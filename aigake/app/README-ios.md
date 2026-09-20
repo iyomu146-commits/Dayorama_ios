@@ -17,7 +17,7 @@ npm run export:ios
 
 `dist/komorebi-ios/` に必要なソースだけを集める。その**中身をGitHubリポジトリのルート**へ配置する。`.github/` も必要。別の親フォルダーで包まない。証明書・鍵・node_modules・過去の実験ページ・生成済みアプリは入れない。書き出したフォルダーは生成物なので、変更は元のソースに行って再出力する。
 
-2026-09-20：星座観測を含む最新版の書き出しを確認。`package.json` の `test:*` に指定されたテストと依存ソースも自動で収集する。書き出したフォルダーで依存パッケージの新規インストール、歩行・星座32件＋編集17件のテスト、Web同梱、CapacitorのiOS同期、iOS構成検査を通過した。Xcodeでのコンパイルと実機署名はGitHubで確認する必要がある。
+2026-09-20：星座観測を含む最新版の書き出しを確認。`package.json` の `test:*` に指定されたテストと依存ソースも自動で収集する。書き出したフォルダーで依存パッケージの新規インストール、歩行・星座32件＋編集17件のテスト、Web同梱、CapacitorのiOS同期、iOS構成検査を通過した。[GitHubの初回ビルド](https://github.com/iyomu146-commits/Dayorama_ios/actions/runs/35511726134)で本体とWidgetのSimulatorコンパイルも成功。実機確認はSideloadlyで進め、TestFlightの署名設定は後回しにする。
 
 ```text
 リポジトリルート/
@@ -44,11 +44,24 @@ npm run export:ios
 
 push / Pull Requestで `Komorebi iOS` が動く。Actionsから `Run workflow` を選び、`testflight` をオフにして手動実行してもよい。Secretsは不要。
 
-テスト → Web同梱 → Capacitor同期 → Xcode / plist / YAML検証 → Swiftの共有データ検証 → アプリとWidgetのSimulatorビルドを行う。Appの中に `PlugIns/KomorebiWidget.appex` が含まれることも確認する。成功時は `Komorebi-Simulator`、失敗時はXcodeの診断結果をArtifactsへ保存する。
+テスト → Web同梱 → Capacitor同期 → Xcode / plist / YAML検証 → Swiftの共有データ検証 → 本体とWidgetのSimulatorビルド → iPhone実機用Releaseビルドを行う。Appの中に `PlugIns/KomorebiWidget.appex` が含まれることも確認する。
 
-**Simulatorの成果物はiPhoneにはインストールできない。** iPhoneで確認するには次の署名付きビルドを使う。
+Artifactsに2種類の成果物が出る。`Komorebi-Simulator` はMacのSimulator専用。**Sideloadlyには `Komorebi-iPhone-Unsigned` を使う。** 失敗時はXcodeの診断結果を保存する。
 
-## 2. Apple側を設定する
+### SideloadlyでiPhoneへ入れる
+
+1. GitHubのActionsで成功した `Komorebi iOS` を開く。
+2. Artifactsの `Komorebi-iPhone-Unsigned` をダウンロードし、外側のZIPを解凍する。
+3. 中の `Komorebi-unsigned.ipa` をSideloadlyに渡し、自分の環境で再署名・インストールする。
+4. 起動と描画を確認後、歩数連携とWidgetを確認する。
+
+IPAには本体とWidgetが含まれる。CI側にApple ID、配布用証明書、Secretsを登録する必要はない。IPAは未署名であり、そのままiPhoneへコピーするだけでは起動できない。
+
+HealthKitとApp Groupの参照用権限ファイル、SHA-256、簡単な手順も同梱する。権限ファイルは自動適用されるものではない。実歩数にはHealthKit、Widget共有には本体・拡張で同じApp Groupが必要。再署名時にBundle IDやApp Groupが変更される場合は、両方の `Info.plist` の `KomorebiAppGroup` と署名の権限も一致させる。Widgetを確認する場合は拡張を削除しない。
+
+Sideloadlyのカスタム権限機能は公式変更履歴でApple Developer Program加入者向け・Patreon機能とされている。利用環境によって歩数やWidgetの確認に追加設定が必要になる。アプリのインストール成功と、これらの動作確認は区別する。[Sideloadly公式](https://sideloadly.io/changelog)
+
+## 2. TestFlightを使う場合：Apple側を設定する
 
 TestFlightを使うため、Apple Developer Programの登録とApp Store Connectの設定が必要。
 
@@ -102,9 +115,9 @@ Widgetが空欄の場合は、アプリを開いて同期する。初回起動�
 
 ## 検証状況と残る確認
 
-Windowsで、歩数・建築・再生・Widget payloadの23テスト、署名プロファイル検証の3テスト、Xcodeターゲットの接続、共有ファイルと各ターゲットの署名、plist・YAML構文、Webの同梱、Capacitor同期、Widget用PNGと表示復帰を確認している。
+Windowsで、歩行・星座32件、編集17件、署名プロファイル検証、Xcodeターゲットの接続、共有ファイルと各ターゲットの署名設定、plist・YAML構文、Webの同梱、Capacitor同期、Widget用PNGと表示復帰を確認している。
 
-**Xcodeでのコンパイル・署名・TestFlightへのアップロード・iPhoneのWidget表示とHealthKitは未検証。** この作業ではGitHubへpushしたり、Secretsを登録したり、workflowを実行したりしていない。GitHubでの最初の署名なしビルドが、ネイティブのコンパイル確認になる。
+**GitHubで本体とWidgetのSimulatorコンパイルは成功。** iPhone実機用IPAのビルド結果は各Actions実行の `Build unsigned iPhone app and widget` を確認する。Sideloadlyでの再署名・インストール、iPhoneのWidget表示とHealthKit、TestFlight配信は実機・アカウント側の確認が必要。
 
 実機では、歩数許可／拒否、深夜またぎ、Widget追加直後、ロック／再起動後、低電力、サイズ変更、タップでの復帰、前回同期の表示、同期中断を確認する。健康データの読み取り拒否はHealthKitから判別できないため、空の応答を許可済みや0歩として扱わない。
 

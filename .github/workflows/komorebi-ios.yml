@@ -65,6 +65,20 @@ jobs:
           name: Komorebi-Simulator
           path: ${{ runner.temp }}/Komorebi-Simulator.zip
           retention-days: 7
+      - name: Build unsigned iPhone app and widget
+        if: ${{ !inputs.testflight }}
+        run: |
+          set -euo pipefail
+          xcodebuild -project ios/App/App.xcodeproj -scheme App -configuration Release -destination 'generic/platform=iOS' -derivedDataPath "$RUNNER_TEMP/komorebi-device" -resultBundlePath "$RUNNER_TEMP/UnsignedDevice.xcresult" CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY='' CURRENT_PROJECT_VERSION="$GITHUB_RUN_NUMBER" build
+          python3 scripts/package-sideload.py --app "$RUNNER_TEMP/komorebi-device/Build/Products/Release-iphoneos/App.app" --output "$RUNNER_TEMP/komorebi-sideload"
+      - name: Save Sideloadly IPA
+        if: ${{ !inputs.testflight && success() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: Komorebi-iPhone-Unsigned
+          path: ${{ runner.temp }}/komorebi-sideload/
+          if-no-files-found: error
+          retention-days: 14
       - name: Install signing assets
         if: ${{ github.event_name == 'workflow_dispatch' && inputs.testflight }}
         env:
@@ -117,6 +131,7 @@ jobs:
           name: Xcode-build-diagnostics
           path: |
             ${{ runner.temp }}/Unsigned.xcresult
+            ${{ runner.temp }}/UnsignedDevice.xcresult
             ${{ runner.temp }}/Archive.xcresult
           if-no-files-found: ignore
           retention-days: 7

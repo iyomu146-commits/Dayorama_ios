@@ -1,6 +1,7 @@
 # 歩行建築アプリ：リリース準備
 
 更新：2026-09-20。現行の `/walk/`、iOS構成、町編集の試作を確認した作業表。
+同日追記：Dayorama_iosへアップロードし、本体とWidgetのSimulatorビルドが成功。実機への導入はSideloadlyを使う方針に変更。TestFlightの署名設定は後回しにする。
 これは準備計画であり、実装済み・実機確認済みを意味しない。GitHub・Apple側の登録や実行状況は今回確認していない。
 課金の合意事項は [MONETIZATION.md](./MONETIZATION.md)、ビルド手順は [README-ios.md](../app/README-ios.md) を参照する。過去の別方式のリリース発注書から、現在の仕様にない機能を持ち込まない。
 

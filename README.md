@@ -3,10 +3,11 @@
 このフォルダーの内容をGitHubリポジトリのルートに配置してください。`.github` も含めます。
 
 - push / Pull Request：アプリとウィジェットの署名なしビルド。
-- Actions → Komorebi iOS → Run workflow：`testflight` をオンにすると署名・TestFlightアップロード。
-- iPhone実機にはApple Developerの設定と署名が必要です。Simulator成果物はiPhoneには入りません。
+- Sideloadly：ActionsのArtifactsから `Komorebi-iPhone-Unsigned` を取得し、解凍して `Komorebi-unsigned.ipa` を渡します。CIのSecretsは不要です。
+- `Komorebi-Simulator` はMacのSimulator専用で、iPhoneには入りません。
+- TestFlightを使う場合は署名設定後に Run workflow の `testflight` をオンにします。
 
-[Apple側の設定、必要なSecrets、実機確認手順](aigake/app/README-ios.md)
+[実機確認手順・歩数とWidgetの権限・TestFlight設定](aigake/app/README-ios.md)
 
 Windows：`cd aigake/app` → `npm ci` → `npm run test:walk` → `npm run sync:ios` → `npm run verify:ios`。
 
