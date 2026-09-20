@@ -69,9 +69,19 @@ public class HealthPlugin: CAPPlugin, CAPBridgedPlugin {
         guard HKHealthStore.isHealthDataAvailable() else {
             call.reject("health_unavailable"); return
         }
-        store.requestAuthorization(toShare: [], read: [stepType]) { ok, err in
-            if let err = err { call.reject("permission_error: \(err.localizedDescription)"); return }
-            call.resolve(["granted": ok])
+        DispatchQueue.main.async {
+            self.store.requestAuthorization(toShare: [], read: [self.stepType]) { ok, err in
+                if let err = err {
+                    let diagnostic = err.localizedDescription.lowercased()
+                    if diagnostic.contains("entitlement") && diagnostic.contains("healthkit") {
+                        call.reject("このインストールでは歩数の読み取り権限が不足しています。署名のHealthKit設定を確認してください。", "HEALTH_ENTITLEMENT_MISSING")
+                    } else {
+                        call.reject("歩数の連携設定を完了できませんでした。\(err.localizedDescription)", "HEALTH_PERMISSION_FAILED")
+                    }
+                    return
+                }
+                call.resolve(["granted": ok])
+            }
         }
     }
 

@@ -38,6 +38,7 @@
     "aigake/app/package.json",
     "aigake/app/scripts/build-walk.mjs",
     "aigake/app/scripts/export-ios.mjs",
+    "aigake/app/scripts/health-bridge.test.mjs",
     "aigake/app/scripts/package-sideload.py",
     "aigake/app/scripts/prepare-signing.py",
     "aigake/app/scripts/test_sideload.py",

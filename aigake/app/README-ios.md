@@ -115,7 +115,9 @@ Widgetが空欄の場合は、アプリを開いて同期する。初回起動�
 
 ## 検証状況と残る確認
 
-Windowsで、歩行・星座32件、編集17件、署名プロファイル検証、Xcodeターゲットの接続、共有ファイルと各ターゲットの署名設定、plist・YAML構文、Webの同梱、Capacitor同期、Widget用PNGと表示復帰を確認している。
+Windowsで、歩行・星座・歩数連携37件、編集17件、署名プロファイル検証、Xcodeターゲットの接続、共有ファイルと各ターゲットの署名設定、plist・YAML構文、Webの同梱、Capacitor同期、Widget用PNGと表示復帰を確認している。
+
+2026-09-20：歩数連携ボタンが応答しない問題を修正。CapacitorのプラグインProxyをasync関数から返すと、Promiseが存在しない `Health.then()` を呼び出して待ち続けていた。初期化とネイティブ呼び出しを分け、実際のCapacitor Proxyを使う回帰テストを追加した。連携中はボタンに状態を表示し、失敗理由は画面に残す。HealthKitの許可画面はメインスレッドから開く。署名後の権限と実機の許可操作は別途確認が必要。
 
 **GitHubで本体とWidgetのSimulatorコンパイルは成功。** iPhone実機用IPAのビルド結果は各Actions実行の `Build unsigned iPhone app and widget` を確認する。Sideloadlyでの再署名・インストール、iPhoneのWidget表示とHealthKit、TestFlight配信は実機・アカウント側の確認が必要。
 
