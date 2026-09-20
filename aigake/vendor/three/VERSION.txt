@@ -1,0 +1,18 @@
+three@0.185.1 (npm three@0.185.1, build/three.module.js + three.core.js). CDN禁止のためvendored。
+
+examples/jsm/ に置いてあるもの(すべて同じ 0.185.1 から取る。版を混ぜないこと):
+  math/SimplexNoise.js
+  postprocessing/ , shaders/
+  controls/OrbitControls.js            … 2026-07-29 追加。Kimi のスタジオ3枚が使う
+  geometries/RoundedBoxGeometry.js     … 2026-07-29 追加。treehouse.html / clay-house.html が使う
+                                         (エンジン本体と vocab.js は使っていない)
+
+【なぜ版を混ぜてはいけないか】2026-07-29、Kimi のスタジオが unpkg の three@0.160.0 を
+読んでいたせいで、**同じブループリントを同じ builder.js で建てても node とブラウザで
+三角形数が食い違った**。物差しが揃っていないと、Kimi の数字と Dayorama の数字を
+並べる意味がなくなる。addon を足すときは必ず 0.185.1 から取ること。
+経緯は aigake/experiments/kimi-vocab-studio/README.md の「物差しを揃えた」。
+
+【app への同期】vendor/ は app/scripts/sync-engine.mjs が**丸ごと** app/www/ へ複製する。
+つまりここに足したものはアプリの束にも入る(addon 2本で約47KB)。足したら
+`node app/scripts/sync-engine.mjs` を回すこと——回さないと check-embed が落ちる(正しい落ち方)。

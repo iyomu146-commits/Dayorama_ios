@@ -1,0 +1,6 @@
+// App, extension, entitlements and CI use the same identifiers.
+KOMOREBI_APP_ID = com.iyomu.dayorama
+KOMOREBI_WIDGET_ID = $(KOMOREBI_APP_ID).widget
+KOMOREBI_APP_GROUP = group.$(KOMOREBI_APP_ID)
+MARKETING_VERSION = 0.3.0
+CURRENT_PROJECT_VERSION = 1

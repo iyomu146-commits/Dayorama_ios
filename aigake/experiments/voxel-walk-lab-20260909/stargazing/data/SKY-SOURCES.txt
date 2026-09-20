@@ -1,0 +1,22 @@
+Current sky renderer (2026-09-20)
+
+Milky Way: original procedural graphics, with no source image or image asset.
+The luminous galactic band, dust lanes and 110,000 faint particles are
+illustrative. They are not a one-to-one reconstruction of observed nebulae
+or catalog stars. Their shape is deterministic and fixed on the sky sphere.
+The diffuse layer is shaded on the GPU and cached in a transient render
+target until the camera, observation date/site or viewport changes.
+
+Celestial/Galactic reference-frame conversion:
+ESA Gaia EDR3 documentation, section 4.1.7, equation 4.62.
+https://gea.esac.esa.int/archive/documentation/GEDR3/Data_processing/chap_cu3ast/sec_cu3ast_intro/ssec_cu3ast_intro_tansforms.html
+
+Actual foreground stars, constellation figures and names:
+d3-celestial, Copyright (c) 2015 Olaf Frohn. BSD-3-Clause.
+https://github.com/ofrohn/d3-celestial
+See LICENSE-d3-celestial.txt (bundled in full).
+stars.6.json: 5,044 catalog stars; RA, declination, magnitude, B-V color index.
+
+The earlier NASA-derived milkyway-4k.webp and its CREDITS.txt remain in the
+development sources for provenance. The current renderer does not load
+them, and the native application does not bundle them.

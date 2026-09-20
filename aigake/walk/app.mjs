@@ -1,0 +1,183 @@
+import {createTownWorld} from '../experiments/voxel-walk-lab-20260909/art-direction-20260915/town-world.mjs';
+import {makeTown} from '../experiments/voxel-walk-lab-20260909/art-direction-20260915/town-plan.mjs';
+import {STEPS_PER_BUILDING,completionStep,prepareConstruction,constructionPlan} from './construction.mjs';
+import {BY_ID} from '../experiments/voxel-walk-lab-20260909/content/catalog.mjs';
+import {dayKey,shiftDay,daysEnding,initialState,restore,applySnapshot,townSteps,pendingRecap,acknowledge,recordCompletions,nextTown,demoState} from './state.mjs';
+import {platform,requestHealth,readHealth} from './health.mjs';
+import {replayTowns,replayTownPlan,replayClips,replayFrame,advanceTimelapse} from './timelapse.mjs';
+import {widgetSnapshot,widgetSignature,publishWidget} from './widget.mjs';
+import {createStargazing} from '../experiments/voxel-walk-lab-20260909/stargazing/game.mjs';
+import {walkUnlocked} from '../experiments/voxel-walk-lab-20260909/stargazing/model.mjs';
+const $=id=>document.getElementById(id),format=n=>Math.round(n).toLocaleString('ja-JP'),params=new URLSearchParams(location.search);
+const native=platform()==='ios',demo=!native&&params.get('demo')==='1',key=demo?'komorebi-walk-preview-v1':'komorebi-walk-health-v1',reduced=matchMedia('(prefers-reduced-motion: reduce)');
+let state,world,profiles,plan,tab='town',period=7,selectedDay=dayKey(),animation=null,visualTotal=0,busy=false,lastFrame=0,lastUI=0,noticeTimer,statusNote='',storageFailed=false;
+let timelapse=null,playerLastFrame=null;
+const stargazing=createStargazing({unlocked:()=>walkUnlocked(state,plan?.walkBudget),storageKey:demo?'komorebi-walk-starbook-demo-v1':'komorebi-walk-starbook-v1',onClose:()=>{if(tab==='town')startRecap();}});
+const sceneHome=$('world').parentElement,replayPlans=new Map();
+let widgetTimer,widgetPublishing=false,lastWidgetSignature='';
+function queueWidget(){
+ if(!native||demo)return;clearTimeout(widgetTimer);widgetTimer=setTimeout(updateWidget,600);
+}
+async function updateWidget(){
+ if(!world||!plan||timelapse||document.hidden||storageFailed)return;
+ if(widgetPublishing){queueWidget();return;}
+ const snapshot=widgetSnapshot(state,plan),signature=widgetSignature(snapshot,state.seed);
+ if(signature===lastWidgetSignature)return;
+ widgetPublishing=true;
+ try{
+  const b=plan.buildings.find(b=>townSteps(state)<completionStep(b,plan.walkBudget));
+  const images=world.widgetSnapshots(progressAt(state.total),b?.id);
+  await publishWidget(snapshot,images);lastWidgetSignature=signature;
+ }catch(e){console.warn('Widget update failed:',e.message);}
+ finally{widgetPublishing=false;}
+}
+function notice(message){$('notice').textContent=message;$('notice').hidden=false;clearTimeout(noticeTimer);noticeTimer=setTimeout(()=>$('notice').hidden=true,5000);}
+function persist(next){try{localStorage.setItem(key,JSON.stringify(next));state=next;return true;}catch{storageFailed=true;notice('保存できませんでした。空き容量を確認してください');return false;}}
+function label(b){return b.name||BY_ID[b.kind]?.name||'建物';}
+function currentProfile(){return profiles.find(p=>p.id===state.region)||profiles[0];}
+function progressAt(total){return Math.max(0,Math.min(1,(total-state.townStart)/plan.walkBudget));}
+function setVisual(total){visualTotal=total;world.setProgress(progressAt(total));}
+function completionEvents(){const next=recordCompletions(state,plan.buildings,plan.walkBudget);if(next.events.length!==state.events.length)persist(next);}
+function buildWorld(){
+ const base=makeTown(currentProfile(),state.seed),next=prepareConstruction(state,base);
+ if(next!==state&&!persist(next))throw Error('建築予定を保存できません');
+ plan=world.build(currentProfile(),state.seed,{townPlan:constructionPlan(base,state.construction)});world.setLook(2);world.setColor(1);world.setMotion(state.motion&&!reduced.matches);setVisual(Math.max(state.townStart,state.seen));world.view('home');completionEvents();
+ $('scene-loading').hidden=true;$('town-name').textContent=currentProfile().name;$('setting-region').textContent=currentProfile().name;
+ queueWidget();
+}
+function updateTown(){
+ if(timelapse)return;
+ const today=state.records[dayKey()];$('today-date').textContent=new Intl.DateTimeFormat('ja-JP',{month:'long',day:'numeric',weekday:'short'}).format(new Date());$('today-steps').textContent=today?format(today.steps):'—';
+ const s=world.stats(),done=s.buildings.filter(b=>b.progress===1).length,b=s.buildings.find(b=>b.progress>0&&b.progress<1)||s.buildings.find(b=>b.progress<1),target=b&&plan.buildings.find(p=>p.id===b.id);
+ $('town-count').textContent=done+' / '+s.buildings.length+' 棟';$('build-name').textContent=b?label(b):'町が完成しました';$('build-phase').textContent=b?['基礎','骨組み','壁・屋根','仕上げ'][b.progress<.14?0:b.progress<.39?1:b.progress<.86?2:3]:'';$('build-progress').value=b?.progress??1;
+ $('remaining').textContent=target?'完成まで '+format(Math.max(0,completionStep(target,plan.walkBudget)-(visualTotal-state.townStart)))+'歩':townSteps(state)>plan.walkBudget?'次の町へ '+format(townSteps(state)-plan.walkBudget)+'歩':'全ての建物が完成';
+ $('next-town').hidden=townSteps(state)<plan.walkBudget||!!animation;$('replay').hidden=!state.recap||!!animation;
+ $('connect-prompt').hidden=state.permissionRequested||demo;$('preview-link').hidden=native;
+ $('source-label').textContent=demo?'プレビュー':state.lastSync?'ヘルスケア':'';$('sync').disabled=busy||(!native&&!demo);
+ $('open-stargazing').hidden=!walkUnlocked(state,plan.walkBudget);$('stars-locked').hidden=state.region!=='stars'||walkUnlocked(state,plan.walkBudget);
+}
+function renderRecords(){
+ const days=daysEnding(dayKey(),period),known=days.filter(d=>state.records[d]),total=known.reduce((sum,d)=>sum+state.records[d].steps,0),max=Math.max(1,...known.map(d=>state.records[d].steps));
+ $('record-period').textContent=days[0].slice(5).replace('-',' / ')+' — '+days.at(-1).slice(5).replace('-',' / ');$('record-total').textContent=known.length?format(total):'—';$('record-average').textContent=known.length?'1日平均 '+format(total/known.length)+'歩 · '+known.length+'日分':'歩数を連携すると記録が表示されます';
+ $('chart').classList.toggle('month',period===30);$('chart').replaceChildren(...days.map((day,i)=>{const record=state.records[day],b=document.createElement('button'),bar=document.createElement('span'),text=document.createElement('span');bar.className='bar';bar.style.height=(record?Math.max(2,record.steps/max*128):2)+'px';text.textContent=period===7?['日','月','火','水','木','金','土'][new Date(day+'T12:00:00').getDay()]:i%5===0||i===days.length-1?String(Number(day.slice(-2))):'';b.dataset.missing=String(!record);b.setAttribute('aria-label',day+' '+(record?format(record.steps)+'歩':'データなし'));b.setAttribute('aria-pressed',String(day===selectedDay));b.append(bar,text);b.onclick=()=>{selectedDay=day;renderRecords();};return b;}));
+ const selected=state.records[selectedDay];$('selected-day').textContent=selectedDay.slice(5).replace('-',' / ')+'　'+(selected?format(selected.steps)+'歩':'データなし');
+ const events=state.events.filter(e=>e.day>=days[0]&&e.day<=days.at(-1)).sort((a,b)=>b.day.localeCompare(a.day));$('journal-count').textContent=events.length+' 棟';$('records-empty').hidden=events.length>0;
+ $('journal').replaceChildren(...events.map(e=>{const li=document.createElement('li'),date=document.createElement('time'),text=document.createElement('div'),name=document.createElement('strong'),region=document.createElement('small'),play=document.createElement('button');date.dateTime=e.day;date.textContent=e.day.slice(5).replace('-','/');const title=e.name||BY_ID[e.kind]?.name||'建物';name.textContent=title+'が完成';region.textContent=profiles.find(p=>p.id===e.region)?.name||'';text.append(name,region);play.className='text-button journal-replay';play.textContent='再生';play.setAttribute('aria-label',title+'のタイムラプス');play.onclick=()=>playCompletedEvent(e);li.append(date,text,play);return li;}));
+}
+function updateSettings(){
+ $('health-status').textContent=demo?'サンプル':!native?'iPhoneアプリで利用':state.permissionRequested?state.lastDataSync?'同期済み':state.lastSync?'データなし':'連携設定済み':'未連携';
+ $('health-note').textContent=demo?'実際の歩数には影響しません。':statusNote||(!native?'端末歩数の読み取りはiPhoneアプリで行います。':'歩数のみ読み取ります。');
+ $('health-connect').textContent=state.permissionRequested?'連携を確認':'歩数を連携';$('health-connect').disabled=!native||busy;
+ $('sync-time').textContent=state.lastSync?'最終同期 '+new Intl.DateTimeFormat('ja-JP',{month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'}).format(new Date(state.lastSync)):'';
+ $('motion').checked=state.motion;$('demo-tools').hidden=!demo;
+}
+function ui(){if(!world)return;updateTown();if(tab==='records')renderRecords();if(tab==='settings')updateSettings();}
+function selectTab(next){if(tab==='town'&&next!=='town')pauseRecap();tab=next;for(const id of ['town','records','settings'])$(id+'-page').hidden=id!==next;document.querySelectorAll('[data-tab]').forEach(b=>{if(b.dataset.tab===next)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current');});window.scrollTo(0,0);ui();if(next==='town'){world.view('home');startRecap();}}
+function finishRecap(){
+ if(!animation)return;const {recap,replay}=animation;animation=null;setVisual(state.total);if(!replay)persist(acknowledge(state,recap));$('recap').hidden=true;ui();
+ const done=plan.buildings.filter(b=>state.townStart+completionStep(b,plan.walkBudget)>recap.from&&state.townStart+completionStep(b,plan.walkBudget)<=recap.to);
+ if(done.length){$('scene-message').textContent=done.length===1?label(done[0])+'が完成':done.length+'棟が完成';$('scene-message').hidden=false;}queueWidget();
+}
+function startRecap(replay=false){
+ if(tab!=='town'||animation||storageFailed||timelapse||stargazing.isOpen||$('timelapse-list-dialog').open)return;
+ const recap=replay?state.recap:pendingRecap(state);if(!recap){setVisual(state.total);return;}
+ if(recap.to<=state.townStart)return;
+ $('scene-message').hidden=true;setVisual(Math.max(state.townStart,recap.from));
+ animation={recap,replay,start:performance.now(),duration:Math.min(9000,Math.max(4000,(recap.to-recap.from)*1.6))};
+ $('recap-steps').textContent='＋'+format(recap.to-recap.from)+'歩';$('recap-caption').textContent=replay?'前回の変化':'町に反映しています';$('recap').hidden=false;ui();
+ if(reduced.matches)finishRecap();
+}
+function pauseRecap(){if(!animation)return;if(!animation.replay)persist({...state,seen:Math.max(state.seen,Math.floor(visualTotal))});animation=null;$('recap').hidden=true;queueWidget();}
+async function synchronize(request=false){
+ if(busy)return;
+ if(demo){startRecap();return;}
+ if(!native){if(request)notice('歩数の連携はiPhoneアプリで利用できます');return;}
+ if(!request&&!state.permissionRequested)return;
+ busy=true;ui();
+ try{
+  if(request){await requestHealth();if(!persist({...state,permissionRequested:true}))return;}
+  const rows=await readHealth(state);pauseRecap();const next=applySnapshot(state,rows);
+  if(!persist(next))return;completionEvents();statusNote=rows.length?'歩数のみ読み取っています。':'新しい歩数を確認できません。ヘルスケアの歩数と連携設定を確認してください。';
+  if(tab==='town')startRecap();
+ }catch(e){statusNote='同期できませんでした。時間をおいてもう一度お試しください。';notice(e.message||statusNote);}
+ finally{busy=false;ui();queueWidget();}
+}
+function chooseRegion(){
+ const canStart=townSteps(state)>=plan.walkBudget,canChange=state.total===state.townStart;
+ $('region-title').textContent=canStart?'次の町':canChange?'地域を選ぶ':'建築中の町';
+ $('region-list').replaceChildren(...profiles.map(p=>{const b=document.createElement('button'),name=document.createElement('span'),mark=document.createElement('small');name.textContent=p.name;mark.textContent=canStart||canChange?'1棟 '+format(STEPS_PER_BUILDING)+'歩':p.id===state.region?'建築中':'';b.disabled=!canStart&&!canChange;b.append(name,mark);b.onclick=()=>{pauseRecap();const next=canStart?nextTown(state,p.id,plan.walkBudget):{...state,region:p.id,construction:null};if(!persist(next))return;$('region-dialog').close();buildWorld();selectTab('town');};return b;}));$('region-dialog').showModal();
+}
+function getReplayPlan(town){
+ if(town.current)return plan;
+ const key=town.start+':'+town.region+':'+town.seed;
+ if(!replayPlans.has(key)){const profile=profiles.find(p=>p.id===town.region);if(!profile)throw Error('地域を読み込めません');replayPlans.set(key,replayTownPlan(makeTown(profile,town.seed),town));}
+ return replayPlans.get(key);
+}
+function showTimelapses(){
+ pauseRecap();
+ const sections=replayTowns(state).map(town=>{
+  const replayPlan=getReplayPlan(town),clips=replayClips(town,replayPlan),section=document.createElement('section'),heading=document.createElement('h3');section.className='replay-town';heading.textContent=(profiles.find(p=>p.id===town.region)?.name||town.region)+(town.current?'':town.completed?' · '+town.completed.replaceAll('-',' / '):'');section.append(heading);
+  function row(clip,preview=false){const b=document.createElement('button'),name=document.createElement('span'),detail=document.createElement('small');name.textContent=preview?'地区全体を試す':clip.kind==='town'?'地区全体':label(replayPlan.buildings.find(p=>p.id===clip.id));detail.textContent=preview?'プレビュー':clip.ready?'再生':'地区の完成後';b.disabled=!clip.ready&&!preview;b.append(name,detail);b.onclick=()=>openTimelapse(town,clip,preview);section.append(b);}
+  row(clips[0]);clips.slice(1).filter(c=>c.ready).forEach(c=>row(c));
+  if(demo&&town.current&&!clips[0].ready)row(clips[0],true);
+  return section;
+ });$('timelapse-list').replaceChildren(...sections);$('timelapse-list-dialog').showModal();
+}
+function playCompletedEvent(event){
+ const town=replayTowns(state).find(t=>event.id.startsWith(t.start+':'+t.region+':'));
+ if(!town){notice('建築の記録を読み込めません');return;}
+ const clip=replayClips(town,getReplayPlan(town)).find(c=>c.kind==='building'&&event.id===town.start+':'+town.region+':'+c.id);
+ if(clip?.ready)openTimelapse(town,clip);else notice('建築の記録を読み込めません');
+}
+function openTimelapse(town,clip,preview=false){
+ if(!clip.ready&&!(demo&&preview))return;
+ pauseRecap();const replayPlan=getReplayPlan(town),profile=profiles.find(p=>p.id===town.region);
+ timelapse={town,clip,plan:replayPlan,position:0,playing:!reduced.matches,speed:1};playerLastFrame=null;
+ $('timelapse-region').textContent=profile.name+(preview?' · プレビュー':'');$('timelapse-title').textContent=clip.kind==='town'?'地区全体':label(replayPlan.buildings.find(b=>b.id===clip.id));
+ if($('timelapse-list-dialog').open)$('timelapse-list-dialog').close();
+ $('timelapse-dialog').showModal();$('timelapse-scene').append($('world'));
+ if(!town.current)world.build(profile,town.seed,{townPlan:replayPlan});
+ world.setShowcase(clip.kind==='building'?clip.id:null);world.setMotion(state.motion&&!reduced.matches);drawTimelapse();
+}
+function drawTimelapse(){
+ if(!timelapse)return;const f=replayFrame(timelapse.clip,timelapse.plan,timelapse.position);world.setProgress(f.progress,f.focus);
+ $('timelapse-phase').textContent=f.phase;$('timelapse-seek').value=Math.round(timelapse.position*1000);$('timelapse-seek').setAttribute('aria-valuetext',Math.round(timelapse.position*100)+'% · '+f.phase);
+ const time=ms=>Math.floor(ms/60000)+':'+String(Math.floor(ms/1000)%60).padStart(2,'0');$('timelapse-time').textContent=time(timelapse.position*timelapse.clip.duration)+' / '+time(timelapse.clip.duration);
+ $('timelapse-toggle').textContent=timelapse.position===1?'もう一度':timelapse.playing?'一時停止':'再生';
+ document.querySelectorAll('[data-playback-speed]').forEach(b=>b.setAttribute('aria-pressed',String(Number(b.dataset.playbackSpeed)===timelapse.speed)));
+}
+function closeTimelapse(){
+ if(!timelapse)return;const archived=!timelapse.town.current;timelapse=null;playerLastFrame=null;
+ sceneHome.prepend($('world'));if(archived)world.build(currentProfile(),state.seed,{townPlan:plan});else world.setShowcase(null);
+ setVisual(Math.max(state.townStart,state.seen));world.setMotion(state.motion&&!reduced.matches);world.view('home');ui();if(tab==='town')startRecap();queueWidget();
+}
+try{
+ const raw=localStorage.getItem(key);state=raw?restore(raw,demo?'demo':'health'):demo?demoState():initialState();
+ if(!persist(state))throw Error('この端末に記録を保存できません');
+ profiles=(await fetch(new URL('../experiments/voxel-walk-lab-20260909/art-direction-20260915/profiles.json',import.meta.url)).then(r=>{if(!r.ok)throw Error('風景を読み込めません');return r.json();})).regions;
+ world=createTownWorld($('world'));buildWorld();
+ document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>selectTab(b.dataset.tab));$('open-records').onclick=()=>selectTab('records');$('home-view').onclick=()=>world.view('home');$('sync').onclick=()=>synchronize();
+ document.querySelectorAll('[data-connect]').forEach(b=>b.onclick=()=>synchronize(true));$('preview-link').onclick=()=>{const u=new URL(location.href);u.searchParams.set('demo','1');location.href=u;};
+ $('replay').onclick=()=>startRecap(true);$('skip').onclick=finishRecap;$('next-town').onclick=chooseRegion;$('choose-region').onclick=chooseRegion;
+ $('open-timelapses').onclick=showTimelapses;$('timelapse-close').onclick=()=>$('timelapse-dialog').close();$('timelapse-dialog').addEventListener('close',closeTimelapse);
+ $('open-stargazing').onclick=()=>{pauseRecap();stargazing.open();};
+ $('timelapse-list-dialog').addEventListener('close',()=>{if(!timelapse&&tab==='town')startRecap();});
+ $('timelapse-toggle').onclick=()=>{if(!timelapse)return;if(timelapse.position===1)timelapse.position=0;timelapse.playing=!timelapse.playing;playerLastFrame=null;drawTimelapse();};
+ $('timelapse-seek').oninput=()=>{if(!timelapse)return;timelapse.position=Number($('timelapse-seek').value)/1000;timelapse.playing=false;playerLastFrame=null;drawTimelapse();};
+ document.querySelectorAll('[data-playback-speed]').forEach(b=>b.onclick=()=>{if(timelapse){timelapse.speed=Number(b.dataset.playbackSpeed);playerLastFrame=null;drawTimelapse();}});
+ $('privacy-open').onclick=()=>$('privacy-dialog').showModal();document.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>$(b.dataset.close).close());
+ $('motion').onchange=()=>{if(persist({...state,motion:$('motion').checked}))world.setMotion(state.motion&&!reduced.matches);};
+ document.querySelectorAll('[data-period]').forEach(b=>b.onclick=()=>{period=Number(b.dataset.period);document.querySelectorAll('[data-period]').forEach(q=>q.setAttribute('aria-pressed',String(q===b)));renderRecords();});
+ $('demo-return').onclick=()=>{pauseRecap();const today=dayKey();if(persist(applySnapshot(state,[{day:today,steps:(state.records[today]?.steps||0)+2400}]))){completionEvents();selectTab('town');}};
+ document.addEventListener('visibilitychange',()=>{playerLastFrame=null;if(document.hidden){pauseRecap();if(timelapse){timelapse.playing=false;drawTimelapse();}}else{selectedDay=dayKey();ui();synchronize().then(()=>startRecap());}});window.addEventListener('pagehide',pauseRecap);
+ // iOS also sends this on a foreground transition even when WebKit's document
+ // visibility does not change. The in-flight guard prevents duplicate reads.
+ window.addEventListener('komorebi:resume',()=>synchronize().then(()=>{startRecap();queueWidget();}));
+ window.addEventListener('komorebi:town',()=>{document.querySelectorAll('dialog[open]').forEach(d=>d.close());selectTab('town');synchronize();});
+ selectTab('town');synchronize();
+ function frame(now){requestAnimationFrame(frame);if(document.hidden||stargazing.isOpen||(!timelapse&&tab!=='town')||now-lastFrame<32)return;lastFrame=now;
+  if(timelapse){const previousPosition=timelapse.position;timelapse=advanceTimelapse(timelapse,playerLastFrame===null?0:Math.min(250,now-playerLastFrame));playerLastFrame=now;if(timelapse.position!==previousPosition)drawTimelapse();world.render(now);return;}
+  if(animation){const a=animation,p=Math.min(1,(now-a.start)/a.duration);setVisual(a.recap.from+(a.recap.to-a.recap.from)*p);if(p===1)finishRecap();if(now-lastUI>150){updateTown();lastUI=now;}}
+  world.render(now);
+ }requestAnimationFrame(frame);
+}catch(e){$('scene-loading').textContent=e.message||'読み込みに失敗しました';notice(e.message||'アプリを開き直してください');console.error(e);}

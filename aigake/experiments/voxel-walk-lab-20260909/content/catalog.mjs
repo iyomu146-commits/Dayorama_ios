@@ -1,0 +1,131 @@
+// This is the full production allocation. An entry becomes available only when
+// its actual voxel blueprint has been authored and passes the geometry audit.
+export const REGIONS={
+  grove:{name:'木もれびの森',count:14,ground:'#91a479',roof:'#668d85',water:'#92bdb4',wall:'#eddfc5',wood:'#916f50',accent:'#c69b74',trees:['oak','birch'],plants:['fern','clover','bluebell','mushroom'],props:['log-bench','book-cart','birdbath']},
+  harbor:{name:'潮風の港',count:12,ground:'#a5b499',roof:'#70959d',water:'#86bfc3',wall:'#e8dfca',wood:'#a08566',accent:'#bb826d',trees:['coastal-pine'],plants:['beach-grass','sea-lavender','succulent'],props:['bollard','rope-coil','fish-crate']},
+  canal:{name:'運河の職人街',count:10,ground:'#a5b188',roof:'#688d9a',water:'#83b9ba',wall:'#dcc6a9',wood:'#856b58',accent:'#a88d65',trees:['willow'],plants:['iris','reed','hydrangea'],props:['iron-bench','parcel-stack','canal-lamp']},
+  meadow:{name:'風渡る牧草地',count:12,ground:'#afbb80',roof:'#ad8070',water:'#96bbaf',wall:'#eee1bb',wood:'#967b51',accent:'#cbb074',trees:['apple','poplar'],plants:['wheat','daisy','poppy','clover'],props:['hay-bale','milk-can','fence']},
+  alpine:{name:'山あいの集落',count:10,ground:'#9eac8b',roof:'#7c8792',water:'#8caeae',wall:'#c7bda7',wood:'#92775c',accent:'#b88c73',trees:['spruce'],plants:['edelweiss','juniper','heather'],props:['trail-sign','stone-bench','log-stack']},
+  satoyama:{name:'灯りの里',count:12,ground:'#a1ad83',roof:'#75847a',water:'#99b8ab',wall:'#e5d9bf',wood:'#806d56',accent:'#b88373',trees:['cherry','bamboo','maple'],plants:['susuki','hydrangea','moss'],props:['stone-lantern','bamboo-fence','water-basin']},
+  oasis:{name:'砂色のオアシス',count:8,ground:'#c5b894',roof:'#af9780',water:'#8fbeb5',wall:'#d6ba95',wood:'#a18763',accent:'#8eafa1',trees:['date-palm'],plants:['cactus','aloe','desert-flower'],props:['clay-jar','woven-mat','water-trough']},
+  snow:{name:'雪あかりの村',count:8,ground:'#d7dfd7',roof:'#92acaf',water:'#9ebfc7',wall:'#dcd9c9',wood:'#9d8273',accent:'#b89181',trees:['snow-fir'],plants:['winter-berry','snowdrop','lichen'],props:['snow-lantern','sled','firewood']},
+  stars:{name:'星を待つ丘',count:6,ground:'#a2aa94',roof:'#789799',water:'#a0b6c0',wall:'#dfd6bc',wood:'#9a8870',accent:'#bea36f',trees:['silver-birch'],plants:['moonflower','lavender','silver-grass'],props:['star-lamp','armillary','moon-bench']},
+  tropical:{name:'木陰の南の島',count:8,ground:'#a5b68c',roof:'#8eaa9c',water:'#84c4bd',wall:'#e2d4b2',wood:'#a08a63',accent:'#cdac88',trees:['palm','mangrove'],plants:['hibiscus','banana','monstera'],props:['woven-seat','coconut-basket','shell-marker']},
+  tokyo:{name:'東京',count:6,ground:'#b6c2a7',roof:'#84948d',water:'#96bdb8',wall:'#ddd9ca',wood:'#7d8981',accent:'#b88770',trees:['ginkgo','zelkova'],plants:['clover','hydrangea','daisy'],props:['iron-bench','parcel-stack','canal-lamp']},
+};
+
+// id | region | name | role | visual hallmark | footprint class | floors
+const rows=`
+books|grove|本屋|本を売る|木枠の玄関庇と店先の本棚|小|1
+tea|grove|喫茶室|喫茶と休憩|低い軒と側面のテラス席|中|1
+flowers|grove|花屋|切り花を売る|温室につながる採光窓と段々の花台|小|1
+bakery|grove|パン屋|パンを焼く|脇の薪窯と軒下のパンの台|中|1
+mushroom-house|grove|住宅|森の小さな住まい|鎧戸の居間と低い物置の棟|小|1
+woodland-library|grove|図書館|本を借りる|縦長の閲覧窓と二階の読書バルコニー|大|2
+apiary|grove|養蜂小屋|蜂蜜を採る|多角形の採蜜小屋と庭の小さな巣箱|中|1
+pottery|grove|陶芸工房|器を焼く|丸い窯と入口の両脇の乾燥棚|中|1
+aviary|grove|野鳥観察舎|鳥を観察する|通風格子と観察用のとまり木|小|2
+herbalist|grove|薬草乾燥小屋|薬草を干す|深い片流れ屋根と薬草の吊り棚|横長|1
+ranger|grove|見張り台|森を見守る|筋交いの四脚と見張り床の記録台|細高|3
+treehouse|grove|郵便詰所|森の便りを中継する|低い高床の玄関と小さな郵便受け|小|1
+acorn-store|grove|木の実貯蔵庫|森の木の実を蓄える|低い円錐屋根と点検梯子のある貯蔵棟|小|2
+forest-stage|grove|野外舞台|森の音楽会を開く|扇形の屋根と段々の客席|横長|1
+lighthouse|harbor|灯台|航路を照らす|しま模様の塔と回る灯り|細高|4
+boathouse|harbor|舟小屋|小舟を保管する|切妻の大きな開口と舟台|横長|1
+fish-market|harbor|魚市場|魚を並べる|開放した売り場と縞の日除け|横長|1
+shipyard|harbor|造船所|船を造る|骨組みの船体とガントリー|大|2
+crab-shack|harbor|海鮮食堂|海の料理を出す|低い庇と側面の食事テラス|小|1
+net-loft|harbor|漁網修繕所|漁網を直す|背面の網干し枠と修繕台|中|2
+coastguard|harbor|海難救助所|海の救助をする|見張り窓の塔と救助艇の舟台|中|2
+sea-museum|harbor|海洋資料館|海の標本を展示する|石の柱の玄関庇と横長の展示窓|大|2
+harbor-inn|harbor|船員の宿|船員が泊まる|二層のバルコニーと鎧戸の客室|中|3
+ferry-terminal|harbor|渡船場|渡し船を待つ|桟橋を覆う帆布屋根と時刻時計|横長|1
+diving-hut|harbor|潜水用品店|潜水道具を貸す|片流れの屋根と器材を洗う軒下|小|1
+shell-chapel|harbor|礼拝堂|海辺で祈る|急勾配の切妻と細い採光窓|中|1
+canal-lock|canal|水門管理所|水位を調節する|二枚の水門扉と巻上げ輪|横長|1
+watermill|canal|水車小屋|水力で粉をひく|建物横の大きな水車|中|2
+bridge-house|canal|橋の管理所|橋を管理する|通り抜ける石のアーチの上の家|横長|2
+clockmaker|canal|時計修理店|時計を直す|細い縦窓と入口上の小時計|細高|3
+post-office|canal|郵便局|荷物を届ける|集配口の水平庇と投函箱|中|2
+glassworks|canal|吹きガラス工房|ガラス器を作る|丸い炉と煉瓦の煙突|中|1
+flower-barge|canal|船上温室|水辺の苗を育てる|平底船の上のガラス屋根|横長|1
+music-school|canal|音楽学校|楽器を教える|練習室の縦窓と低い別棟|中|2
+antique-shop|canal|古道具屋|古道具を直して売る|鎧戸の窓と脇の陳列室|細高|2
+washhouse|canal|共同洗濯場|共同で洗濯する|並んだ洗い槽と物干し屋根|横長|1
+windmill|meadow|風車小屋|風で穀物をひく|四枚の大きな風車羽根|細高|3
+dairy|meadow|集乳所|生乳を集める|白い集乳庇と側面の作業床|中|1
+stable|meadow|厩舎|馬を世話する|木の通風格子と三つの馬房|横長|1
+barn|meadow|農具納屋|農具を納める|大きな交差扉と干し草の天窓|大|2
+grain-silo|meadow|穀物サイロ|穀物を蓄える|連なる三つの円筒と搬送管|中|3
+orchard-press|meadow|りんごの搾り場|果実を搾る|大きな圧搾機とりんごの樽|中|1
+shepherd-lodge|meadow|羊毛作業小屋|羊毛を仕分ける|横へ延びる軒と低い毛刈り床|小|1
+market-hall|meadow|青空市場|野菜を売買する|連続する縞のテントと野菜台|横長|1
+rail-stop|meadow|駅|列車を待つ|細長いホームと小さな信号|横長|1
+kite-workshop|meadow|凧工房|凧を作る|二階の採光窓と凧張りの作業台|中|2
+picnic-pavilion|meadow|休憩所|屋外で食事をする|傘形の大屋根と中央の食卓|中|1
+scarecrow-hut|meadow|農作業小屋|畑の道具を手入れする|住まいとつながる低い道具置き場|小|1
+cable-station|alpine|索道駅|ゴンドラを運行する|滑車と客車につながる乗車ホーム|横長|2
+mountain-lodge|alpine|山小屋食堂|登山者が食事をする|急勾配の屋根と側面の食事テラス|大|2
+ski-shop|alpine|スキー工房|スキー板を作る|深い入口庇と軒下の乾燥棚|中|1
+climbing-gym|alpine|クライミング練習場|登攀を練習する|高い傾斜壁と色付きホールド|細高|3
+crystal-mine|alpine|採掘小屋|結晶を掘り出す|坑口の太い梁と試料の作業屋根|中|1
+bell-tower|alpine|鐘楼|時を知らせる|開いた鐘室と大きな鐘|細高|3
+stone-mason|alpine|石材工房|石を加工する|切石の山と滑車付き作業梁|横長|1
+cheese-cellar|alpine|チーズ熟成庫|チーズを熟成させる|半地下の丸い戸とチーズの輪|横長|1
+avalanche-station|alpine|積雪観測所|積雪を観測する|高い雪尺と気象器の小塔|小|2
+trail-refuge|alpine|避難小屋|登山途中に休む|急勾配の屋根と入口の補強梁|小|1
+lantern-workshop|satoyama|提灯工房|提灯を張る|軒に並ぶ丸い提灯|細長|2
+noodle-shop|satoyama|麺処|麺を打って出す|低い庇と格子窓の暖簾口|小|1
+tofu-shop|satoyama|豆腐店|豆腐を作る|木の水槽と軒下の作業台|中|1
+bathhouse|satoyama|銭湯|湯に浸かる|唐破風の玄関と高い煙突|大|2
+shrine|satoyama|神社|里の祈りを守る|鳥居と反った小屋根|小|1
+pagoda|satoyama|三重塔|里の景色を見守る|三層に重なる反り屋根|細高|3
+rice-granary|satoyama|高床の米蔵|稲を蓄える|太い高床柱と鼠返し|横長|1
+sake-brewery|satoyama|酒蔵|米を醸す|軒の杉玉と並ぶ大樽|大|2
+paper-workshop|satoyama|紙すき工房|和紙をすく|軒と揃えた紙干し枠と水槽|横長|1
+bamboo-craft|satoyama|竹細工工房|竹を編む|斜めに組んだ竹の庇|中|1
+bonsai-nursery|satoyama|盆栽園|盆栽を仕立てる|段々の棚と曲がった小松|横長|1
+ryokan|satoyama|旅館|里に泊まる|二層の縁側と格子の玄関|大|2
+caravanserai|oasis|隊商宿|旅の荷と人を休める|水盤のある中庭と低い門|大|2
+oasis-well|oasis|井戸|地下水を汲む|ドームの陰の釣瓶と井戸|小|1
+date-market|oasis|なつめやし市場|乾果を並べる|布の日除けと果実の山|横長|1
+carpet-weaver|oasis|絨毯工房|敷物を織る|平らな屋根と作業場の縦の織機|中|2
+spice-house|oasis|香辛料店|香辛料を量る|色の違う円錐の香辛料台|中|1
+sundial-house|oasis|日時計の家|太陽で時を読む|屋上テラスと外階段|小|2
+adobe-school|oasis|学校|子どもが学ぶ|連なる土のアーチと黒板|横長|1
+irrigation-house|oasis|灌漑管理所|畑へ水を分ける|三方に分かれる水樋|中|1
+igloo|snow|イグルー|雪の家で休む|半球の屋根とトンネル玄関|小|1
+sauna|snow|サウナ|蒸気で温まる|木板の外壁と小さな高窓|中|1
+sled-workshop|snow|橇工房|橇を作る|深い作業庇と修理中の小さな橇|横長|1
+reindeer-stable|snow|トナカイの小屋|トナカイを世話する|雪よけの長い軒と通風板の囲い|横長|1
+aurora-station|snow|オーロラ観測所|空の光を記録する|北向きの大窓とカメラ台|中|2
+ice-sculpture|snow|氷細工工房|氷を彫る|冷蔵棟とつながる低い作業屋根|中|1
+wool-mill|snow|紡績所|羊毛から糸を紡ぐ|紡ぎ場の庇と窓辺の糸の棚|中|2
+winter-greenhouse|snow|育苗温室|雪の中で苗を育てる|白い縁の温室と暖房煙突|横長|1
+observatory|stars|天文台|星を観測する|開くドームと大きな望遠鏡|大|3
+planetarium|stars|プラネタリウム|星空を投影する|閉じたドームと低い玄関庇|中|1
+star-map-library|stars|星図資料館|空の地図を保存する|三連の採光屋根と閲覧テラス|横長|2
+meteorite-lab|stars|隕石研究室|隕石を調べる|高さの違う研究棟と低い採光棟|中|1
+moon-garden|stars|庭園回廊|夜の庭を歩く|半円の回廊と木のパーゴラ|横長|1
+balloon-port|stars|気象観測所|丘の天候を記録する|鎧戸の記録室と測器の百葉箱|中|1
+stilt-house|tropical|高床住宅|潮の上で暮らす|長い支柱と外階段|中|2
+fruit-bar|tropical|ジュース店|果実を飲みものにする|開放したカウンターと深い日除け|小|1
+turtle-rescue|tropical|ウミガメ保護所|ウミガメを育てる|水槽を見守る横長窓と日除け|横長|1
+coral-lab|tropical|珊瑚育成室|珊瑚を育てる|横長の青い水槽と枝珊瑚|中|1
+surf-school|tropical|サーフィン教室|波乗りを教える|片流れの深い軒と通風窓|中|1
+palm-weaver|tropical|椰子葉工房|椰子葉を編む|編み目の庇と軒下の作業席|小|1
+butterfly-dome|tropical|温室|熱帯植物を育てる|細い白枠の二連の温室|大|1
+canopy-station|tropical|樹冠観察所|森の上を観察する|高い二つの床と吊り橋|横長|3
+tokyo-shop|tokyo|店舗住宅|商店と住まいをつなぐ|一階の売り場と二階の住まい|中|2
+tokyo-apartment|tokyo|集合住宅|複数の世帯が暮らす|住戸の窓と二階のバルコニー|中|2
+tokyo-cafe|tokyo|喫茶店|街角でコーヒーを出す|倉庫の採光窓と側面の席|中|1
+tokyo-station|tokyo|駅舎|電車で街をつなぐ|ホームと柱で支える長い屋根|横長|1
+tokyo-office|tokyo|オフィスビル|街の仕事を支える|窓が連なる高層棟と玄関広場|細高|4
+tokyo-tower|tokyo|電波塔|電波を届け街を見渡す|赤白の鉄骨と二段の展望室|細高|5
+`.trim().split('\n');
+export const BUILDINGS=rows.map((row,index)=>{
+  const [id,region,name,role,charm,size,floors]=row.split('|');
+  return{id,region,name,label:name,role,charm,size,floors:Number(floors),number:index+1,journey:['observatory','lighthouse'].includes(id)};
+});
+export const BY_ID=Object.fromEntries(BUILDINGS.map(b=>[b.id,b]));
+export const buildingsIn=region=>BUILDINGS.filter(b=>b.region===region);

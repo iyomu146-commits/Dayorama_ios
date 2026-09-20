@@ -1,0 +1,7 @@
+{
+  "appId": "com.iyomu.dayorama",
+  "appName": "こもれび",
+  "webDir": "www-walk",
+  "loggingBehavior": "debug",
+  "ios": {"contentInset": "never"}
+}
