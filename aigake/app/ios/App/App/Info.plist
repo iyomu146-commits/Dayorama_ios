@@ -32,6 +32,8 @@
 	     アプリの中の言葉(初回3画面②)と同じことを言う -->
 	<key>NSHealthShareUsageDescription</key>
 	<string>歩いた歩数から、町の建物の工事が進みます。読み取るのは歩数だけで、端末の外へは送りません。</string>
+	<key>NSMotionUsageDescription</key>
+	<string>iPhoneを持って歩いた歩数から、町の建物の工事が進みます。歩数は端末の外へ送りません。</string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>

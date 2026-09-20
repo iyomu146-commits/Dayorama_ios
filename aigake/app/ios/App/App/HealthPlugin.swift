@@ -1,9 +1,12 @@
 import Foundation
 import Capacitor
 import HealthKit
+import CoreMotion
 
 // ===========================================================================
-// Health — 歩数の取り口(iOS / HealthKit)
+// Health — 歩数の取り口(iOS / HealthKit、任意選択のCore Motion歩数計)
+// source: "pedometer" を明示した呼び出しだけCore Motionを使用する。
+// HealthKitの署名権限や読み取り許可を迂回せず、別途MotionのOS許可を得る。
 //
 // Android 版(HealthPlugin.kt)と**同じ4メソッド・同じ返り値**にしてある。
 // 契約の正本は JS 側 step-source.js の HealthStepSource のコメント。
@@ -35,6 +38,7 @@ public class HealthPlugin: CAPPlugin, CAPBridgedPlugin {
 
     private let store = HKHealthStore()
     private let stepType = HKQuantityType.quantityType(forIdentifier: .stepCount)!
+    private let pedometer = CMPedometer()
 
     private var calendar: Calendar {
         var c = Calendar(identifier: .gregorian)
@@ -61,11 +65,19 @@ public class HealthPlugin: CAPPlugin, CAPBridgedPlugin {
     }
 
     @objc func availability(_ call: CAPPluginCall) {
+        if call.getString("source") == "pedometer" {
+            call.resolve(["status": CMPedometer.isStepCountingAvailable() ? "available" : "unsupported"])
+            return
+        }
         // iPad など HealthKit を持たない端末がある。granted は上記の理由で返さない
         call.resolve(["status": HKHealthStore.isHealthDataAvailable() ? "available" : "unsupported"])
     }
 
     @objc func requestPermission(_ call: CAPPluginCall) {
+        if call.getString("source") == "pedometer" {
+            requestMotionPermission(call)
+            return
+        }
         guard HKHealthStore.isHealthDataAvailable() else {
             call.reject("health_unavailable"); return
         }
@@ -118,14 +130,85 @@ public class HealthPlugin: CAPPlugin, CAPBridgedPlugin {
         }
         let stop = min(end, Date())   // 未来までは集計しない(今日の途中で切る)
         if stop <= start { call.resolve(["days": []]); return }
+        if call.getString("source") == "pedometer" {
+            guard motionAllowed(call) else { return }
+            // The OS keeps a rolling seven-day cache. Exclude the partial oldest
+            // date instead of replacing a saved full-day total with a fragment.
+            let cutoff = Date().addingTimeInterval(-7 * 86400)
+            let firstFullDay = calendar.date(byAdding: .day, value: 1, to: calendar.startOfDay(for: cutoff))!
+            collectMotionDays(from: max(start, firstFullDay), to: stop, rows: [], call: call)
+            return
+        }
         collect(from: start, to: stop, interval: DateComponents(day: 1), { rows in
             call.resolve(["days": rows.map { ["day": self.dayKey($0.0), "steps": Int($0.2)] }])
         }, { e in call.reject("steps_error: \(e.localizedDescription)") })
     }
 
+    private func rejectMotion(_ call: CAPPluginCall, error: Error? = nil) {
+        switch CMPedometer.authorizationStatus() {
+        case .denied:
+            call.reject("設定アプリの「プライバシーとセキュリティ」→「モーションとフィットネス」で、こもれびを許可してください。", "MOTION_DENIED")
+        case .restricted:
+            call.reject("このiPhoneではモーションとフィットネスの利用が制限されています。", "MOTION_RESTRICTED")
+        default:
+            call.reject("iPhoneの歩数を読み取れませんでした。\(error?.localizedDescription ?? "連携をもう一度お試しください。")", "MOTION_READ_FAILED")
+        }
+    }
+
+    private func motionAllowed(_ call: CAPPluginCall) -> Bool {
+        guard CMPedometer.isStepCountingAvailable() else {
+            call.reject("この端末ではiPhoneの歩数計を利用できません。", "MOTION_UNAVAILABLE")
+            return false
+        }
+        guard CMPedometer.authorizationStatus() == .authorized else {
+            rejectMotion(call)
+            return false
+        }
+        return true
+    }
+
+    private func requestMotionPermission(_ call: CAPPluginCall) {
+        guard CMPedometer.isStepCountingAvailable() else {
+            call.reject("この端末ではiPhoneの歩数計を利用できません。", "MOTION_UNAVAILABLE")
+            return
+        }
+        let authorization = CMPedometer.authorizationStatus()
+        if authorization == .denied || authorization == .restricted {
+            rejectMotion(call)
+            return
+        }
+        // A query triggers the OS consent sheet when permission is undetermined.
+        DispatchQueue.main.async {
+            let now = Date()
+            self.pedometer.queryPedometerData(from: now.addingTimeInterval(-60), to: now) { _, error in
+                if let error = error { self.rejectMotion(call, error: error); return }
+                guard self.motionAllowed(call) else { return }
+                call.resolve(["granted": true])
+            }
+        }
+    }
+
+    private func collectMotionDays(from start: Date, to end: Date,
+                                   rows: [[String: Any]], call: CAPPluginCall) {
+        guard start < end else { call.resolve(["days": rows]); return }
+        let next = calendar.date(byAdding: .day, value: 1, to: start)!
+        DispatchQueue.main.async {
+            self.pedometer.queryPedometerData(from: start, to: min(next, end)) { data, error in
+                if let error = error { self.rejectMotion(call, error: error); return }
+                guard let data = data else { self.rejectMotion(call); return }
+                let row: [String: Any] = ["day": self.dayKey(start), "steps": data.numberOfSteps.intValue]
+                self.collectMotionDays(from: next, to: end, rows: rows + [row], call: call)
+            }
+        }
+    }
+
     /// その日の最初と最後に歩いた時刻(ms)。1時間ごとの集計=**時間の分解能**。
     /// 記録が無ければ first を返さない(嘘の時刻で町の灯りを点けない)
     @objc func activityWindow(_ call: CAPPluginCall) {
+        if call.getString("source") == "pedometer" {
+            call.reject("iPhoneの歩数計では活動時刻の取得に対応していません。", "MOTION_ACTIVITY_UNAVAILABLE")
+            return
+        }
         guard let dayStr = call.getString("day"),
               let start = day(dayStr),
               let end = calendar.date(byAdding: .day, value: 1, to: start) else {

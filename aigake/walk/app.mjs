@@ -2,8 +2,8 @@ import {createTownWorld} from '../experiments/voxel-walk-lab-20260909/art-direct
 import {makeTown} from '../experiments/voxel-walk-lab-20260909/art-direction-20260915/town-plan.mjs';
 import {STEPS_PER_BUILDING,completionStep,prepareConstruction,constructionPlan} from './construction.mjs';
 import {BY_ID} from '../experiments/voxel-walk-lab-20260909/content/catalog.mjs';
-import {dayKey,shiftDay,daysEnding,initialState,restore,applySnapshot,townSteps,pendingRecap,acknowledge,recordCompletions,nextTown,demoState} from './state.mjs';
-import {platform,requestHealth,readHealth,healthErrorMessage} from './health.mjs';
+import {dayKey,shiftDay,daysEnding,initialState,restore,connectStepSource,applySnapshot,townSteps,pendingRecap,acknowledge,recordCompletions,nextTown,demoState} from './state.mjs';
+import {platform,requestHealth,readHealth,healthErrorMessage,isHealthSigningError} from './health.mjs';
 import {replayTowns,replayTownPlan,replayClips,replayFrame,advanceTimelapse} from './timelapse.mjs';
 import {widgetSnapshot,widgetSignature,publishWidget} from './widget.mjs';
 import {createStargazing} from '../experiments/voxel-walk-lab-20260909/stargazing/game.mjs';
@@ -11,7 +11,9 @@ import {walkUnlocked} from '../experiments/voxel-walk-lab-20260909/stargazing/mo
 const $=id=>document.getElementById(id),format=n=>Math.round(n).toLocaleString('ja-JP'),params=new URLSearchParams(location.search);
 const native=platform()==='ios',demo=!native&&params.get('demo')==='1',key=demo?'komorebi-walk-preview-v1':'komorebi-walk-health-v1',reduced=matchMedia('(prefers-reduced-motion: reduce)');
 let state,world,profiles,plan,tab='town',period=7,selectedDay=dayKey(),animation=null,visualTotal=0,busy=false,lastFrame=0,lastUI=0,noticeTimer,statusNote='',storageFailed=false;
-let timelapse=null,playerLastFrame=null,syncStage='',syncError=false;
+let timelapse=null,playerLastFrame=null,syncStage='',syncError=false,motionOffered=false;
+const stepSourceName=()=>state.stepSource==='pedometer'?'iPhoneの歩数':'ヘルスケア';
+const motionNote='iPhone本体の歩数を使います。Apple Watchは含まず、履歴の取得は直近7日分です。';
 const stargazing=createStargazing({unlocked:()=>walkUnlocked(state,plan?.walkBudget),storageKey:demo?'komorebi-walk-starbook-demo-v1':'komorebi-walk-starbook-v1',onClose:()=>{if(tab==='town')startRecap();}});
 const sceneHome=$('world').parentElement,replayPlans=new Map();
 let widgetTimer,widgetPublishing=false,lastWidgetSignature='';
@@ -53,13 +55,15 @@ function updateTown(){
  $('remaining').textContent=target?'完成まで '+format(Math.max(0,completionStep(target,plan.walkBudget)-(visualTotal-state.townStart)))+'歩':townSteps(state)>plan.walkBudget?'次の町へ '+format(townSteps(state)-plan.walkBudget)+'歩':'全ての建物が完成';
  $('next-town').hidden=townSteps(state)<plan.walkBudget||!!animation;$('replay').hidden=!state.recap||!!animation;
  $('connect-prompt').hidden=state.permissionRequested||demo;$('preview-link').hidden=native;
- $('source-label').textContent=demo?'プレビュー':state.lastSync?'ヘルスケア':'';$('sync').disabled=busy||(!native&&!demo);
+ $('source-label').textContent=demo?'プレビュー':state.lastSync?stepSourceName():'';$('sync').disabled=busy||(!native&&!demo);
  $('open-stargazing').hidden=!walkUnlocked(state,plan.walkBudget);$('stars-locked').hidden=state.region!=='stars'||walkUnlocked(state,plan.walkBudget);
 }
 function updateConnection(){
  const loading=syncStage==='permission'?'連携を確認中…':'歩数を読み込み中…';
  document.querySelectorAll('[data-connect]').forEach(b=>{b.disabled=busy||(b.id==='health-connect'&&!native);b.textContent=busy?loading:state.permissionRequested?'連携を確認':'歩数を連携';b.setAttribute('aria-busy',String(busy));});
  $('connection-message').hidden=!busy&&!syncError;$('connection-message').textContent=busy?loading:syncError?statusNote:'';
+ $('motion-fallback').hidden=!native||!motionOffered||state.stepSource==='pedometer';$('motion-connect').disabled=busy;
+ $('switch-step-source').hidden=!native;$('switch-step-source').disabled=busy;$('switch-step-source').textContent=state.stepSource==='pedometer'?'ヘルスケアを使う':'iPhoneの歩数を使う';
 }
 function renderRecords(){
  const days=daysEnding(dayKey(),period),known=days.filter(d=>state.records[d]),total=known.reduce((sum,d)=>sum+state.records[d].steps,0),max=Math.max(1,...known.map(d=>state.records[d].steps));
@@ -70,8 +74,10 @@ function renderRecords(){
  $('journal').replaceChildren(...events.map(e=>{const li=document.createElement('li'),date=document.createElement('time'),text=document.createElement('div'),name=document.createElement('strong'),region=document.createElement('small'),play=document.createElement('button');date.dateTime=e.day;date.textContent=e.day.slice(5).replace('-','/');const title=e.name||BY_ID[e.kind]?.name||'建物';name.textContent=title+'が完成';region.textContent=profiles.find(p=>p.id===e.region)?.name||'';text.append(name,region);play.className='text-button journal-replay';play.textContent='再生';play.setAttribute('aria-label',title+'のタイムラプス');play.onclick=()=>playCompletedEvent(e);li.append(date,text,play);return li;}));
 }
 function updateSettings(){
+ $('health-source').textContent=stepSourceName();
  $('health-status').textContent=demo?'サンプル':!native?'iPhoneアプリで利用':state.permissionRequested?state.lastDataSync?'同期済み':state.lastSync?'データなし':'連携設定済み':'未連携';
- $('health-note').textContent=demo?'実際の歩数には影響しません。':statusNote||(!native?'端末歩数の読み取りはiPhoneアプリで行います。':'歩数のみ読み取ります。');
+ $('health-note').textContent=demo?'実際の歩数には影響しません。':statusNote||(!native?'端末歩数の読み取りはiPhoneアプリで行います。':state.stepSource==='pedometer'?motionNote:'歩数のみ読み取ります。');
+ $('step-source-note').hidden=!native||state.stepSource==='pedometer';$('step-source-note').textContent=motionNote;
  $('sync-time').textContent=state.lastSync?'最終同期 '+new Intl.DateTimeFormat('ja-JP',{month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'}).format(new Date(state.lastSync)):'';
  $('motion').checked=state.motion;$('demo-tools').hidden=!demo;
 }
@@ -92,19 +98,19 @@ function startRecap(replay=false){
  if(reduced.matches)finishRecap();
 }
 function pauseRecap(){if(!animation)return;if(!animation.replay)persist({...state,seen:Math.max(state.seen,Math.floor(visualTotal))});animation=null;$('recap').hidden=true;queueWidget();}
-async function synchronize(request=false){
+async function synchronize(request=false,provider=state.stepSource){
  if(busy)return;
  if(demo){startRecap();return;}
  if(!native){if(request)notice('歩数の連携はiPhoneアプリで利用できます');return;}
  if(!request&&!state.permissionRequested)return;
- busy=true;syncError=false;syncStage=request?'permission':'reading';statusNote=request?'ヘルスケアの連携を確認しています。':'歩数を読み込んでいます。';ui();
+ busy=true;syncError=false;syncStage=request?'permission':'reading';statusNote=request?'歩数の連携を確認しています。':'歩数を読み込んでいます。';ui();
  try{
-  if(request){await requestHealth();if(!persist({...state,permissionRequested:true}))return;}
+  if(request){await requestHealth(provider);if(!persist(connectStepSource(state,provider)))return;motionOffered=false;}
   syncStage='reading';statusNote='歩数を読み込んでいます。';ui();
   const rows=await readHealth(state);pauseRecap();const next=applySnapshot(state,rows);
-  if(!persist(next))return;completionEvents();statusNote=rows.length?'歩数のみ読み取っています。':'新しい歩数を確認できません。ヘルスケアの歩数と連携設定を確認してください。';
+  if(!persist(next))return;completionEvents();statusNote=rows.length?(state.stepSource==='pedometer'?motionNote:'歩数のみ読み取っています。'):(state.stepSource==='pedometer'?'新しい歩数を確認できません。iPhoneを持って歩いてから、もう一度同期してください。':'新しい歩数を確認できません。ヘルスケアの歩数と連携設定を確認してください。');
   if(tab==='town')startRecap();
- }catch(e){syncError=true;statusNote=healthErrorMessage(e);notice(statusNote);}
+ }catch(e){syncError=true;motionOffered=isHealthSigningError(e);statusNote=motionOffered?'このインストールではヘルスケアを利用できません。iPhoneの歩数計を使えます。':healthErrorMessage(e);notice(statusNote);}
  finally{busy=false;syncStage='';ui();queueWidget();}
 }
 function chooseRegion(){
@@ -163,6 +169,7 @@ try{
  world=createTownWorld($('world'));buildWorld();
  document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>selectTab(b.dataset.tab));$('open-records').onclick=()=>selectTab('records');$('home-view').onclick=()=>world.view('home');$('sync').onclick=()=>synchronize();
  document.querySelectorAll('[data-connect]').forEach(b=>b.onclick=()=>synchronize(true));$('preview-link').onclick=()=>{const u=new URL(location.href);u.searchParams.set('demo','1');location.href=u;};
+ $('motion-connect').onclick=()=>synchronize(true,'pedometer');$('switch-step-source').onclick=()=>synchronize(true,state.stepSource==='pedometer'?'healthkit':'pedometer');
  $('replay').onclick=()=>startRecap(true);$('skip').onclick=finishRecap;$('next-town').onclick=chooseRegion;$('choose-region').onclick=chooseRegion;
  $('open-timelapses').onclick=showTimelapses;$('timelapse-close').onclick=()=>$('timelapse-dialog').close();$('timelapse-dialog').addEventListener('close',closeTimelapse);
  $('open-stargazing').onclick=()=>{pauseRecap();stargazing.open();};

@@ -12,6 +12,7 @@ globalThis.window=globalThis;
 globalThis.webkit={messageHandlers:{bridge:{}}};
 globalThis.Capacitor={getPlatform:()=>'ios',PluginHeaders:[{name:'Health',methods:['availability','requestPermission','dailySteps'].map(name=>({name,rtype:'promise'}))}],nativePromise:async(name,method,args)=>{calls.push({method,args});return respond(method,args);}};
 const {requestHealth,readHealth,healthErrorMessage}=await import('../../walk/health.mjs');
+const {dayKey,shiftDay}=await import('../../walk/state.mjs');
 
 test('request reaches the native permission method without awaiting the plugin proxy',{timeout:2000},async()=>{
  calls.length=0;respond=method=>method==='availability'?{status:'available'}:{granted:true};
@@ -37,4 +38,23 @@ test('daily readings reach the native transport and reject malformed responses',
 test('native registration failure gets a useful message instead of a raw plugin error',()=>{
  assert.match(healthErrorMessage({code:'UNIMPLEMENTED'}),/最新版/);
  assert.match(healthErrorMessage({message:'permission_error: Missing com.apple.developer.healthkit entitlement.'}),/HealthKit設定/);
+});
+
+test('the iPhone source requests Motion consent without invoking HealthKit',{timeout:2000},async()=>{
+ calls.length=0;respond=(method,args)=>{assert.equal(args.source,'pedometer');return method==='availability'?{status:'available'}:{granted:true};};
+ await requestHealth('pedometer');assert.deepEqual(calls.map(c=>c.method),['availability','requestPermission']);
+});
+test('Motion reads only seven calendar dates even after a long absence',{timeout:2000},async()=>{
+ calls.length=0;const today=dayKey();respond=()=>({days:[{day:today,steps:0}]});
+ const rows=await readHealth({stepSource:'pedometer',startDay:'2020-01-01',lastDataSync:'2020-01-01T12:00:00Z'});
+ assert.deepEqual(calls,[{method:'dailySteps',args:{source:'pedometer',from:shiftDay(today,-6),to:today}}]);
+ assert.deepEqual(rows,[{day:today,steps:0}]);
+});
+test('denied Motion consent stays rejected and does not try another provider',async()=>{
+ calls.length=0;respond=method=>{if(method==='availability')return{status:'available'};throw Object.assign(Error('モーションとフィットネスで許可してください'),{code:'MOTION_DENIED'});};
+ await assert.rejects(requestHealth('pedometer'),{code:'MOTION_DENIED'});
+ assert.ok(calls.every(c=>c.args.source==='pedometer'));assert.equal(calls.length,2);
+});
+test('unknown sources never reach native transport',async()=>{
+ calls.length=0;await assert.rejects(requestHealth('unknown'),/連携先/);await assert.rejects(readHealth({stepSource:'unknown'}),/連携先/);assert.equal(calls.length,0);
 });

@@ -57,7 +57,11 @@ Artifactsに2種類の成果物が出る。`Komorebi-Simulator` はMacのSimulat
 
 IPAには本体とWidgetが含まれる。CI側にApple ID、配布用証明書、Secretsを登録する必要はない。IPAは未署名であり、そのままiPhoneへコピーするだけでは起動できない。
 
-HealthKitとApp Groupの参照用権限ファイル、SHA-256、簡単な手順も同梱する。権限ファイルは自動適用されるものではない。実歩数にはHealthKit、Widget共有には本体・拡張で同じApp Groupが必要。再署名時にBundle IDやApp Groupが変更される場合は、両方の `Info.plist` の `KomorebiAppGroup` と署名の権限も一致させる。Widgetを確認する場合は拡張を削除しない。
+HealthKitとApp Groupの参照用権限ファイル、SHA-256、簡単な手順も同梱する。権限ファイルは自動適用されるものではない。ヘルスケア連携にはHealthKit、Widget共有には本体・拡張で同じApp Groupが必要。再署名時にBundle IDやApp Groupが変更される場合は、両方の `Info.plist` の `KomorebiAppGroup` と署名の権限も一致させる。Widgetを確認する場合は拡張を削除しない。
+
+HealthKit権限が付かない署名では、アプリの設定から **「iPhoneの歩数を使う」** を選ぶ。HealthKitの署名エラーが出た町の画面にも同じボタンを表示する。Core Motionの `CMPedometer` を使い、OSの「モーションとフィットネス」を別途許可する方式で、HealthKitの権限は使わない。拒否した場合はiPhoneの設定 → プライバシーとセキュリティ → モーションとフィットネスを確認する。
+
+この方式はiPhone本体で計測した歩数のみ。Apple Watchやヘルスケアに追加された他の記録は含まない。OSから新しく読める履歴は直近7日間で、途中からしか取得できない最古の日は除外する。7日を超えてアプリを開かなかった期間の未取得分は復元できないが、取得済みの記録と町は保存する。連携先を変更しても同じ日を二重加算しない。アプリを削除せず上書き更新する。WidgetのApp Group権限は、この歩数方式への切り替えでは解消しない。
 
 Sideloadlyのカスタム権限機能は公式変更履歴でApple Developer Program加入者向け・Patreon機能とされている。利用環境によって歩数やWidgetの確認に追加設定が必要になる。アプリのインストール成功と、これらの動作確認は区別する。[Sideloadly公式](https://sideloadly.io/changelog)
 
@@ -115,7 +119,7 @@ Widgetが空欄の場合は、アプリを開いて同期する。初回起動�
 
 ## 検証状況と残る確認
 
-Windowsで、歩行・星座・歩数連携37件、編集17件、署名プロファイル検証、Xcodeターゲットの接続、共有ファイルと各ターゲットの署名設定、plist・YAML構文、Webの同梱、Capacitor同期、Widget用PNGと表示復帰を確認している。
+Windowsで、歩行・星座・歩数連携43件、編集17件、署名プロファイル検証、Xcodeターゲットの接続、共有ファイルと各ターゲットの署名設定、plist・YAML構文、Webの同梱、Capacitor同期、Widget用PNGと表示復帰を確認している。
 
 2026-09-20：歩数連携ボタンが応答しない問題を修正。CapacitorのプラグインProxyをasync関数から返すと、Promiseが存在しない `Health.then()` を呼び出して待ち続けていた。初期化とネイティブ呼び出しを分け、実際のCapacitor Proxyを使う回帰テストを追加した。連携中はボタンに状態を表示し、失敗理由は画面に残す。HealthKitの許可画面はメインスレッドから開く。署名後の権限と実機の許可操作は別途確認が必要。
 
@@ -125,6 +129,8 @@ Windowsで、歩行・星座・歩数連携37件、編集17件、署名プロフ
 
 ## 公式資料
 
+- [Core Motionの歩数計と利用許可](https://developer.apple.com/documentation/coremotion/cmpedometer)
+- [取得可能な履歴は直近7日間](https://developer.apple.com/documentation/coremotion/cmpedometer/querypedometerdata(from:to:withhandler:))
 - [CapacitorのiOS対応とXcode要件](https://capacitorjs.com/docs/ios)
 - [Widget Extension](https://developer.apple.com/documentation/widgetkit/creating-a-widget-extension)
 - [App GroupsとWidgetKitの構成](https://developer.apple.com/documentation/WidgetKit/Developing-a-WidgetKit-strategy)

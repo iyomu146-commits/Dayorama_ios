@@ -1,6 +1,6 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
-import {initialState,restore,applySnapshot,pendingRecap,acknowledge,recordCompletions,nextTown,townSteps,shiftDay,daysEnding} from './state.mjs';
+import {initialState,restore,connectStepSource,applySnapshot,pendingRecap,acknowledge,recordCompletions,nextTown,townSteps,shiftDay,daysEnding} from './state.mjs';
 const day='2026-09-16',at='2026-09-16T12:00:00+09:00',fresh=()=>initialState('health',day),read=(s,steps)=>applySnapshot(s,[{day,steps}],at);
 test('same HealthKit total is credited only once',()=>{const a=read(fresh(),2400),b=read(a,2400);assert.equal(b.total,2400);assert.equal(read(b,2600).total,2600);});
 test('a corrected diary never rebuilds or removes earned construction',()=>{let s=read(fresh(),2400);s=read(s,1800);assert.equal(s.records[day].steps,1800);assert.equal(s.total,2400);assert.equal(read(s,2200).total,2400);assert.equal(read(s,2500).total,2500);});
@@ -13,3 +13,15 @@ test('completed town overflow is preserved for the next region',()=>{const s=rea
 test('completion events are dated by credited days and deduplicated',()=>{let s=initialState('health','2026-09-15');s=applySnapshot(s,[{day:'2026-09-15',steps:7000},{day,steps:3000}],at);const buildings=[{id:'one',kind:'books',end:.25},{id:'two',kind:'tea',end:.45}];s=recordCompletions(s,buildings,20000);assert.deepEqual(s.events.map(e=>e.day),['2026-09-15','2026-09-16']);assert.equal(recordCompletions(s,buildings,20000).events.length,2);});
 test('source separation, corrupt saves and invalid step values fail closed',()=>{assert.throws(()=>restore({...fresh(),source:'demo'},'health'));assert.throws(()=>restore({...fresh(),total:-1}));for(const steps of [-1,NaN,Infinity,1.4])assert.throws(()=>read(fresh(),steps));assert.throws(()=>applySnapshot(fresh(),[{day:'2026-09-18',steps:1}],at));});
 test('calendar iteration crosses month, year and leap-day boundaries',()=>{assert.equal(shiftDay('2026-01-01',-1),'2025-12-31');assert.equal(shiftDay('2024-02-28',1),'2024-02-29');assert.equal(daysEnding('2026-03-01',30).length,30);});
+test('old saves keep HealthKit and Motion selection survives restart',()=>{
+ const old=fresh();delete old.stepSource;assert.equal(restore(old).stepSource,'healthkit');
+ const saved=restore(JSON.stringify(connectStepSource(old,'pedometer')));assert.equal(saved.stepSource,'pedometer');assert.equal(saved.permissionRequested,true);
+ assert.throws(()=>restore({...old,stepSource:'unknown'}));assert.throws(()=>connectStepSource(old,'unknown'));
+});
+test('switching step sources preserves the town and prevents double credit',()=>{
+ let s=acknowledge(read(fresh(),2400));const savedRecords=structuredClone(s.records);
+ s=connectStepSource(s,'pedometer');assert.equal(s.lastDataSync,null);assert.equal(s.seen,2400);assert.deepEqual(s.records,savedRecords);
+ s=read(s,1800);assert.equal(s.total,2400);assert.equal(s.records[day].steps,1800);
+ s=read(s,2500);assert.equal(s.total,2500);
+ s=read(connectStepSource(s,'healthkit'),3000);assert.equal(s.total,3000);
+});

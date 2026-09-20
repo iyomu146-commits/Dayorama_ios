@@ -5,15 +5,22 @@ export function shiftDay(key,n){const d=new Date(key+'T12:00:00');d.setDate(d.ge
 export function daysEnding(end,count){return Array.from({length:count},(_,i)=>shiftDay(end,i-count+1));}
 const finite=n=>Number.isSafeInteger(n)&&n>=0;
 export function initialState(source='health',today=dayKey()){
- return{version:VERSION,source,startDay:today,records:{},total:0,seen:0,lastSync:null,lastDataSync:null,permissionRequested:false,region:'grove',seed:741,townStart:0,album:[],events:[],recap:null,motion:true,construction:null};
+ return{version:VERSION,source,stepSource:'healthkit',startDay:today,records:{},total:0,seen:0,lastSync:null,lastDataSync:null,permissionRequested:false,region:'grove',seed:741,townStart:0,album:[],events:[],recap:null,motion:true,construction:null};
 }
 export function restore(raw,source='health'){
  if(!raw)return initialState(source);
  const s=typeof raw==='string'?JSON.parse(raw):raw;
+ if(s.stepSource!==undefined&&!['healthkit','pedometer'].includes(s.stepSource))throw Error('歩数の連携先を読み込めません');
  if(s.version!==VERSION||s.source!==source||!finite(s.total)||!finite(s.seen)||s.seen>s.total||!finite(s.townStart)||s.townStart>s.total||!s.records||!Array.isArray(s.album)||!Array.isArray(s.events))throw Error('保存データを読み込めません');
  for(const [day,r] of Object.entries(s.records))if(!/^\d{4}-\d{2}-\d{2}$/.test(day)||!finite(r.steps)||!finite(r.credited))throw Error('歩数の保存データを読み込めません');
  if(s.construction){const c=s.construction;if(!finite(c.stepsPerBuilding)||!Array.isArray(c.buildings)||!c.buildings.length||c.buildings.some(b=>typeof b.id!=='string'||!Number.isSafeInteger(b.startStep)||!finite(b.endStep)||b.endStep<=b.startStep))throw Error('建築予定を読み込めません');if(c.sceneryAnchor&&(!(c.sceneryAnchor.before>0&&c.sceneryAnchor.before<=1)||!finite(c.sceneryAnchor.steps)))throw Error('植生の進捗を読み込めません');}
  return{...initialState(source),...s,legacyPace:s.legacyPace||!Object.hasOwn(s,'construction')};
+}
+// Call only after the selected provider's OS permission flow has completed.
+// Keep the per-day credit ceiling when changing providers to avoid double awards.
+export function connectStepSource(s,stepSource){
+ if(!['healthkit','pedometer'].includes(stepSource))throw Error('歩数の連携先を確認してください');
+ return{...s,stepSource,permissionRequested:true,...(stepSource!==s.stepSource?{lastSync:null,lastDataSync:null}:{})};
 }
 // Health totals are authoritative for the diary. Construction has a separate
 // high-water mark per date, so repeated reads and downward corrections never

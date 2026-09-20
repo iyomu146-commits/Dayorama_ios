@@ -20,15 +20,17 @@ export function healthErrorMessage(error){
  if(code==='UNIMPLEMENTED')return '歩数連携の機能を読み込めませんでした。アプリを最新版に更新してください。';
  return message||'歩数を同期できませんでした。もう一度お試しください。';
 }
-export async function requestHealth(){
- await prepareHealth();const a=await timedRead(bridge.availability());if(a.status!=='available')throw Error('この端末では歩数を読み取れません');
+export function isHealthSigningError(error){return error?.code==='HEALTH_ENTITLEMENT_MISSING'||/missing.*healthkit.*entitlement|missing.*entitlement.*healthkit/i.test(error?.message||'');}
+function sourceOptions(source){if(!['healthkit','pedometer'].includes(source))throw Error('歩数の連携先を確認してください');return{source};}
+export async function requestHealth(source='healthkit'){
+ const options=sourceOptions(source);await prepareHealth();const a=await timedRead(bridge.availability(options));if(a.status!=='available')throw Error('この端末では歩数を読み取れません');
  // Do not time out the authorization sheet while the person is reading it.
- const result=await bridge.requestPermission();if(!result?.granted)throw Error('歩数の連携設定を完了できませんでした。もう一度お試しください。');
+ const result=await bridge.requestPermission(options);if(!result?.granted)throw Error('歩数の連携設定を完了できませんでした。もう一度お試しください。');
 }
 export async function readHealth(state){
- await prepareHealth();const today=dayKey(),from=state.lastDataSync?shiftDay(dayKey(new Date(state.lastDataSync)),-7):state.startDay<shiftDay(today,-29)?state.startDay:shiftDay(today,-29);
+ const options=sourceOptions(state.stepSource||'healthkit');await prepareHealth();const today=dayKey(),from=options.source==='pedometer'?shiftDay(today,-6):state.lastDataSync?shiftDay(dayKey(new Date(state.lastDataSync)),-7):state.startDay<shiftDay(today,-29)?state.startDay:shiftDay(today,-29);
  const rows=[];
  // Query bounded chunks after a long absence, without losing intervening days.
- for(let start=from;start<=today;){const end=shiftDay(start,89)<today?shiftDay(start,89):today,result=await timedRead(bridge.dailySteps({from:start,to:end}));if(!Array.isArray(result.days))throw Error('歩数を読み込めませんでした');rows.push(...result.days);start=shiftDay(end,1);}
+ for(let start=from;start<=today;){const end=shiftDay(start,89)<today?shiftDay(start,89):today,result=await timedRead(bridge.dailySteps({...options,from:start,to:end}));if(!Array.isArray(result.days))throw Error('歩数を読み込めませんでした');rows.push(...result.days);start=shiftDay(end,1);}
  return rows;
 }

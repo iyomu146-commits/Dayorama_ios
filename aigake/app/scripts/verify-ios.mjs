@@ -32,6 +32,8 @@ for(const [id,target]of targets){
  }
 }
 const config=text(path.join(native,'Config/Komorebi.xcconfig')),appID=/^KOMOREBI_APP_ID\s*=\s*(\S+)/m.exec(config)[1];assert.equal(JSON.parse(text(path.join(app,'capacitor.config.json'))).appId,appID);
+const mainInfo=plist.parse(text(path.join(native,'App/Info.plist')));
+assert.ok(mainInfo.NSMotionUsageDescription?.trim(),'Motion consent explanation is required to avoid a native crash');
 assert.match(text(path.join(app,'ios/debug.xcconfig')),/App\/Config\/Komorebi.xcconfig/);
 assert.match(text(path.join(native,'App.xcodeproj/xcshareddata/xcschemes/App.xcscheme')),/buildImplicitDependencies="YES"/);
 plist.parse(text(path.join(native,'App/PrivacyInfo.xcprivacy')));
