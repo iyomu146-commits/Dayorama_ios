@@ -23,7 +23,9 @@ await copy('experiments/voxel-walk-lab-20260909/art-direction-20260915/profiles.
 for(const file of ['style.css','about.html','data/LICENSE-d3-celestial.txt','data/SKY-SOURCES.txt'])await copy('experiments/voxel-walk-lab-20260909/stargazing/'+file);
 await copyFile(path.join(app,'node_modules/@capacitor/core/dist/index.js'),path.join(out,'walk/capacitor-core.js'));
 let html=await readFile(path.join(source,'walk/index.html'),'utf8');
+const debugTools=process.env.KOMOREBI_DEBUG_TOOLS==='1';
+html=html.replace('<meta name="komorebi-debug-tools" content="0">',`<meta name="komorebi-debug-tools" content="${debugTools?'1':'0'}">`);
 html=html.replace('href="./app.css"','href="./walk/app.css"').replace('src="./app.mjs"','src="./walk/app.mjs"').replaceAll('../vendor/','./vendor/');
 await writeFile(path.join(out,'index.html'),html);
-await writeFile(path.join(out,'build.json'),JSON.stringify({entry:'walk',files:copied.size+2,sources:[...copied].map(p=>p.replaceAll('\\','/')).sort()},null,2));
+await writeFile(path.join(out,'build.json'),JSON.stringify({entry:'walk',debugTools,files:copied.size+2,sources:[...copied].map(p=>p.replaceAll('\\','/')).sort()},null,2));
 console.log(`Walk app: ${copied.size+2} files bundled, all assets local.`);

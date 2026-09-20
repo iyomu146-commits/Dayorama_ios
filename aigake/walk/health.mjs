@@ -28,6 +28,7 @@ export async function requestHealth(source='healthkit'){
  const result=await bridge.requestPermission(options);if(!result?.granted)throw Error('歩数の連携設定を完了できませんでした。もう一度お試しください。');
 }
 export async function readHealth(state){
+ if(state.source&&state.source!=='health')throw Error('デバッグやプレビューでは端末歩数を読み取りません');
  const options=sourceOptions(state.stepSource||'healthkit');await prepareHealth();const today=dayKey(),from=options.source==='pedometer'?shiftDay(today,-6):state.lastDataSync?shiftDay(dayKey(new Date(state.lastDataSync)),-7):state.startDay<shiftDay(today,-29)?state.startDay:shiftDay(today,-29);
  const rows=[];
  // Query bounded chunks after a long absence, without losing intervening days.

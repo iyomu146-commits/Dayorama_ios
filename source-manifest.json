@@ -119,6 +119,8 @@
     "aigake/walk/app.mjs",
     "aigake/walk/construction.mjs",
     "aigake/walk/construction.test.mjs",
+    "aigake/walk/debug.mjs",
+    "aigake/walk/debug.test.mjs",
     "aigake/walk/health.mjs",
     "aigake/walk/index.html",
     "aigake/walk/state.mjs",

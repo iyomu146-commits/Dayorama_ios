@@ -68,6 +68,8 @@ def package(app, output):
         'HealthKit権限が不足する場合は、アプリの設定で「iPhoneの歩数を使う」を選び、モーションとフィットネスを許可してください。\n'
         'iPhone本体の歩数のみを読みます。Apple Watchは含まず、新しく取得できる履歴は直近7日間です。取得済みの記録は保存します。\n'
         '更新時はアプリを削除せず、同じBundle IDで上書きしてください。\n\n'
+        '設定 → デバッグ → デバッグを開始で、テスト用の歩数を追加できます。実際の歩数・町には反映されません。\n'
+        '終了するときは設定 → デバッグを終了を選んでください。\n\n'
         'このIPAにはiPhone実機用アプリとWidgetが含まれています。配布用署名・証明書・プロファイルは含めていません。\n'
         'HealthKitにはcom.apple.developer.healthkit、Widget共有にはApp Groupsの権限が必要です。\n'
         'App.entitlementsとWidget.entitlementsは再署名時の参照用で、自動的に適用されるものではありません。\n'

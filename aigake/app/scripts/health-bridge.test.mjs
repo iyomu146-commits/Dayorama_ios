@@ -58,3 +58,6 @@ test('denied Motion consent stays rejected and does not try another provider',as
 test('unknown sources never reach native transport',async()=>{
  calls.length=0;await assert.rejects(requestHealth('unknown'),/連携先/);await assert.rejects(readHealth({stepSource:'unknown'}),/連携先/);assert.equal(calls.length,0);
 });
+test('debug and preview ledgers cannot request device data',async()=>{
+ calls.length=0;for(const source of ['debug','demo'])await assert.rejects(readHealth({source,stepSource:'pedometer'}),/端末歩数を読み取りません/);assert.equal(calls.length,0);
+});

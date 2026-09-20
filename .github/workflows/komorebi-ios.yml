@@ -19,6 +19,8 @@ jobs:
   build:
     runs-on: macos-15
     timeout-minutes: 35
+    env:
+      KOMOREBI_DEBUG_TOOLS: ${{ inputs.testflight && '0' || '1' }}
     defaults:
       run:
         working-directory: aigake/app

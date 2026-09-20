@@ -39,6 +39,10 @@ assert.match(text(path.join(native,'App.xcodeproj/xcshareddata/xcschemes/App.xcs
 plist.parse(text(path.join(native,'App/PrivacyInfo.xcprivacy')));
 const workflow=YAML.parse(text(path.join(root,'.github/workflows/komorebi-ios.yml')));
 assert.ok(workflow.on.push&&workflow.on.pull_request);assert.equal(workflow.on.workflow_dispatch.inputs.testflight.default,false);
+assert.equal(workflow.jobs.build.env.KOMOREBI_DEBUG_TOOLS,"${{ inputs.testflight && '0' || '1' }}",'TestFlight builds disable debug tools');
+const build=JSON.parse(text(path.join(app,'www-walk/build.json'))),debugTools=process.env.KOMOREBI_DEBUG_TOOLS==='1';
+assert.equal(build.debugTools,debugTools,'generated debug gate matches build environment');
+assert.ok(text(path.join(app,'www-walk/index.html')).includes(`<meta name="komorebi-debug-tools" content="${debugTools?'1':'0'}">`));
 const steps=workflow.jobs.build.steps;assert.ok(steps.some(s=>s.env?.WIDGET_PROFILE_BASE64));assert.ok(steps.some(s=>s.run?.includes('KOMOREBI_WIDGET_PROFILE=')));assert.ok(!steps.some(s=>s.run?.includes(' PROVISIONING_PROFILE_SPECIFIER=')),'do not force a single profile on both targets');
 const workflowSource=JSON.stringify(workflow);assert.match(workflowSource,/PlugIns\/KomorebiWidget.appex/);assert.match(workflowSource,/CODE_SIGNING_ALLOWED=NO/);
 const deviceBuild=steps.find(s=>s.run?.includes('package-sideload.py'));assert.ok(deviceBuild,'unsigned device IPA build exists');assert.equal(deviceBuild.if,'${{ !inputs.testflight }}');assert.match(deviceBuild.run,/generic\/platform=iOS'/);assert.match(deviceBuild.run,/CODE_SIGNING_ALLOWED=NO/);assert.match(deviceBuild.run,/Release-iphoneos\/App.app/);assert.ok(steps.some(s=>s.with?.name==='Komorebi-iPhone-Unsigned'));
