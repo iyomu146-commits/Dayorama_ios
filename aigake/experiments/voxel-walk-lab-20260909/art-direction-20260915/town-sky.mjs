@@ -9,8 +9,12 @@ export function createTownSky(scene){
  void main(){
   vec2 uv=vUv; vec3 color=mix(uHorizon,uTop,smoothstep(.05,1.0,uv.y));
   vec2 grid=uv*vec2(130.0*uAspect,130.0),cell=floor(grid);float rnd=hash(cell);
-  float star=(1.0-smoothstep(.04,.17,length(fract(grid)-.5)))*step(.984,rnd)*smoothstep(.35,.8,uv.y);
-  color+=vec3(.72,.80,.95)*star*uNight*(.75+.25*sin(uTime*.25+rnd*160.0));
+  vec2 center=.22+.56*vec2(hash(cell+17.0),hash(cell+53.0));
+  float d=length(fract(grid)-center),bright=step(.997,rnd),radius=mix(.13,.23,bright);
+  float core=1.0-smoothstep(.025,radius,d),halo=(1.0-smoothstep(radius,radius*2.5,d))*.10*bright;
+  // The lower town backdrop stays clear, regardless of camera orbit or zoom.
+  float star=(core+halo)*step(.981,rnd)*smoothstep(.70,.87,uv.y);
+  color+=vec3(.72,.82,1.0)*star*uNight*(.55+.35*hash(cell+89.0))*(.9+.1*sin(uTime*.25+rnd*160.0));
   gl_FragColor=vec4(color,1.0);
   #include <colorspace_fragment>
  }`});
@@ -19,8 +23,8 @@ export function createTownSky(scene){
  return{update(c,region,elapsed,aspect){
   // The warm sunset sits at the top of the screen and fades toward a quiet,
   // cooler lower backdrop behind the town.
-  uniforms.uTop.value.copy(mix('#13283f',region==='oasis'?'#6bafcc':'#79b8dc',c.daylight)).lerp(new THREE.Color('#eda383'),c.sunset*.94);
-  uniforms.uHorizon.value.copy(mix('#354b63','#e3f0ed',c.daylight)).lerp(new THREE.Color('#afbaca'),c.sunset*.6).lerp(new THREE.Color('#efae83'),c.dawn*.48);
-  uniforms.uNight.value=c.night;uniforms.uTime.value=elapsed;uniforms.uAspect.value=aspect;
+  uniforms.uTop.value.copy(mix('#0b1730',region==='oasis'?'#6bafcc':'#79b8dc',c.daylight)).lerp(new THREE.Color('#eda383'),c.sunset*.94).lerp(new THREE.Color('#0b1730'),c.nightSky);
+  uniforms.uHorizon.value.copy(mix('#2b435f','#e3f0ed',c.daylight)).lerp(new THREE.Color('#afbaca'),c.sunset*.6).lerp(new THREE.Color('#efae83'),c.dawn*.48).lerp(new THREE.Color('#2b435f'),c.nightSky);
+  uniforms.uNight.value=c.nightSky;uniforms.uTime.value=elapsed;uniforms.uAspect.value=aspect;
  }};
 }

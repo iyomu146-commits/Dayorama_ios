@@ -4,12 +4,13 @@ export const localHour=date=>date.getHours()+date.getMinutes()/60+date.getSecond
 export function townClock(hour){
  const h=((Number(hour)%24)+24)%24;
  const daylight=smooth(5,7.5,h)*(1-smooth(16.5,19.5,h));
- const sunset=smooth(15.5,17.8,h)*(1-smooth(18.4,20,h));
+ const sunset=smooth(15.5,17.8,h)*(1-smooth(18.1,19,h));
+ const nightSky=1-smooth(5,6.5,h)+smooth(18.25,19.25,h);
  const dawn=smooth(4.8,6,h)*(1-smooth(6,8,h));
  const night=1-daylight,lamps=Math.max(1-smooth(5.5,7,h),smooth(17,19,h));
  const rooms=.34+.40*smooth(5.5,7,h)*(1-smooth(8,10,h))+.60*smooth(16,19,h)-.60*smooth(21,24,h);
- return{hour:h,daylight,sunset,dawn,night,lamps,rooms,
-  label:h<5?'深夜':h<8?'朝':h<16.5?'昼':h<19.5?'夕方':h<22?'夜':'深夜'};
+ return{hour:h,daylight,sunset,dawn,night,nightSky,lamps,rooms,residentsOutside:h>=7&&h<19,
+  label:h<5?'深夜':h<8?'朝':h<16.5?'昼':h<19?'夕方':h<22?'夜':'深夜'};
 }
 export function smokeActivity(kind,region,hour){
  const h=((hour%24)+24)%24,pulse=(a,b)=>smooth(a,a+.4,h)*(1-smooth(b-.4,b,h));

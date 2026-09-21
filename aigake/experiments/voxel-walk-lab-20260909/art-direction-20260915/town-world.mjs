@@ -4,7 +4,7 @@ import {createLooks,voxelSurface,plainSurface,constructionSurface,surfaceRole} f
 import {Voxels} from '../voxels.mjs';
 import {countsAt,hash,clamp} from '../model.mjs';
 import {makeTown,buildingProgress,blend} from './town-plan.mjs';
-import {createResident,updateResident} from './town-resident.mjs';
+import {createResident,updateResident,residentVisible} from './town-resident.mjs';
 import {makeLifePlan,createLifeAnimal,updateLifeAnimal} from './town-life.mjs';
 import {RAIL,CAR,loopLength,railPoint,carPose} from '../tokyo/city.mjs';
 import {crossingPhase,SHIBUYA_CROSSING} from './tokyo-activity.mjs';
@@ -136,7 +136,7 @@ export function createTownWorld(host){
   progress=clamp(Number(value)||0,0,1);
   for(const b of buildings){b.progress=focus?.buildingId===b.id?clamp(focus.buildingProgress,0,1):buildingProgress(b,progress);b.full.visible=b.progress===1;const counts=countsAt(b.bp.counts,b.progress*4800);b.phases.forEach((m,i)=>{m.count=counts[i];m.visible=b.progress>0&&b.progress<1;});if(lookMode>0&&b.progress>0&&b.progress<1)b.construction.update(counts);if(b.contact){b.contact.visible=lookMode>0&&b.progress>.08;b.contact.material.uniforms.uOpacity.value=.15*clamp((b.progress-.08)/.1,0,1);}}
   for(const v of vegetation)v.mesh.count=v.items.filter(p=>p.birth<=progress).length;
-  actors.forEach(a=>a.g.visible=buildings[a.building].progress===1);
+  actors.forEach(a=>a.g.visible=residentVisible(a,clock,buildings,!!showcase));
   pets.forEach(a=>a.g.visible=buildings[a.building].progress===1&&progress>=(a.birth??0));
   lifeFixtures.forEach(a=>a.g.visible=buildings[a.building].progress===1);
   for(const b of unfinished)if(b.progress===1)completionFx.play(b,elapsed);
@@ -160,7 +160,9 @@ export function createTownWorld(host){
   applyShowcase();dirty=true;view(showcase?'building:'+showcase.id:'home');
  }
  function animate(){
-  for(const a of actors)if(a.g.visible){
+  for(const a of actors){
+   const visible=residentVisible(a,clock,buildings,!!showcase);if(a.g.visible!==visible)dirty=true;a.g.visible=visible;
+   if(!visible)continue;
    updateResident(a,elapsed);
    if(a.drops){a.drops.visible=a.action==='water';if(a.drops.visible){const start=new THREE.Vector3(.11,.06,0).applyQuaternion(a.rig.carry.quaternion).add(a.rig.carry.position).add(a.rig.hips.position),end=new THREE.Vector3(0,.33,.36);for(let i=0;i<3;i++){const point=start.clone().lerp(end,(elapsed*.9+i/3)%1);matrix.makeScale(.012,.026,.012);matrix.setPosition(point);a.drops.setMatrixAt(i,matrix);}a.drops.instanceMatrix.needsUpdate=true;}}
   }

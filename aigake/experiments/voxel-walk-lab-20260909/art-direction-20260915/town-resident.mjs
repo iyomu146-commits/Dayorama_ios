@@ -3,6 +3,10 @@ import {crossingPhase} from './tokyo-activity.mjs';
 
 const SPEED=.23,PAUSE=.35;
 
+export function residentVisible(resident,clock,buildings,showcase=false){
+ return !showcase&&clock.residentsOutside&&buildings[resident.building]?.progress===1;
+}
+
 export function createResident(route,index,building,seed,options={}){
  if(route.length<3&&!options.seat)return null;
  const lengths=[0];

@@ -59,7 +59,7 @@ export function createDomestic(root,plan,defs){
    const hour=previewLaundry?16.7+yard.offset+Math.min(elapsed,yard.trip*2+19)/3600:clock.hour;
    const activity=laundryState(hour,yard.offset,yard.trip),done=complete(yard.building);yard.g.visible=done;
    yard.cloth.forEach((cloth,i)=>{cloth.visible=activity.cloth>(i+.5)/3;cloth.rotation.x=Math.sin(elapsed*1.4+i)*.07;});
-   yard.rig.root.visible=done&&activity.phase!=='idle';
+   yard.rig.root.visible=done&&clock.residentsOutside&&activity.phase!=='idle';
    if(!yard.rig.root.visible)continue;
    const pose=routePoint(yard.route,activity.travel),moving=activity.phase!=='work';
    yard.rig.root.position.set(...pose.position);yard.rig.root.rotation.y=moving?pose.yaw+(activity.phase==='home'?Math.PI:0):Math.PI;

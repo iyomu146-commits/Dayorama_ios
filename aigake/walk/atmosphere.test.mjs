@@ -9,6 +9,8 @@ const {makeTown}=await import('../experiments/voxel-walk-lab-20260909/art-direct
 const {makeLifePlan}=await import('../experiments/voxel-walk-lab-20260909/art-direction-20260915/town-life.mjs');
 const {makeDomesticPlan,routeLength,routePoint}=await import('../experiments/voxel-walk-lab-20260909/art-direction-20260915/town-domestic-plan.mjs');
 const {createDomestic}=await import('../experiments/voxel-walk-lab-20260909/art-direction-20260915/town-domestic.mjs');
+const {residentVisible}=await import('../experiments/voxel-walk-lab-20260909/art-direction-20260915/town-resident.mjs');
+const {createTownSky}=await import('../experiments/voxel-walk-lab-20260909/art-direction-20260915/town-sky.mjs');
 const THREE=await import('three');
 const profiles=JSON.parse(readFileSync(new URL('../experiments/voxel-walk-lab-20260909/art-direction-20260915/profiles.json',import.meta.url))).regions;
 
@@ -16,7 +18,17 @@ test('clock uses local civil time, stays continuous at midnight and exposes gent
  assert.equal(localHour(new Date(2026,8,21,17,30,0)),17.5);
  assert.equal(townClock(12).daylight,1);assert.equal(townClock(12).lamps,0);
  assert.equal(townClock(21).lamps,1);assert.ok(townClock(23.5).rooms<townClock(20).rooms);
- for(const h of [0,5,7,16.5,17,19,21,24])for(const key of ['daylight','sunset','dawn','lamps','rooms'])assert.ok(Math.abs(townClock(h-.0001)[key]-townClock(h+.0001)[key])<.002,`${h}: ${key}`);
+ for(const h of [0,5,6.5,7,16.5,17,18.25,19,19.25,21,24])for(const key of ['daylight','sunset','dawn','lamps','rooms','nightSky'])assert.ok(Math.abs(townClock(h-.0001)[key]-townClock(h+.0001)[key])<.002,`${h}: ${key}`);
+});
+
+test('sunset gives way to blue night and stars fade out again at dawn',()=>{
+ const scene=new THREE.Scene(),sky=createTownSky(scene),uniforms=scene.children[0].material.uniforms;
+ for(const p of profiles){
+  sky.update(townClock(17.5),p.id,0,1.7);assert.ok(uniforms.uTop.value.r>uniforms.uTop.value.b);assert.equal(uniforms.uNight.value,0);
+  for(const h of [19,20,23.5,0,4]){sky.update(townClock(h),p.id,0,1.7);assert.ok(uniforms.uTop.value.b>uniforms.uTop.value.r*2,p.id);assert.ok(uniforms.uNight.value>.8);}
+  for(const h of [7,12]){sky.update(townClock(h),p.id,0,1.7);assert.equal(uniforms.uNight.value,0);}
+ }
+ scene.children[0].geometry.dispose();scene.children[0].material.dispose();
 });
 test('laundry has continuous outward/work/home travel and changes cloth only at the line',()=>{
  const offset=.3,trip=16,start=16.7+offset;
@@ -35,6 +47,13 @@ test('all regional vents are above actual geometry and laundry has clear, access
  let yards=0,vents=0;
  for(const p of profiles){
   const plan=makeTown(p,741),life=makeLifePlan(plan),domestic=makeDomesticPlan(plan,life);
+  const complete=plan.buildings.map(()=>({progress:1})),unfinished=plan.buildings.map(()=>({progress:.99}));
+  for(const resident of life.workers){
+   for(const h of [7,12,18.99])assert.equal(residentVisible(resident,townClock(h),complete),true,p.id);
+   for(const h of [19,20,23.5,0,6.99])assert.equal(residentVisible(resident,townClock(h),complete),false,p.id);
+   assert.equal(residentVisible(resident,townClock(12),unfinished),false);
+   assert.equal(residentVisible(resident,townClock(12),complete,true),false);
+  }
   for(const c of domestic.chimneys){assert.ok(Number.isFinite(c.y));assert.ok(c.y>plan.buildings[c.building].base+.5);vents++;}
   for(const yard of domestic.laundry){
    assert.ok(life.clear(yard.x,yard.z,yard.r));assert.ok(!plan.onPath(yard.x,yard.z));assert.ok(routeLength(yard.route)>0);
