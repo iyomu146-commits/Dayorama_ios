@@ -18,7 +18,7 @@ async function copySource(relative){
   if(!dep)throw Error('Unbundled source dependency '+id+' in '+rel);await copySource(dep);
  }
 }
-for(const rel of [...manifest.sources,'walk/index.html','walk/README.md','walk/MONETIZATION.md','walk/RELEASE-PLAN-20260920.md','experiments/voxel-walk-lab-20260909/stargazing/README.md'])await copySource(rel);
+for(const rel of [...manifest.sources,'walk/index.html','walk/README.md','walk/LIVING-TOWN.md','walk/MONETIZATION.md','walk/RELEASE-PLAN-20260920.md','experiments/voxel-walk-lab-20260909/stargazing/README.md'])await copySource(rel);
 // Test commands evolve independently of the app's runtime imports. Include their
 // entry points and dependency graph so a fresh GitHub checkout can run them all.
 const pkg=JSON.parse(await readFile(path.join(app,'package.json'),'utf8'));
@@ -40,6 +40,6 @@ await tree(path.join(app,'ios'),'ios');
 for(const name of ['build-walk.mjs','export-ios.mjs','verify-ios.mjs','prepare-signing.py','test_signing.py','package-sideload.py','test_sideload.py','widget-model-check.swift'])await copy(path.join(app,'scripts',name),path.join('aigake/app/scripts',name));
 await copy(path.join(repo,'.github/workflows/komorebi-ios.yml'),'.github/workflows/komorebi-ios.yml');
 await writeFile(path.join(out,'.gitignore'),'node_modules/\naigake/app/www-walk/\naigake/app/dist/\naigake/app/ios/App/App/public/\naigake/app/ios/App/App/capacitor.config.json\naigake/app/ios/App/App/config.xml\n.build/\nDerivedData/\nxcuserdata/\n__pycache__/\n.env\n.env.*\n.dev.vars\n*.p12\n*.p8\n*.mobileprovision\n*.pem\n*.key\n*.ipa\n*.xcarchive/\n.DS_Store\n');
-await writeFile(path.join(out,'README.md'),'# こもれび — iPhone / WidgetKit\n\nこのフォルダーの内容をGitHubリポジトリのルートに配置してください。`.github` も含めます。\n\n- push / Pull Request：アプリとウィジェットの署名なしビルド。\n- Sideloadly：ActionsのArtifactsから `Komorebi-iPhone-Unsigned` を取得し、解凍して `Komorebi-unsigned.ipa` を渡します。CIのSecretsは不要です。\n- `Komorebi-Simulator` はMacのSimulator専用で、iPhoneには入りません。\n- TestFlightを使う場合は署名設定後に Run workflow の `testflight` をオンにします。\n\n[実機確認手順・歩数とWidgetの権限・TestFlight設定](aigake/app/README-ios.md)\n\nWindows：`cd aigake/app` → `npm ci` → `npm run test:walk` → `npm run sync:ios` → `npm run verify:ios`。\n\n生成物と証明書は含みません。元の作業環境で更新したら `npm run export:ios` で再作成します。\n');
+await writeFile(path.join(out,'README.md'),'# Dayorama — iPhone / WidgetKit\n\nこのフォルダーの内容をGitHubリポジトリのルートに配置してください。`.github` も含めます。\n\n- push / Pull Request：アプリとウィジェットの署名なしビルド。\n- Sideloadly：ActionsのArtifactsから `Komorebi-iPhone-Unsigned` を取得し、解凍して `Komorebi-unsigned.ipa` を渡します。CIのSecretsは不要です。\n- `Komorebi-Simulator` はMacのSimulator専用で、iPhoneには入りません。\n- TestFlightを使う場合は署名設定後に Run workflow の `testflight` をオンにします。\n\n[実機確認手順・歩数とWidgetの権限・TestFlight設定](aigake/app/README-ios.md)\n\nWindows：`cd aigake/app` → `npm ci` → `npm run test:walk` → `npm run sync:ios` → `npm run verify:ios`。\n\n生成物と証明書は含みません。元の作業環境で更新したら `npm run export:ios` で再作成します。\n');
 await writeFile(path.join(out,'source-manifest.json'),JSON.stringify({files:[...files].sort()},null,2));
 console.log(`GitHub project exported: ${out} (${files.size} source files; no dependencies, signing keys or generated app bundle).`);

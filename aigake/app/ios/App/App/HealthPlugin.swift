@@ -147,7 +147,7 @@ public class HealthPlugin: CAPPlugin, CAPBridgedPlugin {
     private func rejectMotion(_ call: CAPPluginCall, error: Error? = nil) {
         switch CMPedometer.authorizationStatus() {
         case .denied:
-            call.reject("設定アプリの「プライバシーとセキュリティ」→「モーションとフィットネス」で、こもれびを許可してください。", "MOTION_DENIED")
+            call.reject("設定アプリの「プライバシーとセキュリティ」→「モーションとフィットネス」で、Dayoramaを許可してください。", "MOTION_DENIED")
         case .restricted:
             call.reject("このiPhoneではモーションとフィットネスの利用が制限されています。", "MOTION_RESTRICTED")
         default:

@@ -1,4 +1,4 @@
-# こもれび — iPhone / WidgetKit
+# Dayorama — iPhone / WidgetKit
 
 このフォルダーの内容をGitHubリポジトリのルートに配置してください。`.github` も含めます。
 

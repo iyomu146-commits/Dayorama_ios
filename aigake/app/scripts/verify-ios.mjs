@@ -25,6 +25,7 @@ for(const [id,target]of targets){
  const sources=target.buildPhases.map(r=>flat[ref(r)]).filter(p=>p.isa==='PBXSourcesBuildPhase').flatMap(p=>p.files.map(r=>flat[ref(r)].fileRef));assert.ok(sources.includes(sharedFile),target.name+' includes shared model');
  for(const r of flat[target.buildConfigurationList].buildConfigurations){const config=flat[ref(r)],s=config.buildSettings,ent=plist.parse(text(path.join(native,unquote(s.CODE_SIGN_ENTITLEMENTS)))),info=plist.parse(text(path.join(native,unquote(s.INFOPLIST_FILE))));
   assert.deepEqual(ent['com.apple.security.application-groups'],['$(KOMOREBI_APP_GROUP)']);assert.equal(info.KomorebiAppGroup,'$(KOMOREBI_APP_GROUP)');assert.equal(Number(s.IPHONEOS_DEPLOYMENT_TARGET),16.4);
+  assert.equal(info.CFBundleDisplayName,'Dayorama');
   assert.equal(unquote(s.PRODUCT_BUNDLE_IDENTIFIER),id===main[0]?'$(KOMOREBI_APP_ID)':'$(KOMOREBI_WIDGET_ID)');
   assert.equal(unquote(s.PROVISIONING_PROFILE_SPECIFIER),id===main[0]?'$(KOMOREBI_APP_PROFILE)':'$(KOMOREBI_WIDGET_PROFILE)');
   if(id===main[0]){assert.equal(ent['com.apple.developer.healthkit'],true);assert.ok(info.CFBundleURLTypes.some(t=>t.CFBundleURLSchemes.includes('komorebi')));}

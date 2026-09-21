@@ -97,6 +97,7 @@ function makeHuman(seed,item,appearance={}){
     if(action==='serve')carry.rotation.y=Math.sin(t*.6)*.06;
     if(carry.visible){for(const [i,a] of arms.entries()){if(i===0&&['cup','can'].includes(item))continue;const side=i?1:-1,grip=new THREE.Vector3(item==='can'?-.05:item==='cup'?.01:side*.074,item==='can'?.08:item==='cup'?.035:item==='shovel'?.12:.02,0).applyQuaternion(carry.quaternion).add(carry.position);reach(a,grip.toArray(),side);}}
     if(action==='push'){arms.forEach((a,i)=>reach(a,[(i?1:-1)*.135,.44-hipY,.18],i?1:-1));}
+    if(action==='laundry'){arms.forEach((a,i)=>reach(a,[(i?1:-1)*.075,.75/size-hipY,.21/size],i?1:-1));}
     return{feet:legs.map(l=>l.foot.getWorldPosition(new THREE.Vector3()).toArray()),height:.83};
   }
   pose(0);return{root,pose,hips,head,legs,arms,carry,prop,appearance,body:{radius:.15*size,height:(appearance.hat?.94:.88)*size},type:'person'};

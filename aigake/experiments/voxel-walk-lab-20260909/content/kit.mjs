@@ -2,7 +2,7 @@ import {Voxels,COLORS} from '../voxels.mjs';
 import {REGIONS} from './catalog.mjs';
 
 export function workshop(region='grove',seed=41){
-  const v=new Voxels(seed),theme=REGIONS[region],C={...COLORS,...theme},rooms=[],roofs=[],features=[],openStructures=[],entrances=[],furniture=[],buildings=[],ladders=[],awnings=[],signs=[],fittings=[];
+  const v=new Voxels(seed),theme=REGIONS[region],C={...COLORS,...theme},rooms=[],roofs=[],features=[],openStructures=[],entrances=[],furniture=[],buildings=[],ladders=[],awnings=[],signs=[],fittings=[],chimneys=[];
   const box=(...a)=>v.box(...a),put=(...a)=>v.put(...a),line=(...a)=>v.line(...a);
   function paint(x0,y0,z0,x1,y1,z1,color,phase=3){for(let x=x0;x<=x1;x++)for(let y=y0;y<=y1;y++)for(let z=z0;z<=z1;z++)put(x,y,z,color,phase,true);}
   function ellipsoid(x,y,z,rx,ry,rz,color,phase=3){
@@ -73,7 +73,7 @@ export function workshop(region='grove',seed=41){
       if(rise>=6&&i>=2)for(const xx of [x-r,x+r]){box(xx,top+4,z+i,xx,top+5,z+i,C.woodLight,3);if(i%3===2||i===length-1)box(xx,top+1,z+i,xx,top+3,z+i,C.wood,3);}
     }
   }
-  function chimney(x,z,base,top,width=3){box(x,base,z,x+width-1,top,z+width-1,C.stone,2);box(x-1,top+1,z-1,x+width,top+2,z+width,C.trim,3);}
+  function chimney(x,z,base,top,width=3){chimneys.push({x:x+(width-1)/2,z:z+(width-1)/2,top:top+2.5,width});box(x,base,z,x+width-1,top,z+width-1,C.stone,2);box(x-1,top+1,z-1,x+width,top+2,z+width,C.trim,3);}
   // Identity comes from usable architectural elements at the building's scale.
   // Small fittings sit at hand/door height; roofs do not carry enlarged goods.
   function awning({x=0,z=10,w=17,depth=5,y=12,color=C.roof,posts=true}={}){
@@ -142,7 +142,7 @@ export function workshop(region='grove',seed=41){
   function finish(id){
     const cells=v.list(),phases=[0,1,2,3].map(p=>cells.filter(c=>c.phase===p));
     const bounds=cells.reduce((b,c)=>({min:b.min.map((n,i)=>Math.min(n,[c.x,c.y,c.z][i])),max:b.max.map((n,i)=>Math.max(n,[c.x,c.y,c.z][i]))}),{min:[Infinity,Infinity,Infinity],max:[-Infinity,-Infinity,-Infinity]});
-    return{id,cells,phases,counts:phases.map(p=>p.length),bounds,audit:{rooms,roofs,features,openStructures,entrances,furniture,buildings,ladders,awnings,signs,fittings}};
+    return{id,cells,phases,counts:phases.map(p=>p.length),bounds,audit:{rooms,roofs,features,openStructures,entrances,furniture,buildings,ladders,awnings,signs,fittings,chimneys}};
   }
   return{v,C,box,put,line,paint,ellipsoid,disk,roof,window,house,roundHouse,hall,stairs,chimney,awning,sign,shutters,feature,fitting,opening,book,shelf,pot,bench,chair,table,doorway,threshold,accessPoint,sideDoor,clearBox,accessLadder,flower,finish};
 }

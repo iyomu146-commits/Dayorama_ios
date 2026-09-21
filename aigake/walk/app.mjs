@@ -25,7 +25,7 @@ function queueWidget(){
 async function updateWidget(){
  if(simulated||!world||!plan||timelapse||document.hidden||storageFailed)return;
  if(widgetPublishing){queueWidget();return;}
- const snapshot=widgetSnapshot(state,plan),signature=widgetSignature(snapshot,state.seed);
+ const snapshot=widgetSnapshot(state,plan),signature=widgetSignature(snapshot,state.seed)+':'+Math.floor(Date.now()/1800000);
  if(signature===lastWidgetSignature)return;
  widgetPublishing=true;
  try{
@@ -175,6 +175,7 @@ function toggleDebugMode(){
 }
 function openDebugControls(){
  if(!debug)return;pauseRecap();$('debug-total').textContent='今日 '+format(state.records[dayKey()]?.steps||0)+'歩 · 累計 '+format(state.total)+'歩';
+ $('debug-time').querySelector('[value="laundry"]').disabled=!world.stats().domestic?.laundry;
  document.querySelectorAll('[data-debug-finish]').forEach(b=>{b.disabled=debugStepsToFinish(state,plan,b.dataset.debugFinish)===0;});
  $('debug-dialog').showModal();
 }
@@ -201,6 +202,7 @@ try{
  document.querySelectorAll('[data-debug-add]').forEach(b=>b.onclick=()=>advanceDebug(Number(b.dataset.debugAdd)));
  document.querySelectorAll('[data-debug-finish]').forEach(b=>b.onclick=()=>advanceDebug(debugStepsToFinish(state,plan,b.dataset.debugFinish)));
  $('debug-add-form').onsubmit=e=>{e.preventDefault();advanceDebug(Number($('debug-amount').value));};$('debug-reset').onclick=resetDebugTown;
+ $('debug-time').onchange=()=>{const v=$('debug-time').value;world.setTime(v==='auto'?null:v==='laundry'?17:Number(v),{laundry:v==='laundry'});world.view(v==='laundry'?'laundry':'home');$('debug-dialog').close();};
  $('debug-dialog').addEventListener('close',()=>{if(tab==='town')startRecap();});
  $('replay').onclick=()=>startRecap(true);$('skip').onclick=finishRecap;$('next-town').onclick=chooseRegion;$('choose-region').onclick=chooseRegion;
  $('open-timelapses').onclick=showTimelapses;$('timelapse-close').onclick=()=>$('timelapse-dialog').close();$('timelapse-dialog').addEventListener('close',closeTimelapse);

@@ -100,11 +100,11 @@ export function createLooks(renderer){
     varying float vTownAO; varying float vTownKind; varying vec3 vTownWorld;
     uniform float uTownTime; uniform float uTownLive;
     ${cells?'attribute vec3 cellAO1; attribute vec3 cellAO2; attribute float cellKind;':''}
-    ${building?'attribute float warmth; varying float vWarmth;':''}\n`+shader.vertexShader;
+    ${building?'attribute float warmth; attribute float windowStrength; varying float vWarmth; varying float vWindowStrength;':''}\n`+shader.vertexShader;
    shader.vertexShader=shader.vertexShader.replace('#include <begin_vertex>',`#include <begin_vertex>
     vTownKind=${cells?'cellKind':'townKind'};
     vTownAO=${cells?'normal.x > .5 ? cellAO1.x : normal.x < -.5 ? cellAO1.y : normal.y > .5 ? cellAO1.z : normal.y < -.5 ? cellAO2.x : normal.z > .5 ? cellAO2.y : cellAO2.z':'townAO'};
-    ${building?'vWarmth = warmth;':''}
+    ${building?'vWarmth = warmth; vWindowStrength=windowStrength;':''}
     ${windCode}`);
    shader.vertexShader=shader.vertexShader.replace('#include <worldpos_vertex>',`#include <worldpos_vertex>
     vec4 townPosition = vec4(transformed,1.0);
@@ -113,15 +113,15 @@ export function createLooks(renderer){
     #endif
     vTownWorld = (modelMatrix * townPosition).xyz;`);
    shader.fragmentShader=`varying float vTownAO; varying float vTownKind; varying vec3 vTownWorld;
-    uniform float uTownLook; uniform float uTownLive; uniform float uTownTime; uniform float uTownRegion; uniform float uTownColor;
-    ${building?'varying float vWarmth; uniform float uNight;':''}\n`+shader.fragmentShader;
+    uniform float uTownLook; uniform float uTownLive; uniform float uTownTime; uniform float uTownRegion; uniform float uTownColor; uniform float uNight; uniform float uRooms;
+    ${building?'varying float vWarmth; varying float vWindowStrength;':''}\n`+shader.fragmentShader;
    shader.fragmentShader=shader.fragmentShader.replace('#include <roughnessmap_fragment>',`#include <roughnessmap_fragment>
     float townRoughness = vTownKind > 6.5 ? .27 : vTownKind > 5.5 ? .46 : vTownKind > 4.5 ? .83 : vTownKind > 3.5 ? .86 : vTownKind > 2.5 ? .22 : vTownKind > 1.5 ? .74 : .94;
     roughnessFactor = mix(roughnessFactor,townRoughness,uTownLook);`);
    shader.fragmentShader=shader.fragmentShader.replace('#include <metalnessmap_fragment>',`#include <metalnessmap_fragment>
     metalnessFactor = mix(metalnessFactor,vTownKind > 5.5 && vTownKind < 6.5 ? .65 : 0.0,uTownLook);`);
    shader.fragmentShader=shader.fragmentShader.replace('#include <color_fragment>',`#include <color_fragment>
-    if(uTownLook > .5 && vTownKind > 6.5){
+    if(uTownLook > .5 && vTownKind > 6.5 && vTownKind < 7.5){
      float shore = 0.0;
      if(uTownRegion < .5) shore = smoothstep(.45,1.0,length((vTownWorld.xz-vec2(-.8,2.0))/vec2(2.7,2.0)));
      else if(uTownRegion < 1.5) shore = smoothstep(.3,1.6,abs(vTownWorld.x));
@@ -151,7 +151,7 @@ export function createLooks(renderer){
      diffuseColor.rgb = max(base,vec3(0.0));
     }`);
    shader.fragmentShader=shader.fragmentShader.replace('#include <normal_fragment_maps>',`#include <normal_fragment_maps>
-    if(vTownKind > 6.5 && uTownLive > .5){
+    if(vTownKind > 6.5 && vTownKind < 7.5 && uTownLive > .5){
      vec3 waves = vec3(cos(vTownWorld.x*4.0+vTownWorld.z*2.1-uTownTime*.65)*.035,0.0,cos(vTownWorld.z*3.3-uTownTime*.43)*.022);
      normal = normalize(normal + (viewMatrix * vec4(waves,0.0)).xyz);
     }`);
@@ -159,11 +159,14 @@ export function createLooks(renderer){
     float townOcclusion = mix(1.0,vTownAO,uTownLook);
     reflectedLight.indirectDiffuse *= townOcclusion;
     reflectedLight.directDiffuse *= mix(1.0,townOcclusion,.35);`);
-   if(building){shader.uniforms.uNight=uniforms.uNight;shader.fragmentShader=shader.fragmentShader.replace('#include <emissivemap_fragment>','#include <emissivemap_fragment>\ntotalEmissiveRadiance += vec3(1.0,0.64,0.28) * vWarmth * uNight * mix(1.0,1.0-step(.1,abs(vTownKind-3.0)),uTownLook);');}
+   shader.fragmentShader=shader.fragmentShader.replace('#include <emissivemap_fragment>',`#include <emissivemap_fragment>
+    totalEmissiveRadiance += vec3(1.0,.64,.28) * uNight * (1.0-step(.1,abs(vTownKind-8.0))) * 1.8;
+    ${building?'totalEmissiveRadiance += vec3(1.0,.58,.22) * uNight * smoothstep(vWarmth-.07,vWarmth+.07,uRooms) * (1.0-step(.1,abs(vTownKind-3.0))) * vWindowStrength;':''}`);
   };
   m.customProgramCacheKey=()=>`town-look-2-${cells}-${water}-${building}`;mats.push(m);return m;
  }
  uniforms.uNight={value:0};
+ uniforms.uRooms={value:1};
  const depth=new THREE.MeshDepthMaterial({depthPacking:THREE.RGBADepthPacking});
  depth.onBeforeCompile=shader=>{Object.assign(shader.uniforms,uniforms);shader.vertexShader='attribute float townSway; uniform float uTownTime; uniform float uTownLive;\n'+shader.vertexShader;shader.vertexShader=shader.vertexShader.replace('#include <begin_vertex>','#include <begin_vertex>\n'+windCode);};
  depth.customProgramCacheKey=()=> 'town-wind-depth-1';
@@ -177,6 +180,7 @@ export function createLooks(renderer){
   setColor:value=>colorStrength=Math.max(0,Math.min(1,Number(value)||0)),
   set(mode,id){uniforms.uTownLook.value=mode>0?1:0;uniforms.uTownLive.value=mode===2?1:0;uniforms.uTownRegion.value=id==='oasis'?0:id==='canal'?1:2;uniforms.uTownColor.value=mode>0?colorStrength:0;mats.forEach(m=>m.envMapIntensity=mode>0?.42-.16*colorStrength:0);},
   tick:t=>uniforms.uTownTime.value=t,
+  atmosphere:(night,rooms)=>{uniforms.uNight.value=night;uniforms.uRooms.value=rooms;mats.forEach(m=>m.envMapIntensity=(uniforms.uTownLook.value?(.42-.16*colorStrength):0)*(1-night*.86));},
   contact(bounds,y){
    const w=bounds.max[0]-bounds.min[0],d=bounds.max[1]-bounds.min[1],g=new THREE.PlaneGeometry(w+1.4,d+1.4);
    const m=new THREE.ShaderMaterial({transparent:true,depthWrite:false,uniforms:{uOpacity:{value:0},uSize:{value:new THREE.Vector2(w,d)}},vertexShader:'varying vec2 vLocal; void main(){vLocal=position.xy;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}',fragmentShader:'varying vec2 vLocal; uniform vec2 uSize; uniform float uOpacity; void main(){vec2 q=max(abs(vLocal)-uSize*.5,vec2(0.0)); float a=1.0-smoothstep(0.0,.7,length(q));gl_FragColor=vec4(.15,.19,.18,a*uOpacity);\n#include <colorspace_fragment>\n}'});

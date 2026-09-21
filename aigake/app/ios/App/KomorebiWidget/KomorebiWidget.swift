@@ -69,7 +69,7 @@ struct TownWidgetView: View {
         } else {
             VStack(spacing: 10) {
                 Image(systemName: "building.2").font(.title2)
-                Text("こもれび").font(.headline)
+                Text("Dayorama").font(.headline)
                 Text("アプリを開く").font(.caption).foregroundStyle(.secondary)
             }.frame(maxWidth: .infinity, maxHeight: .infinity)
         }
@@ -107,7 +107,7 @@ struct TownWidgetView: View {
 struct KomorebiWidget: Widget {
     var body: some WidgetConfiguration {
         StaticConfiguration(kind: WidgetStore.kind, provider: TownProvider()) { entry in TownWidgetView(entry: entry) }
-            .configurationDisplayName("こもれび")
+            .configurationDisplayName("Dayorama")
             .description("歩数と町の建築の進み具合")
             .supportedFamilies([.systemSmall, .systemMedium])
     }

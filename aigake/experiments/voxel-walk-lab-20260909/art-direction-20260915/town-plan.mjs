@@ -35,7 +35,7 @@ function repaint(bp,p,seed){
    const h=bp.audit.buildings.find(b=>Math.abs(cell.x-b.x)<=b.hx)||bp.audit.buildings[0];
    lightKey=[h.x+Math.sign(cell.z),Math.floor((cell.y-5)/10),Math.floor((cell.x-h.x+h.hx-2)/5)];
   }
-  if(isGlass&&['snow','stars','tokyo','satoyama'].includes(p.id)&&hash(seed,...lightKey)<(p.id==='tokyo'?.20:.42))color='#e7c68a';
+  // Window warmth is applied at render time, according to the local clock.
   v.put(cell.x,cell.y,cell.z,color,cell.phase);
   surfaces.set([cell.x,cell.y,cell.z].join(','),isGlass?3:[s.wood,s.woodLight].includes(cell.color)?2:cell.color===s.leaf?4:0);
  }
@@ -270,7 +270,7 @@ export function makeTown(p,seed=741){
    lamps.push({x,y:surface(x,z),z});
   }
  }
- for(const {x,y,z}of lamps){box(x,y+.75,z,.08,1.5,.08,C.wood,'lamp');box(x,y+1.53,z,.25,.20,.25,'#e4cf99','lamp');box(x,y+1.67,z,.32,.09,.32,C.roof,'lamp');}
+ for(const {x,y,z}of lamps){box(x,y+.75,z,.08,1.5,.08,C.wood,'lamp');box(x,y+1.53,z,.25,.20,.25,'#e4cf99','lamp-light');box(x,y+1.67,z,.32,.09,.32,C.roof,'lamp');}
  // One crate and a bench beside a path add human scale without blocking doors.
  for(const [i,b]of buildings.entries())if(i%2===0&&!['tokyo','tropical'].includes(id)){const x=b.bounds.max[0]+.36,z=b.bounds.max[1]-.25,y=surface(x,z);if(inside(x,z)&&!wet(x,z)&&!occupied(x,z,.15)&&!onPath(x,z)){for(const xx of [x-.23,x+.23])for(const zz of [z-.1,z+.1])box(xx,y+.12,zz,.06,.24,.06,C.wood,'furniture');box(x,y+.28,z,.60,.10,.30,blend(C.wood,C.wall,.3),'furniture');box(x,y+.43,z-.12,.60,.24,.07,blend(C.wood,C.wall,.3),'furniture');}}
  const crop=new Voxels();for(const x of [-1,1])crop.box(x,0,0,x,3,0,id==='satoyama'?'#789568':'#a7a26a');crop.box(0,0,0,0,5,0,id==='satoyama'?'#8eab70':'#c7b573');crop.box(-1,5,0,1,6,0,id==='satoyama'?'#afbb78':'#ddc58b');
