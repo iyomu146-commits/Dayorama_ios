@@ -9,6 +9,9 @@ const {makeTown}=await import('../experiments/voxel-walk-lab-20260909/art-direct
 const {makeLifePlan,createLifeAnimal,updateLifeAnimal}=await import('../experiments/voxel-walk-lab-20260909/art-direction-20260915/town-life.mjs');
 const {makeDomesticPlan}=await import('../experiments/voxel-walk-lab-20260909/art-direction-20260915/town-domestic-plan.mjs');
 const {hash}=await import('../experiments/voxel-walk-lab-20260909/model.mjs');
+const {treeGrowth}=await import('../experiments/voxel-walk-lab-20260909/art-direction-20260915/tree-growth.mjs');
+const {vegetationShape,vegetationOverlap,vegetationHitsBox,sceneryBoxes}=await import('../experiments/voxel-walk-lab-20260909/art-direction-20260915/vegetation-layout.mjs');
+const {prepareConstruction,constructionPlan}=await import('./construction.mjs');
 const THREE=await import('three');
 const profiles=JSON.parse(readFileSync(new URL('../experiments/voxel-walk-lab-20260909/art-direction-20260915/profiles.json',import.meta.url))).regions;
 
@@ -65,5 +68,32 @@ test('both butterflies visit existing shop flowers without entering buildings du
    }
    assert.deepEqual([...actions].sort(),['fly','nectar']);a.rig.dispose();
   }
+ }
+});
+
+test('regional trees grow one at a time, stay rooted and keep clear of the surrounding scene',()=>{
+ for(const profile of profiles)for(const seed of [741,913,2401]){
+  const base=makeTown(profile,seed),plan=constructionPlan(base,prepareConstruction({total:0,townStart:0},base).construction);
+  const obstacles=sceneryBoxes(plan.buildings,plan.boxes),plants=plan.plants.map(p=>({...p,shape:vegetationShape(plan.prototypes[p.kind],p.u)}));
+  const trees=plan.trees.map(t=>({...t,shape:vegetationShape(plan.treePrototypes[t.variant],t.u)}));
+  for(const [i,t]of trees.entries()){
+   assert.ok(t.mature>t.birth);assert.ok(t.mature<=1);if(i)assert.ok(t.birth>=trees[i-1].mature);
+   const complete=treeGrowth(t,1);assert.deepEqual(complete,{progress:1,height:1,width:1});
+   let previous=0;
+   for(const phase of [.001,...Array.from({length:20},(_,i)=>(i+1)/20)]){
+    const progress=t.birth+(t.mature-t.birth)*phase,g=treeGrowth(t,progress);
+    assert.ok(g.height>=previous&&g.height<=1&&g.width<=g.height);previous=g.height;
+    assert.ok(plan.trees.filter(other=>{const state=treeGrowth(other,progress);return state.progress>1e-8&&state.progress<1-1e-8;}).length<=1);
+    // The first voxel's lower face remains exactly at the soil throughout growth.
+    assert.ok(Math.abs(t.y+t.u/2*g.height-.05*(t.u/.1*g.height)-t.y)<1e-10);
+    const bands=t.shape.bands.map(b=>({min:b.min*g.height,max:b.max*g.height,r:b.r*g.width}));
+    const grown={...t,shape:{bands,r:t.shape.r*g.width,min:t.shape.min*g.height,max:t.shape.max*g.height}};
+    assert.ok(!obstacles.some(b=>vegetationHitsBox(grown,b)),profile.id+' growing tree hits scenery');
+    assert.ok(!plants.some(p=>p.birth<=progress&&vegetationOverlap(grown,p)),profile.id+' growing tree hits a plant');
+    assert.ok(!trees.slice(0,i).some(other=>vegetationOverlap(grown,other)),profile.id+' growing tree hits another tree');
+    assert.deepEqual(treeGrowth(t,progress),g,'reopening and replaying produce the same growth');
+   }
+  }
+  for(const p of plan.plants.filter(p=>p.kind==='mushroom'))assert.ok(p.birth>=plan.trees[p.tree].mature,'root mushrooms follow their mature tree');
  }
 });

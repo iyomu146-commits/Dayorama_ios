@@ -9,6 +9,7 @@ import {insideLoop} from '../tokyo/city.mjs';
 import {tokyoDistrictPlan,tokyoPavement,tokyoStreetDetails} from './tokyo-districts.mjs';
 import {SHIBUYA_CROSSING} from './tokyo-activity.mjs';
 import {vegetationShape,vegetationOverlap,vegetationHitsBox,sceneryBoxes,spaceGroundPlants} from './vegetation-layout.mjs';
+import {scheduleTreeGrowth} from './tree-growth.mjs';
 
 export const GRID=.32, HALF=[10.24,8.32];
 export const blend=(a,b,t)=>{const c=s=>[1,3,5].map(i=>parseInt(s.slice(i,i+2),16));return '#'+c(a).map((v,i)=>Math.round(v*(1-t)+c(b)[i]*t).toString(16).padStart(2,'0')).join('');};
@@ -233,10 +234,11 @@ export function makeTown(p,seed=741){
   if(!inside(x,z)||wet(x,z)||deck(x,z)!==null||occupied(x,z,canopyClearance)||onPath(x,z)||roads.some(([a,b])=>dist([x,z],a,b)<1)||trees.some(t=>Math.hypot(t.x-x,t.z-z)<1.8)||paddy(x,z)||field(x,z))continue;
   // Keep the central sightline open; taller woodland lives around the perimeter.
   if(id==='grove'&&Math.abs(x)<3.2&&z<3.8&&z>-3.8)continue;
-  const t={x,z,y:surface(x,z),variant:trees.length%4,u:treeUnit,birth:trees.length%4===0?hash(seed,i,234)*.8:0},site={...t,shape:treeShapes[t.variant]};
+  const t={x,z,y:surface(x,z),variant:trees.length%4,u:treeUnit,birth:0},site={...t,shape:treeShapes[t.variant]};
   if(treeSites.some(q=>vegetationOverlap(site,q,.04))||treeObstacles.some(q=>vegetationHitsBox(site,q)))continue;
   trees.push(t);treeSites.push(site);
  }
+ scheduleTreeGrowth(trees);
  const kinds=id==='grove'?Object.keys(WILDFLOWER_COLORS).flatMap(k=>['fern','clover','fern',k]):id==='harbor'?['beach-grass','sea-lavender','succulent']:id==='canal'?['iris','hydrangea','reed']:id==='tropical'?['beach-grass','succulent']:id==='snow'?['beach-grass']:['clover','bluebell','fern'];
  const target=id==='tokyo'?0:id==='oasis'?85:id==='snow'?100:id==='grove'?500:230;
  for(let i=0,n=0;i<7000&&n<target;i++){
@@ -258,7 +260,13 @@ export function makeTown(p,seed=741){
    for(const c of cells){const [xx,zz]=turn(c.x*unit,c.z*unit,rot);boxes.push({x:x+xx,y:y+(c.y+.5)*unit,z:z+zz,w:unit,h:unit,d:unit,color:c.color,kind:'stone',rockId});}
    sites.push({x,z});
   }
- }else for(let i=0;i<45;i++){const x=(hash(seed,i,601)*2-1)*9.7,z=(hash(seed,i,602)*2-1)*7.7;if(!inside(x,z)||wet(x,z)||occupied(x,z,.5)||onPath(x,z)||paddy(x,z)||field(x,z)||id==='tokyo')continue;const h=.16+hash(seed,i,603)*.38;box(x,surface(x,z)+h/2,z,.3+h,h,.3+h*.7,blend(C.ground,C.shadow,.16),'stone');}
+ }else for(let i=0;i<45;i++){
+  const x=(hash(seed,i,601)*2-1)*9.7,z=(hash(seed,i,602)*2-1)*7.7;
+  if(!inside(x,z)||wet(x,z)||occupied(x,z,.5)||onPath(x,z)||paddy(x,z)||field(x,z)||trees.some(t=>Math.hypot(t.x-x,t.z-z)<.85)||id==='tokyo')continue;
+  const h=.16+hash(seed,i,603)*.38,y=surface(x,z),w=.3+h,d=.3+h*.7;
+  if(treeSites.some(t=>vegetationHitsBox(t,{min:[x-w/2,y,z-d/2],max:[x+w/2,y+h,z+d/2]})))continue;
+  box(x,y+h/2,z,w,h,d,blend(C.ground,C.shadow,.16),'stone');
+ }
  // Tokyo lamps follow each street's perpendicular, not a fixed x offset.
  // Leave the entire lamp cap clear of rendered road cells and retain space
  // around entrance routes. If neither sidewalk is free, omit that lamp.
@@ -305,7 +313,7 @@ export function makeTown(p,seed=741){
     if(boxes.some(b=>!['base','land','water'].includes(b.kind)&&Math.abs(b.x-x)<b.w/2+.14&&Math.abs(b.z-z)<b.d/2+.14&&b.y+b.h/2>y+.02))continue;
     if(plants.some(p=>p.kind==='mushroom'&&Math.hypot(p.x-x,p.z-z)<.27))continue;
     for(let j=plants.length-1;j>=0;j--)if(plants[j].kind!=='mushroom'&&Math.hypot(plants[j].x-x,plants[j].z-z)<.30)plants.splice(j,1);
-    plants.push({id:`root-mushroom-${t.index}-${count}`,x,y,z,kind:'mushroom',tree:t.index,variant:count,u:.045,birth:Math.max(t.birth+.02,.12+hash(seed,t.index,i,774)*.75)});count++;
+    plants.push({id:`root-mushroom-${t.index}-${count}`,x,y,z,kind:'mushroom',tree:t.index,variant:count,u:.045,birth:Math.max(t.mature+.005,.12+hash(seed,t.index,i,774)*.75)});count++;
    }
    if(count)groups++;
   }

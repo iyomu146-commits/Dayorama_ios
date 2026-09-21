@@ -35,5 +35,5 @@ export function constructionPlan(plan,construction){
   const after=Math.min(1,anchor.steps/walkBudget);
   return value<=anchor.before?value/anchor.before*after:after+(value-anchor.before)/(1-anchor.before)*(1-after);
  };
- return{...plan,walkBudget,buildings,trees:plan.trees.map(t=>({...t,birth:birth(t.birth)})),plants:plan.plants.map(p=>({...p,birth:birth(p.birth)}))};
+ return{...plan,walkBudget,buildings,trees:plan.trees.map(t=>({...t,birth:birth(t.birth),...(t.mature===undefined?{}:{mature:birth(t.mature)})})),plants:plan.plants.map(p=>({...p,birth:birth(p.birth)}))};
 }

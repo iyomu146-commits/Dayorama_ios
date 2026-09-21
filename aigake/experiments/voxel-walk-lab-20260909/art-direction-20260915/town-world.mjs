@@ -14,6 +14,7 @@ import {makeDomesticPlan} from './town-domestic-plan.mjs';
 import {createDomestic} from './town-domestic.mjs';
 import {windowLighting} from './window-lighting.mjs';
 import {createCompletionEffects} from './completion-effects.mjs';
+import {treeGrowth} from './tree-growth.mjs';
 
 function compact(boxes){
  const groups=new Map(),other=[];
@@ -70,7 +71,15 @@ export function createTownWorld(host){
  }
  function instances(items,cells,u,name){
   if(!items.length)return;const sorted=[...items].sort((a,b)=>a.birth-b.birth),g=voxelSurface(cells,plan.p,{wind:true,tree:name==='trees',snow:plan.id==='snow'&&name==='trees'}),m=new THREE.InstancedMesh(g,material,items.length);
-  sorted.forEach((p,i)=>{const size=p.u??u,q=new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0,1,0),hash(plan.seed,i,21)*Math.PI*2);matrix.compose(new THREE.Vector3(p.x,p.y+size/2,p.z),q,new THREE.Vector3(size/.1,size/.1,size/.1));m.setMatrixAt(i,matrix);});m.name=name;m.castShadow=name==='trees';m.customDepthMaterial=looks.depth;m.receiveShadow=true;root.add(m);vegetation.push({mesh:m,items:sorted,kind:name});
+  const poses=sorted.map((p,i)=>{const size=p.u??u,q=new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0,1,0),hash(plan.seed,i,21)*Math.PI*2);matrix.compose(new THREE.Vector3(p.x,p.y+size/2,p.z),q,new THREE.Vector3(size/.1,size/.1,size/.1));m.setMatrixAt(i,matrix);return{size,q};});m.name=name;m.castShadow=name==='trees';if(name==='trees')m.frustumCulled=false;m.customDepthMaterial=looks.depth;m.receiveShadow=true;root.add(m);vegetation.push({mesh:m,items:sorted,poses,kind:name});
+ }
+ function growTrees(v){
+  let count=0;
+  v.items.forEach((tree,i)=>{
+   const growth=treeGrowth(tree,progress),{size,q}=v.poses[i];if(growth.progress>0)count++;
+   matrix.compose(new THREE.Vector3(tree.x,tree.y+size/2*growth.height,tree.z),q,new THREE.Vector3(size/.1*growth.width,size/.1*growth.height,size/.1*growth.width));v.mesh.setMatrixAt(i,matrix);
+  });
+  v.mesh.count=count;v.mesh.instanceMatrix.needsUpdate=true;
  }
  function person(route,index,building,options){
   const a=createResident(route,index,building,plan.seed,options);
@@ -135,7 +144,7 @@ export function createTownWorld(host){
   const unfinished=celebrate&&motion?buildings.filter(b=>b.progress<1):[];
   progress=clamp(Number(value)||0,0,1);
   for(const b of buildings){b.progress=focus?.buildingId===b.id?clamp(focus.buildingProgress,0,1):buildingProgress(b,progress);b.full.visible=b.progress===1;const counts=countsAt(b.bp.counts,b.progress*4800);b.phases.forEach((m,i)=>{m.count=counts[i];m.visible=b.progress>0&&b.progress<1;});if(lookMode>0&&b.progress>0&&b.progress<1)b.construction.update(counts);if(b.contact){b.contact.visible=lookMode>0&&b.progress>.08;b.contact.material.uniforms.uOpacity.value=.15*clamp((b.progress-.08)/.1,0,1);}}
-  for(const v of vegetation)v.mesh.count=v.items.filter(p=>p.birth<=progress).length;
+  for(const v of vegetation){if(v.kind==='trees')growTrees(v);else v.mesh.count=v.items.filter(p=>p.birth<=progress).length;}
   actors.forEach(a=>a.g.visible=residentVisible(a,clock,buildings,!!showcase));
   pets.forEach(a=>a.g.visible=buildings[a.building].progress===1&&progress>=(a.birth??0));
   lifeFixtures.forEach(a=>a.g.visible=buildings[a.building].progress===1);
