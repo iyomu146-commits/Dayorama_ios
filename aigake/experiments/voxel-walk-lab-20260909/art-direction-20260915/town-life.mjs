@@ -1,10 +1,11 @@
 import * as THREE from 'three';
 import {createActor,ACTORS} from '../life/actors.mjs';
-import {REGION_LIFE,regionalWorkers,regionalFamily} from './region-life.mjs';
+import {REGION_LIFE,regionalWorkers,regionalFamily,regionalSeatedVisitors} from './region-life.mjs';
 import {inRect} from './town-plan.mjs';
 import {insideLoop} from '../tokyo/city.mjs';
 import {crossingWalkers,SHIBUYA_CROSSING} from './tokyo-activity.mjs';
 import {flowerFlights,flowerFlightPose} from './pollinator-flight.mjs';
+import {residentSeat} from './resident-seat.mjs';
 
 const distance=(a,b)=>Math.hypot(a.x-b.x,a.z-b.z);
 export function makeLifePlan(plan){
@@ -12,6 +13,11 @@ export function makeLifePlan(plan){
  if(plan.id==='tokyo')zones.push({...SHIBUYA_CROSSING,y:.34,r:2.65,mode:'land',building:0});
  const obstacles=plan.boxes.filter(b=>!['land','base','water','bridge','pier'].includes(b.kind));
  const ownerFor=kind=>Math.max(0,plan.buildings.findIndex(b=>b.kind===kind));
+ function seatedWorker(def,building,furniture){
+  const seat=residentSeat(plan.buildings[building],furniture,def.appearance);if(!seat)return false;
+  const [x,y,z]=seat.position,zone={x,y,z,r:.40,mode:'seated',building};zones.push(zone);
+  workers.push({route:[seat.position],index:workers.length,building,options:{...def,seat},zone});return true;
+ }
  function clear(x,z,r,mode='land'){
   const sea=['water','sea-air'].includes(mode),y=sea?plan.waterY:plan.surface(x,z);
   for(let i=0;i<17;i++){
@@ -87,6 +93,7 @@ export function makeLifePlan(plan){
  }
  for(const [index,def] of regionalWorkers(plan.id).entries()){
   const building=ownerFor(def.kind),b=plan.buildings[building];
+  if(def.kind==='books'&&seatedWorker(def,building,b.bp.audit.furniture.find(f=>f.name==='bench')))continue;
   const paddock=def.action==='care'?zones.find(z=>z.building===building&&z.pen):null;
   if(paddock){
    const gate=paddock.z+paddock.pen.depth/2,stop=Math.max(gate+.04,paddock.z+1.10),route=[.46,.23,0].map(offset=>[paddock.x,paddock.y,stop+offset]);
@@ -108,6 +115,11 @@ export function makeLifePlan(plan){
   }
   if(parts.length)fixture(zone,parts);
   workers.push({route,index,building,options:def,zone});
+ }
+ for(const def of regionalSeatedVisitors(plan.id)){
+  const building=ownerFor(def.kind),b=plan.buildings[building];
+  const chair=b.bp.audit.furniture.find(f=>f.name==='chair'&&f.turn===2);
+  if(!seatedWorker(def,building,chair))notes.push(def.label+': no usable chair');
  }
  // A parent and child share a clear walking area and the same travel clock.
  // Parallel routes keep them together without ever passing through each other.

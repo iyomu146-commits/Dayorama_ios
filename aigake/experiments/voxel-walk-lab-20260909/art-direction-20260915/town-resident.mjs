@@ -4,10 +4,10 @@ import {crossingPhase} from './tokyo-activity.mjs';
 const SPEED=.23,PAUSE=.35;
 
 export function createResident(route,index,building,seed,options={}){
- if(route.length<3)return null;
+ if(route.length<3&&!options.seat)return null;
  const lengths=[0];
  for(let i=1;i<route.length;i++)lengths.push(lengths.at(-1)+Math.hypot(route[i][0]-route[i-1][0],route[i][2]-route[i-1][2]));
- if(!lengths.at(-1))return null;
+ if(!lengths.at(-1)&&!options.seat)return null;
  // Reuse the game's articulated person, including its original skin/clothing
  // material. Landscape saturation and vegetation deformation do not apply.
  const rig=createActor('person',{seed:seed+index*31,item:options.item,appearance:options.appearance}),g=rig.root;
@@ -18,6 +18,11 @@ export function createResident(route,index,building,seed,options={}){
 }
 
 export function updateResident(a,elapsed){
+ if(a.options.seat){
+  const seat=a.options.seat;a.g.position.set(...seat.position);a.g.rotation.y=seat.yaw;
+  a.moving=false;a.distance=0;a.action=a.options.action||'idle';
+  a.rig.pose(elapsed,{seatHeight:seat.height,action:a.action});return;
+ }
  if(a.options.crosswalk){
   const phase=crossingPhase(elapsed,a.options.crosswalk.group),start=a.route[0],end=a.route.at(-1);
   a.g.position.set(...start.map((v,i)=>v+(end[i]-v)*phase.t));

@@ -105,23 +105,23 @@ export function workshop(region='grove',seed=41){
   function pot(x,y,z,r=3,h=5,color=C.accent){for(let b=0;b<h;b++)disk(x,y+b,z,r-(b===0?1:0),color,3);disk(x,y+h,z,r+.6,C.woodLight,3,'round',r-1);}
   // y is the lowest leg cell. Four distinct feet support both front and rear
   // edges; a nearby wall or another leg cannot count as floor support.
-  function bench(x,y,z,w=11,turn=0){
-    const back=z+(turn===2?2:0);box(x,y+3,z,x+w,y+3,z+2,C.woodLight,3);box(x,y+4,back,x+w,y+6,back,C.woodLight,3);
-    const feet=[];for(const a of [0,w])for(const b of [0,2]){box(x+a,y,z+b,x+a,y+2,z+b,C.wood,3);feet.push([x+a,y,z+b]);}
-    furniture.push({name:'bench',feet,seat:y+3,center:[x+w/2,y+3.5,z+1],turn});
+  function bench(x,y,z,w=11,turn=0,{seat=3}={}){
+    const back=z+(turn===2?2:0);box(x,y+seat,z,x+w,y+seat,z+2,C.woodLight,3);box(x,y+seat+1,back,x+w,y+seat+3,back,C.woodLight,3);
+    const feet=[];for(const a of [0,w])for(const b of [0,2]){box(x+a,y,z+b,x+a,y+seat-1,z+b,C.wood,3);feet.push([x+a,y,z+b]);}
+    furniture.push({name:'bench',feet,seat:y+seat,center:[x+w/2,y+seat+.5,z+1],turn});
   }
-  function chair(x,y,z,turn=0){
+  function chair(x,y,z,turn=0,{seat=3}={}){
     const point=(a,b)=>turn===1?[x-b,z+a]:turn===2?[x-a,z-b]:turn===3?[x+b,z-a]:[x+a,z+b];
     const cell=(a,h,b,c)=>{const[xx,zz]=point(a,b);put(xx,y+h,zz,c,3);};
-    for(let a=-2;a<=2;a++)for(let b=-2;b<=2;b++)cell(a,3,b,C.woodLight);
-    for(let a=-2;a<=2;a++)for(let h=4;h<=7;h++)cell(a,h,-2,C.woodLight);
-    const feet=[];for(const a of [-2,2])for(const b of [-2,2]){for(let h=0;h<3;h++)cell(a,h,b,C.wood);const[xx,zz]=point(a,b);feet.push([xx,y,zz]);}
-    furniture.push({name:'chair',feet,seat:y+3,center:[x,y+3.5,z],turn});
+    for(let a=-2;a<=2;a++)for(let b=-2;b<=2;b++)cell(a,seat,b,C.woodLight);
+    for(let a=-2;a<=2;a++)for(let h=seat+1;h<=seat+4;h++)cell(a,h,-2,C.woodLight);
+    const feet=[];for(const a of [-2,2])for(const b of [-2,2]){for(let h=0;h<seat;h++)cell(a,h,b,C.wood);const[xx,zz]=point(a,b);feet.push([xx,y,zz]);}
+    furniture.push({name:'chair',feet,seat:y+seat,center:[x,y+seat+.5,z],turn});
   }
-  function table(x,y,z,w=7,d=7){
-    const hx=Math.floor(w/2),hz=Math.floor(d/2),feet=[];box(x-hx,y+6,z-hz,x+hx,y+6,z+hz,C.woodLight,3);
-    for(const a of [-hx+1,hx-1])for(const b of [-hz+1,hz-1]){box(x+a,y,z+b,x+a,y+5,z+b,C.wood,3);feet.push([x+a,y,z+b]);}
-    furniture.push({name:'table',feet,top:y+6});
+  function table(x,y,z,w=7,d=7,{height=6}={}){
+    const hx=Math.floor(w/2),hz=Math.floor(d/2),feet=[];box(x-hx,y+height,z-hz,x+hx,y+height,z+hz,C.woodLight,3);
+    for(const a of [-hx+1,hx-1])for(const b of [-hz+1,hz-1]){box(x+a,y,z+b,x+a,y+height-1,z+b,C.wood,3);feet.push([x+a,y,z+b]);}
+    furniture.push({name:'table',feet,top:y+height});
   }
   function doorway(x,y,z,height=9,{access='ground',name='entrance'}={}){
     paint(x-2,y,z,x+2,y+height-1,z,C.wood,3);paint(x-1,y+Math.max(2,height-5),z,x+1,y+height-2,z,C.glass,3);put(x+2,y+3,z+1,C.light,3,true);

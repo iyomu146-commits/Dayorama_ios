@@ -39,3 +39,6 @@ export function regionalFamily(id,seed){
   {label:'子供',appearance:humanStyle({region:id,role:'child',variant:1,gender:seed%2?'man':'woman',age:'child'})}
  ].map(p=>({...p,action:'idle',workSeconds:3,phase:0}));
 }
+export function regionalSeatedVisitors(id){
+ return id==='grove'?[{kind:'tea',label:'テラスでコーヒーを飲む人',item:'cup',action:'drink',appearance:humanStyle({region:id,role:'visitor',variant:2,gender:'man'})}]:[];
+}

@@ -80,6 +80,9 @@ function makeHuman(seed,item,appearance={}){
     const seated=seatHeight!==null,standing=moving?.425:.4485,blend=seated?seatBlend:0,supportOffset=appearance.skirt?.065:.044,hipY=standing+(seated?seatHeight/size+supportOffset-standing:0)*blend;hips.position.y=hipY;head.rotation.y=Math.sin(t*.6+seed)*.055;head.rotation.x=['read','work','water','care','shovel'].includes(action)?.14:action==='observe'?-.22:0;
     const cycle=distance/size*Math.PI/(2*HUMAN_STRIDE);
     legs.forEach((l,i)=>{const ph=cycle+i*Math.PI,foot=moving?walkingFoot(ph):{z:0,y:.0135};ik(l,hipY,foot.z,foot.y);
+      // Small differences in authored seat heights need a slightly longer
+      // relaxed lower leg, not a stretched torso or floating adult feet.
+      l.lower.scale.y=seated&&!child?Math.max(1,Math.min(1.16,(hipY-.005-.0135)/.215)):1;l.foot.scale.y=1/l.lower.scale.y;
       if(seated){
         // Thighs rest on the seat; knees stay at its front edge. A short
         // child's feet can hang naturally instead of stretching the shins.
@@ -95,7 +98,12 @@ function makeHuman(seed,item,appearance={}){
     if(action==='care'&&item==='basket'){carry.position.y=.09;carry.rotation.x=.12+Math.sin(t*1.1)*.045;}
     if(item==='can'&&appearance.regional){carry.rotation.set(action==='water'?.28+Math.sin(t*1.8)*.12:0,-Math.PI/2,0);carry.position.set(.035,-.02,.18);}
     if(action==='serve')carry.rotation.y=Math.sin(t*.6)*.06;
+    if(action==='drink'){
+      const phase=((t+seed*.13)%11+11)%11,smooth=v=>{v=Math.max(0,Math.min(1,v));return v*v*(3-2*v);},sip=smooth((phase-3)/1.5)*(1-smooth((phase-6)/1.5));
+      carry.position.set(.09-.072*sip,.20*sip,.18-.02*sip);carry.rotation.x=-.28*sip;
+    }
     if(carry.visible){for(const [i,a] of arms.entries()){if(i===0&&['cup','can'].includes(item))continue;const side=i?1:-1,grip=new THREE.Vector3(item==='can'?-.05:item==='cup'?.01:side*.074,item==='can'?.08:item==='cup'?.035:item==='shovel'?.12:.02,0).applyQuaternion(carry.quaternion).add(carry.position);reach(a,grip.toArray(),side);}}
+    if(seated&&item==='cup')reach(arms[0],[-.075,.01,.13],-1);
     if(action==='push'){arms.forEach((a,i)=>reach(a,[(i?1:-1)*.135,.44-hipY,.18],i?1:-1));}
     if(action==='laundry'){arms.forEach((a,i)=>reach(a,[(i?1:-1)*.075,.75/size-hipY,.21/size],i?1:-1));}
     return{feet:legs.map(l=>l.foot.getWorldPosition(new THREE.Vector3()).toArray()),height:.83};

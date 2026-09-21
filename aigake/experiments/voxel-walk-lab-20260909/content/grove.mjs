@@ -7,13 +7,13 @@ export function groveBlueprint(id,seed=41){
   if(id==='books'){
     house({w:25,d:17,h:17,rise:7});
     feature('木枠の玄関庇',()=>{k.awning({z:9,w:15,y:13,depth:4});});
-    feature('店先の本棚と腰掛け',()=>{shelf(-13,0,13,7,8);box(-13,9,13,-6,9,16,C.woodLight,3);bench(6,0,16,8);});
+    feature('店先の本棚と腰掛け',()=>{shelf(-13,0,13,7,8);box(-13,9,13,-6,9,16,C.woodLight,3);bench(6,0,16,8,0,{seat:1});});
   }else if(id==='tea'){
     // One continuous ground slab joins the entrance, posts and side seating.
     box(-19,0,-11,25,0,14,C.floor,0);
     house({x:-6,w:25,d:19,h:14,rise:5,shape:'hip',roofColor:'#8a9a85',foundationMargin:0});
     feature('低い軒と開いた窓辺',()=>{k.awning({x:-6,z:10,w:25,y:12,depth:3,color:'#b7a58b'});k.window(-13,5,10,5,6);k.window(1,5,10,5,6);});
-    feature('側面のテラス席',()=>{k.table(17,1,0);k.chair(17,1,-8,0);k.chair(17,1,8,2);put(17,8,0,C.trim,3);});
+    feature('側面のテラス席',()=>{k.table(17,1,0,7,7,{height:3});k.chair(17,1,-8,0,{seat:1});k.chair(17,1,8,2,{seat:1});put(17,5,0,C.trim,3);});
   }else if(id==='flowers'){
     house({x:-4,w:19,d:15,h:14,rise:8,roofColor:'#74949b'});house({x:10,z:-2,w:9,d:13,h:10,rise:4,color:C.glass,roofColor:C.glass,windows:false,door:false});
     feature('温室につながる採光窓',()=>{k.window(-9,5,8,5,6);for(const x of [6,10,14])paint(x,2,5,x,9,5,C.trim,3);});

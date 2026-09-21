@@ -9,15 +9,17 @@ import {widgetSnapshot,widgetSignature,publishWidget} from './widget.mjs';
 import {createStargazing} from '../experiments/voxel-walk-lab-20260909/stargazing/game.mjs';
 import {walkUnlocked} from '../experiments/voxel-walk-lab-20260909/stargazing/model.mjs';
 import {walkMode,createDebugState,addDebugSteps,debugStepsToFinish,resetDebugState} from './debug.mjs';
+import {recapPlayback,advanceRecap} from './recap-playback.mjs';
 const $=id=>document.getElementById(id),format=n=>Math.round(n).toLocaleString('ja-JP'),params=new URLSearchParams(location.search);
 const native=platform()==='ios',mode=walkMode({native,buildDebug:document.querySelector('meta[name="komorebi-debug-tools"]')?.content==='1',hostname:location.hostname,search:location.search});
 const {debugTools,debug,demo,simulated,key}=mode,reduced=matchMedia('(prefers-reduced-motion: reduce)');
 let state,world,profiles,plan,tab='town',period=7,selectedDay=dayKey(),animation=null,visualTotal=0,busy=false,lastFrame=0,lastUI=0,noticeTimer,statusNote='',storageFailed=false;
-let timelapse=null,playerLastFrame=null,syncStage='',syncError=false,motionOffered=false;
+let timelapse=null,playerLastFrame=null,syncStage='',syncError=false,motionOffered=false,completionNoticeTimer;
 const stepSourceName=()=>state.stepSource==='pedometer'?'iPhoneの歩数':'ヘルスケア';
 const motionNote='iPhone本体の歩数を使います。Apple Watchは含まず、履歴の取得は直近7日分です。';
 const stargazing=createStargazing({unlocked:()=>walkUnlocked(state,plan?.walkBudget),storageKey:mode.starbookKey,onClose:()=>{if(tab==='town')startRecap();}});
 const sceneHome=$('world').parentElement,replayPlans=new Map();
+$('scene-message').setAttribute('role','status');
 let widgetTimer,widgetPublishing=false,lastWidgetSignature='';
 function queueWidget(){
  if(!native||simulated)return;clearTimeout(widgetTimer);widgetTimer=setTimeout(updateWidget,600);
@@ -40,7 +42,12 @@ function persist(next){try{localStorage.setItem(key,JSON.stringify(next));state=
 function label(b){return b.name||BY_ID[b.kind]?.name||'建物';}
 function currentProfile(){return profiles.find(p=>p.id===state.region)||profiles[0];}
 function progressAt(total){return Math.max(0,Math.min(1,(total-state.townStart)/plan.walkBudget));}
-function setVisual(total){visualTotal=total;world.setProgress(progressAt(total));}
+function setVisual(total,celebrate=false){visualTotal=total;world.setProgress(progressAt(total),null,{celebrate});}
+function showCompletionMessage(buildings){
+ if(!buildings.length)return;clearTimeout(completionNoticeTimer);
+ const message=$('scene-message');message.textContent=buildings.length===1?label(buildings[0])+'が完成':buildings.length+'棟が完成';message.hidden=false;
+ completionNoticeTimer=setTimeout(()=>message.hidden=true,2800);
+}
 function completionEvents(){const next=recordCompletions(state,plan.buildings,plan.walkBudget);if(next.events.length!==state.events.length)persist(next);}
 function buildWorld(){
  const base=makeTown(currentProfile(),state.seed),next=prepareConstruction(state,base);
@@ -90,20 +97,20 @@ function updateSettings(){
 function ui(){if(!world)return;updateTown();if(tab==='records')renderRecords();if(tab==='settings')updateSettings();updateConnection();}
 function selectTab(next){if(tab==='town'&&next!=='town')pauseRecap();tab=next;for(const id of ['town','records','settings'])$(id+'-page').hidden=id!==next;document.querySelectorAll('[data-tab]').forEach(b=>{if(b.dataset.tab===next)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current');});window.scrollTo(0,0);ui();if(next==='town'){world.view('home');startRecap();}}
 function finishRecap(){
- if(!animation)return;const {recap,replay}=animation;animation=null;setVisual(state.total);if(!replay)persist(acknowledge(state,recap));$('recap').hidden=true;ui();
+ if(!animation)return;const {recap,replay,playback}=animation;if(!playback.done)world.clearCompletion();animation=null;setVisual(state.total);if(!replay)persist(acknowledge(state,recap));$('recap').hidden=true;ui();
  const done=plan.buildings.filter(b=>state.townStart+completionStep(b,plan.walkBudget)>recap.from&&state.townStart+completionStep(b,plan.walkBudget)<=recap.to);
- if(done.length){$('scene-message').textContent=done.length===1?label(done[0])+'が完成':done.length+'棟が完成';$('scene-message').hidden=false;}queueWidget();
+ if(done.length>1||!playback.index)showCompletionMessage(done);queueWidget();
 }
 function startRecap(replay=false){
  if(tab!=='town'||animation||storageFailed||timelapse||stargazing.isOpen||$('timelapse-list-dialog').open||$('debug-dialog').open)return;
  const recap=replay?state.recap:pendingRecap(state);if(!recap){setVisual(state.total);return;}
  if(recap.to<=state.townStart)return;
- $('scene-message').hidden=true;setVisual(Math.max(state.townStart,recap.from));
- animation={recap,replay,start:performance.now(),duration:Math.min(9000,Math.max(4000,(recap.to-recap.from)*1.6))};
+ clearTimeout(completionNoticeTimer);$('scene-message').hidden=true;world.clearCompletion();setVisual(Math.max(state.townStart,recap.from));
+ animation={recap,replay,playback:recapPlayback(recap,plan,state.townStart),lastFrame:null};
  $('recap-steps').textContent='＋'+format(recap.to-recap.from)+'歩';$('recap-caption').textContent=replay?'前回の変化':'町に反映しています';$('recap').hidden=false;ui();
  if(reduced.matches)finishRecap();
 }
-function pauseRecap(){if(!animation)return;if(!animation.replay)persist({...state,seen:Math.max(state.seen,Math.floor(visualTotal))});animation=null;$('recap').hidden=true;queueWidget();}
+function pauseRecap(){if(!animation)return;if(!animation.replay)persist({...state,seen:Math.max(state.seen,Math.floor(visualTotal))});animation=null;world.clearCompletion();$('recap').hidden=true;queueWidget();}
 async function synchronize(request=false,provider=state.stepSource){
  if(busy)return;
  if(simulated){startRecap();return;}
@@ -156,8 +163,8 @@ function openTimelapse(town,clip,preview=false){
  if(!town.current)world.build(profile,town.seed,{townPlan:replayPlan});
  world.setShowcase(clip.kind==='building'?clip.id:null);world.setMotion(state.motion&&!reduced.matches);drawTimelapse();
 }
-function drawTimelapse(){
- if(!timelapse)return;const f=replayFrame(timelapse.clip,timelapse.plan,timelapse.position);world.setProgress(f.progress,f.focus);
+function drawTimelapse(celebrate=false){
+ if(!timelapse)return;const f=replayFrame(timelapse.clip,timelapse.plan,timelapse.position);world.setProgress(f.progress,f.focus,{celebrate});
  $('timelapse-phase').textContent=f.phase;$('timelapse-seek').value=Math.round(timelapse.position*1000);$('timelapse-seek').setAttribute('aria-valuetext',Math.round(timelapse.position*100)+'% · '+f.phase);
  const time=ms=>Math.floor(ms/60000)+':'+String(Math.floor(ms/1000)%60).padStart(2,'0');$('timelapse-time').textContent=time(timelapse.position*timelapse.clip.duration)+' / '+time(timelapse.clip.duration);
  $('timelapse-toggle').textContent=timelapse.position===1?'もう一度':timelapse.playing?'一時停止':'再生';
@@ -222,8 +229,8 @@ try{
  window.addEventListener('komorebi:town',()=>{document.querySelectorAll('dialog[open]').forEach(d=>d.close());selectTab('town');synchronize();});
  selectTab('town');synchronize();
  function frame(now){requestAnimationFrame(frame);if(document.hidden||stargazing.isOpen||(!timelapse&&tab!=='town')||now-lastFrame<32)return;lastFrame=now;
-  if(timelapse){const previousPosition=timelapse.position;timelapse=advanceTimelapse(timelapse,playerLastFrame===null?0:Math.min(250,now-playerLastFrame));playerLastFrame=now;if(timelapse.position!==previousPosition)drawTimelapse();world.render(now);return;}
-  if(animation){const a=animation,p=Math.min(1,(now-a.start)/a.duration);setVisual(a.recap.from+(a.recap.to-a.recap.from)*p);if(p===1)finishRecap();if(now-lastUI>150){updateTown();lastUI=now;}}
+  if(timelapse){const previousPosition=timelapse.position;timelapse=advanceTimelapse(timelapse,playerLastFrame===null?0:Math.min(250,now-playerLastFrame));playerLastFrame=now;if(timelapse.position!==previousPosition)drawTimelapse(true);world.render(now);return;}
+  if(animation){const a=animation;a.playback=advanceRecap(a.playback,a.lastFrame===null?0:Math.min(100,now-a.lastFrame));a.lastFrame=now;setVisual(a.playback.value,a.playback.completed.length>0);showCompletionMessage(plan.buildings.filter(b=>a.playback.completed.includes(b.id)));if(a.playback.done)finishRecap();if(now-lastUI>150){updateTown();lastUI=now;}}
   world.render(now);
  }requestAnimationFrame(frame);
 }catch(e){$('scene-loading').textContent=e.message||'読み込みに失敗しました';notice(e.message||'アプリを開き直してください');console.error(e);}

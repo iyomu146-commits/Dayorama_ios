@@ -13,6 +13,7 @@ import {createTownSky} from './town-sky.mjs';
 import {makeDomesticPlan} from './town-domestic-plan.mjs';
 import {createDomestic} from './town-domestic.mjs';
 import {windowLighting} from './window-lighting.mjs';
+import {createCompletionEffects} from './completion-effects.mjs';
 
 function compact(boxes){
  const groups=new Map(),other=[];
@@ -107,14 +108,15 @@ export function createTownWorld(host){
    signals.push({group:sx===sz?1:0,lights});
   }
  }
- let showcase=null,showcaseVisibility=null;
+ let showcase=null,showcaseVisibility=null,completionFx;
  function build(p,seed=741,{townPlan}={}){
+  completionFx?.clear();
   showcase=null;showcaseVisibility=null;floor.position.y=-1.11;floor.visible=false;
   clear();plan=townPlan||makeTown(p,seed);lifePlan=makeLifePlan(plan);const domesticPlan=makeDomesticPlan(plan,lifePlan);root=new THREE.Group();root.name='town-'+p.id;scene.add(root);buildings=[];vegetation=[];actors=[];pets=[];lifeFixtures=[];boats=[];train=[];couplers=[];signals=[];elapsed=0;last=null;previewStarted=0;focusIndex.people=0;focusIndex.animals=0;
   const shadowExtent=p.id==='tokyo'?30:17;Object.assign(sun.shadow.camera,{left:-shadowExtent,right:shadowExtent,top:shadowExtent,bottom:-shadowExtent,far:p.id==='tokyo'?90:65});sun.shadow.camera.updateProjectionMatrix();controls.minZoom=p.id==='tokyo'?.18:.4;
   mesh(root,boxesGeometry(plan.boxes.filter(b=>b.kind!=='water'),p));
   const wet=plan.boxes.filter(b=>b.kind==='water');if(wet.length){const m=mesh(root,boxesGeometry(wet,p),waterMaterial);m.castShadow=false;}
-  buildings=plan.buildings.map(makeBuilding);
+  buildings=plan.buildings.map(makeBuilding);completionFx=createCompletionEffects(root);
   domestic=createDomestic(root,plan,domesticPlan);
   for(let i=0;i<4;i++)instances(plan.trees.filter(t=>t.variant===i),plan.treePrototypes[i],plan.trees.find(t=>t.variant===i)?.u||.12,'trees');
   for(const [kind,cells]of Object.entries(plan.prototypes))instances(plan.plants.filter(t=>t.kind===kind),cells,.075,'plants');
@@ -129,13 +131,15 @@ export function createTownWorld(host){
   const sg=new THREE.BufferGeometry();sg.setAttribute('position',new THREE.Float32BufferAttribute(starPositions,3));starPoints=new THREE.Points(sg,new THREE.PointsMaterial({size:.065,color:'#dfe4dc',sizeAttenuation:true}));starPoints.userData.ownMaterial=true;root.add(starPoints);
   lights();setProgress(progress);view('home');dirty=true;render();return plan;
  }
- function setProgress(value,focus=null){
+ function setProgress(value,focus=null,{celebrate=false}={}){
+  const unfinished=celebrate&&motion?buildings.filter(b=>b.progress<1):[];
   progress=clamp(Number(value)||0,0,1);
   for(const b of buildings){b.progress=focus?.buildingId===b.id?clamp(focus.buildingProgress,0,1):buildingProgress(b,progress);b.full.visible=b.progress===1;const counts=countsAt(b.bp.counts,b.progress*4800);b.phases.forEach((m,i)=>{m.count=counts[i];m.visible=b.progress>0&&b.progress<1;});if(lookMode>0&&b.progress>0&&b.progress<1)b.construction.update(counts);if(b.contact){b.contact.visible=lookMode>0&&b.progress>.08;b.contact.material.uniforms.uOpacity.value=.15*clamp((b.progress-.08)/.1,0,1);}}
   for(const v of vegetation)v.mesh.count=v.items.filter(p=>p.birth<=progress).length;
   actors.forEach(a=>a.g.visible=buildings[a.building].progress===1);
   pets.forEach(a=>a.g.visible=buildings[a.building].progress===1&&progress>=(a.birth??0));
   lifeFixtures.forEach(a=>a.g.visible=buildings[a.building].progress===1);
+  for(const b of unfinished)if(b.progress===1)completionFx.play(b,elapsed);
   if(viewName==='people'&&!actors.some(a=>a.g.visible))view('home');
   if(viewName==='animals'&&!pets.some(a=>a.g.visible))view('home');
   const waterFacility=buildings.find(b=>['boathouse','island-cabin','clockmaker'].includes(b.kind));boats.forEach(b=>b.g.visible=waterFacility?.progress===1);
@@ -144,9 +148,10 @@ export function createTownWorld(host){
  }
  function applyShowcase(){
   if(!showcase)return;
-  for(const child of root.children)if(child!==showcase.g&&child!==showcase.contact)child.visible=false;
+  for(const child of root.children)if(child!==showcase.g&&child!==showcase.contact&&child!==completionFx?.group)child.visible=false;
  }
- function setShowcase(id=null){
+ function setShowcase(id=null,{preserveCompletion=false}={}){
+  if(!preserveCompletion)completionFx?.clear();
   if(showcaseVisibility)for(const [child,visible]of showcaseVisibility)child.visible=visible;
   showcase=buildings.find(b=>b.id===id)||null;
   floor.visible=!!showcase;
@@ -170,7 +175,7 @@ export function createTownWorld(host){
   if(now&&last!==null&&motion)elapsed+=Math.min(.10,Math.max(0,(now-last)/1000));if(now)last=now;
   clock=townClock(clockOverride??localHour(new Date()));const bucket=Math.floor(clock.hour*60);if(lastClockBucket!==bucket){lastClockBucket=bucket;lights();}
   sky.update(clock,plan?.id,elapsed,Math.max(.1,host.clientWidth/Math.max(1,host.clientHeight)));
-  looks.tick(elapsed);animate();domestic?.update(clock,elapsed-previewStarted,buildings,{showcase:!!showcase,previewLaundry});controls.update();
+  looks.tick(elapsed);animate();completionFx?.update(elapsed);domestic?.update(clock,elapsed-previewStarted,buildings,{showcase:!!showcase,previewLaundry});controls.update();
   if(dirty||(motion&&now-lastShadow>300)){renderer.shadowMap.needsUpdate=true;dirty=false;lastShadow=now;}
   renderer.render(scene,camera);
  }
@@ -215,12 +220,13 @@ export function createTownWorld(host){
   if(showcase)throw Error('再生中の画像はウィジェットに使用できません');
   const saved={progress,viewName,position:camera.position.clone(),target:controls.target.clone(),zoom:camera.zoom};
   const capture=()=>{render();const source=renderer.domElement,canvas=document.createElement('canvas'),scale=Math.min(1,512/Math.max(source.width,source.height));canvas.width=Math.max(1,Math.round(source.width*scale));canvas.height=Math.max(1,Math.round(source.height*scale));canvas.getContext('2d').drawImage(source,0,0,canvas.width,canvas.height);return canvas.toDataURL('image/png');};
+  completionFx.group.visible=false;
   try{
    setProgress(value);view('home');const town=capture();
-   if(buildingId){setShowcase(buildingId);setProgress(value);}
+   if(buildingId){setShowcase(buildingId,{preserveCompletion:true});setProgress(value);}
    return{town,building:buildingId?capture():town};
   }finally{
-   setShowcase(null);setProgress(saved.progress);viewName=saved.viewName;controls.target.copy(saved.target);camera.position.copy(saved.position);camera.zoom=saved.zoom;camera.lookAt(controls.target);controls.update();camera.updateProjectionMatrix();dirty=true;render();
+   setShowcase(null,{preserveCompletion:true});setProgress(saved.progress);completionFx.group.visible=true;viewName=saved.viewName;controls.target.copy(saved.target);camera.position.copy(saved.position);camera.zoom=saved.zoom;camera.lookAt(controls.target);controls.update();camera.updateProjectionMatrix();dirty=true;render();
   }
  }
  new ResizeObserver(resize).observe(host);controls.addEventListener('change',()=>dirty=true);resize();
@@ -228,5 +234,5 @@ export function createTownWorld(host){
  function setColor(value){colorStrength=clamp(Number(value)||0,0,1);looks.setColor(colorStrength);lights();render();}
  function setTime(hour=null,{laundry=false}={}){clockOverride=hour===null?null:Number(hour);clock=townClock(clockOverride??localHour(new Date()));previewLaundry=laundry;previewStarted=elapsed;lastClockBucket='';lights();render();}
  const life=()=>({clothes:lifePlan?.config.clothes,workers:actors.map(a=>({label:a.options.label,action:a.action,item:a.options.item,building:a.building,visible:a.g.visible,position:a.g.position.toArray()})),animals:pets.map(a=>({type:a.type,label:a.label,action:a.action,building:a.building,visible:a.g.visible,position:a.g.position.toArray()})),notes:lifePlan?.notes||[]});
- return{setTime,widgetSnapshots,build,setProgress,setShowcase,view,render,setLook,setColor,life,setMotion:v=>{motion=!!v;last=null;},setEvening:v=>{evening=!!v;setTime(v?21:null);},snapshot:()=>{render();return renderer.domElement.toDataURL('image/png');},advance:seconds=>{if(motion)elapsed+=seconds;render();},stats:()=>({id:plan?.id,seed:plan?.seed,clock,domestic:domestic?.stats(),progress,signature:plan?.signature,walkBudget:plan?.walkBudget,tiles:plan?.tiles.map(t=>({...t,progress:clamp(progress*4-t.index,0,1)})),look:lookMode,color:colorStrength,camera:{position:camera.position.toArray(),target:controls.target.toArray(),zoom:camera.zoom},buildings:buildings.map(b=>({id:b.id,kind:b.kind,name:b.name,district:b.district,progress:b.progress,position:[b.x,b.base,b.z],scale:b.g.scale.toArray(),cells:countsAt(b.bp.counts,b.progress*4800).reduce((a,b)=>a+b,0),total:b.bp.cells.length,connected:b.entrance.connected})),trees:vegetation.filter(v=>v.kind==='trees').reduce((n,v)=>n+v.mesh.count,0),plants:vegetation.filter(v=>v.kind==='plants').reduce((n,v)=>n+v.mesh.count,0),totalPlants:plan?.plants.length,residents:actors.filter(a=>a.g.visible).map(a=>a.g.position.toArray()),life:life(),boats:boats.filter(b=>b.g.visible).map(b=>b.g.position.toArray()),trains:train.filter(t=>t.g.visible).map(t=>t.g.position.toArray()),motion,elapsed,evening,drawCalls:renderer.info.render.calls,triangles:renderer.info.render.triangles,geometries:renderer.info.memory.geometries}),plan:()=>plan};
+ return{clearCompletion:()=>completionFx?.clear(),setTime,widgetSnapshots,build,setProgress,setShowcase,view,render,setLook,setColor,life,setMotion:v=>{motion=!!v;if(!motion)completionFx?.clear();last=null;},setEvening:v=>{evening=!!v;setTime(v?21:null);},snapshot:()=>{render();return renderer.domElement.toDataURL('image/png');},advance:seconds=>{if(motion)elapsed+=seconds;render();},stats:()=>({id:plan?.id,seed:plan?.seed,clock,domestic:domestic?.stats(),progress,signature:plan?.signature,walkBudget:plan?.walkBudget,tiles:plan?.tiles.map(t=>({...t,progress:clamp(progress*4-t.index,0,1)})),look:lookMode,color:colorStrength,camera:{position:camera.position.toArray(),target:controls.target.toArray(),zoom:camera.zoom},buildings:buildings.map(b=>({id:b.id,kind:b.kind,name:b.name,district:b.district,progress:b.progress,position:[b.x,b.base,b.z],scale:b.g.scale.toArray(),cells:countsAt(b.bp.counts,b.progress*4800).reduce((a,b)=>a+b,0),total:b.bp.cells.length,connected:b.entrance.connected})),trees:vegetation.filter(v=>v.kind==='trees').reduce((n,v)=>n+v.mesh.count,0),plants:vegetation.filter(v=>v.kind==='plants').reduce((n,v)=>n+v.mesh.count,0),totalPlants:plan?.plants.length,residents:actors.filter(a=>a.g.visible).map(a=>a.g.position.toArray()),life:life(),boats:boats.filter(b=>b.g.visible).map(b=>b.g.position.toArray()),trains:train.filter(t=>t.g.visible).map(t=>t.g.position.toArray()),motion,elapsed,evening,drawCalls:renderer.info.render.calls,triangles:renderer.info.render.triangles,geometries:renderer.info.memory.geometries}),plan:()=>plan};
 }
