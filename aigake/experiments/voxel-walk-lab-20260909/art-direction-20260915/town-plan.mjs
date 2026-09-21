@@ -298,8 +298,16 @@ export function makeTown(p,seed=741){
   }
  }
  for(const {x,y,z}of lamps){box(x,y+.75,z,.08,1.5,.08,C.wood,'lamp');box(x,y+1.53,z,.25,.20,.25,'#e4cf99','lamp-light');box(x,y+1.67,z,.32,.09,.32,C.roof,'lamp');}
- // One crate and a bench beside a path add human scale without blocking doors.
- for(const [i,b]of buildings.entries())if(i%2===0&&!['tokyo','tropical'].includes(id)){const x=b.bounds.max[0]+.36,z=b.bounds.max[1]-.25,y=surface(x,z);if(inside(x,z)&&!wet(x,z)&&!occupied(x,z,.15)&&!onPath(x,z)){for(const xx of [x-.23,x+.23])for(const zz of [z-.1,z+.1])box(xx,y+.12,zz,.06,.24,.06,C.wood,'furniture');box(x,y+.28,z,.60,.10,.30,blend(C.wood,C.wall,.3),'furniture');box(x,y+.43,z-.12,.60,.24,.07,blend(C.wood,C.wall,.3),'furniture');}}
+ // Keep each bench's complete footprint reserved from the start. The bench
+ // itself is installed when its nearby building reaches the finishing stages.
+ for(const [i,b]of buildings.entries())if(i%2===0&&!['tokyo','tropical'].includes(id)){
+  const x=b.bounds.max[0]+.36,z=b.bounds.max[1]-.25,y=surface(x,z);
+  if(inside(x,z)&&!wet(x,z)&&!occupied(x,z,.15)&&!onPath(x,z)){
+   const part=(...args)=>{box(...args);Object.assign(boxes.at(-1),{propId:'bench-'+b.id,building:b.id,reveal:.7});};
+   for(const xx of [x-.23,x+.23])for(const zz of [z-.1,z+.1])part(xx,y+.12,zz,.06,.24,.06,C.wood,'furniture');
+   part(x,y+.28,z,.60,.10,.30,blend(C.wood,C.wall,.3),'furniture');part(x,y+.43,z-.12,.60,.24,.07,blend(C.wood,C.wall,.3),'furniture');
+  }
+ }
  // Just two small mushrooms at each of three tree bases. They appear only
  // after their tree, and avoid paths, rocks, furniture and other plants.
  if(id==='grove'){

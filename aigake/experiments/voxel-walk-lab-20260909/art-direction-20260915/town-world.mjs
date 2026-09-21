@@ -117,15 +117,18 @@ export function createTownWorld(host){
    signals.push({group:sx===sz?1:0,lights});
   }
  }
- let showcase=null,showcaseVisibility=null,completionFx;
+ let showcase=null,showcaseVisibility=null,completionFx,furnishings=[];
  function build(p,seed=741,{townPlan}={}){
   completionFx?.clear();
-  showcase=null;showcaseVisibility=null;floor.position.y=-1.11;floor.visible=false;
+  showcase=null;showcaseVisibility=null;furnishings=[];floor.position.y=-1.11;floor.visible=false;
   clear();plan=townPlan||makeTown(p,seed);lifePlan=makeLifePlan(plan);const domesticPlan=makeDomesticPlan(plan,lifePlan);root=new THREE.Group();root.name='town-'+p.id;scene.add(root);buildings=[];vegetation=[];actors=[];pets=[];lifeFixtures=[];boats=[];train=[];couplers=[];signals=[];elapsed=0;last=null;previewStarted=0;focusIndex.people=0;focusIndex.animals=0;
   const shadowExtent=p.id==='tokyo'?30:17;Object.assign(sun.shadow.camera,{left:-shadowExtent,right:shadowExtent,top:shadowExtent,bottom:-shadowExtent,far:p.id==='tokyo'?90:65});sun.shadow.camera.updateProjectionMatrix();controls.minZoom=p.id==='tokyo'?.18:.4;
-  mesh(root,boxesGeometry(plan.boxes.filter(b=>b.kind!=='water'),p));
+  mesh(root,boxesGeometry(plan.boxes.filter(b=>b.kind!=='water'&&!b.propId),p));
   const wet=plan.boxes.filter(b=>b.kind==='water');if(wet.length){const m=mesh(root,boxesGeometry(wet,p),waterMaterial);m.castShadow=false;}
   buildings=plan.buildings.map(makeBuilding);completionFx=createCompletionEffects(root);
+  const props=new Map();
+  for(const box of plan.boxes.filter(b=>b.propId)){if(!props.has(box.propId))props.set(box.propId,[]);props.get(box.propId).push(box);}
+  for(const [id,parts]of props){const first=parts[0],building=buildings.find(b=>b.id===first.building),g=mesh(root,boxesGeometry(parts,p));g.name=id;furnishings.push({id,building,reveal:first.reveal,g});}
   domestic=createDomestic(root,plan,domesticPlan);
   for(let i=0;i<4;i++)instances(plan.trees.filter(t=>t.variant===i),plan.treePrototypes[i],plan.trees.find(t=>t.variant===i)?.u||.12,'trees');
   for(const [kind,cells]of Object.entries(plan.prototypes))instances(plan.plants.filter(t=>t.kind===kind),cells,.075,'plants');
@@ -145,6 +148,7 @@ export function createTownWorld(host){
   progress=clamp(Number(value)||0,0,1);
   for(const b of buildings){b.progress=focus?.buildingId===b.id?clamp(focus.buildingProgress,0,1):buildingProgress(b,progress);b.full.visible=b.progress===1;const counts=countsAt(b.bp.counts,b.progress*4800);b.phases.forEach((m,i)=>{m.count=counts[i];m.visible=b.progress>0&&b.progress<1;});if(lookMode>0&&b.progress>0&&b.progress<1)b.construction.update(counts);if(b.contact){b.contact.visible=lookMode>0&&b.progress>.08;b.contact.material.uniforms.uOpacity.value=.15*clamp((b.progress-.08)/.1,0,1);}}
   for(const v of vegetation){if(v.kind==='trees')growTrees(v);else v.mesh.count=v.items.filter(p=>p.birth<=progress).length;}
+  for(const prop of furnishings)prop.g.visible=prop.building.progress>=prop.reveal-1e-9;
   actors.forEach(a=>a.g.visible=residentVisible(a,clock,buildings,!!showcase));
   pets.forEach(a=>a.g.visible=buildings[a.building].progress===1&&progress>=(a.birth??0));
   lifeFixtures.forEach(a=>a.g.visible=buildings[a.building].progress===1);
