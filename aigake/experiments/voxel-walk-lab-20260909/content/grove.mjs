@@ -7,7 +7,7 @@ export function groveBlueprint(id,seed=41){
   if(id==='books'){
     house({w:25,d:17,h:17,rise:7});
     feature('木枠の玄関庇',()=>{k.awning({z:9,w:15,y:13,depth:4});});
-    feature('店先の本棚と腰掛け',()=>{shelf(-13,0,13,7,8);box(-13,9,13,-6,9,16,C.woodLight,3);book(-10,10,13,5);bench(6,0,16,8);});
+    feature('店先の本棚と腰掛け',()=>{shelf(-13,0,13,7,8);box(-13,9,13,-6,9,16,C.woodLight,3);bench(6,0,16,8);});
   }else if(id==='tea'){
     // One continuous ground slab joins the entrance, posts and side seating.
     box(-19,0,-11,25,0,14,C.floor,0);
@@ -17,14 +17,21 @@ export function groveBlueprint(id,seed=41){
   }else if(id==='flowers'){
     house({x:-4,w:19,d:15,h:14,rise:8,roofColor:'#74949b'});house({x:10,z:-2,w:9,d:13,h:10,rise:4,color:C.glass,roofColor:C.glass,windows:false,door:false});
     feature('温室につながる採光窓',()=>{k.window(-9,5,8,5,6);for(const x of [6,10,14])paint(x,2,5,x,9,5,C.trim,3);});
-    feature('通路の両脇の花台',()=>{for(let i=0;i<3;i++){for(const[a,b]of [[-14,-9],[2,14]])box(a,0,11+i*4,b,5-i*2,13+i*4,C.woodLight,3);for(const x of [-12,5,11])flower(x,6-i*2,12+i*4,['#d9b2c2','#dbca97','#b8bbd2'][i],3);}});
+    feature('通路の両脇の花台',()=>{for(let i=0;i<3;i++){for(const[a,b]of [[-14,-9],[2,14]])box(a,0,11+i*4,b,5-i*2,13+i*4,C.woodLight,3);for(const [j,x]of [-12,5,11].entries())flower(x,6-i*2,12+i*4,['#d9859b','#f0e7d2','#a797cd','#e4bd55'][(i+j)%4],3,{stamen:'#e6b63e',pistil:'#97643a'});}});
   }else if(id==='bakery'){
     house({x:-5,w:21,d:17,h:14,rise:8,shape:'hip',roofColor:'#b88a70'});roundHouse({x:13,z:-2,r:6,h:9,rise:6,cap:'dome',color:'#bda48b',roofColor:'#b5967d',door:false,windows:false});chimney(12,-3,10,27,3);
     feature('薪窯の脇の軒下',()=>{k.awning({x:-5,z:9,w:19,y:12,depth:3,color:'#c8b590'});});
     feature('薪窯とパンの台',()=>{paint(11,3,4,15,7,4,C.dark);box(-18,0,13,-10,4,17,C.wood,3);for(const x of [-16,-12])ellipsoid(x,6,15,1.5,2,1.8,'#d2ae74');for(let y=0;y<=3;y+=2)for(const x of [10,13,16])box(x,y,10,x+1,y+1,16,C.wood,3);});
   }else if(id==='mushroom-house'){
     house({w:29,d:21,h:29,rise:8,floors:2,roofColor:'#8d9b8a'});
-    feature('二階の寝室と鎧戸',()=>{for(const y of [4,18])for(const x of [-9,9])k.shutters(x,y,10,3,6);});
+    feature('二階の窓の手すり',()=>{for(const x of [-9,9]){
+      k.window(x,18,10,5,7);
+      // Shallow window guards are anchored to the jambs, with open spaces
+      // between the balusters so the glazing remains visible.
+      for(const dx of [-3,3])box(x+dx,18,11,x+dx,21,12,C.wood,3);
+      box(x-3,18,12,x+3,18,12,C.wood,3);box(x-3,21,12,x+3,21,12,C.woodLight,3);
+      for(const dx of [-1,1])box(x+dx,19,12,x+dx,20,12,C.wood,3);
+    }});
     // A full-height internal staircase reaches the second-floor landing.
     k.clearBox(-12,14,-6,-8,14,5);
     for(let i=0;i<=12;i++)box(-12,2,-6+i,-8,2+i,-6+i,C.woodLight,1);
@@ -35,7 +42,7 @@ export function groveBlueprint(id,seed=41){
     feature('二層の縦長の閲覧窓',()=>{for(const x of [-10,0,10])k.window(x,19,-11,5,8);});
     feature('二階の読書バルコニー',()=>{box(-14,15,11,14,15,16,C.woodLight,1);for(const x of [-14,14])box(x,1,16,x,20,16,C.wood,1);for(let x=-14;x<=14;x+=4)box(x,16,16,x,20,16,C.woodLight,3);box(-14,20,16,14,20,16,C.woodLight,3);shelf(-12,16,12,8,5);shelf(4,16,12,8,5);});
     k.doorway(0,16,10,9,{access:'balcony',name:'reading balcony door'});for(const x of [-14,14]){box(x,20,11,x,20,16,C.woodLight,3);box(x,16,13,x,19,13,C.woodLight,3);}
-    feature('入口の本のワゴン',()=>{shelf(-18,0,15,7,8);box(-18,9,15,-11,9,18,C.woodLight,3);book(-15,10,15,5);bench(5,0,17,9);});
+    feature('入口の本のワゴン',()=>{shelf(-18,0,15,7,8);box(-18,9,15,-11,9,18,C.woodLight,3);bench(5,0,17,9);});
   }else if(id==='apiary'){
     roundHouse({x:-6,r:8,h:16,rise:7,metric:'hex',roofColor:'#b9a173'});
     feature('庭に並ぶ小さな巣箱',()=>{for(const[x,z]of [[10,0],[15,10],[4,15]]){box(x-2,0,z-2,x+2,5,z+2,'#c4ab7c',3);box(x-3,6,z-3,x+3,6,z+3,C.woodLight,3);paint(x-1,2,z+3,x+1,2,z+3,C.dark);}});

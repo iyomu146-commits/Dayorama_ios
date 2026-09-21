@@ -139,7 +139,16 @@ export function workshop(region='grove',seed=41){
     for(let y=2;y<=deck;y+=2){box(x-2,y,z,x+2,y,z,C.woodLight,3);rungs.push([x-2,y,z,x+2]);}
     ladders.push({name:'access ladder',base:[x,0,z+3],top:[x,deck+1,z-2],rungs});
   }
-  function flower(x,y,z,color=C.flower,height=5){box(x,y,z,x,y+height,z,C.leaf,3);put(x+1,y+2,z,C.leaf,3);ellipsoid(x,y+height+1,z,2,1.5,2,color);}
+  function flower(x,y,z,color=C.flower,height=5,{stamen='#e6b63e',pistil='#97643a',leaf=C.leaf,phase=3}={}){
+    const head=y+height+1;
+    box(x,y,z,x,head-1,z,leaf,phase);
+    put(x+1,y+1,z,leaf,phase);if(height>2)put(x-1,y+2,z,leaf,phase);
+    // Four rounded petal lobes, rather than a solid ellipsoid. The centre
+    // connects every petal to the stem, and the raised pistil stays visible.
+    for(let a=-2;a<=2;a++)for(let b=-2;b<=2;b++)if(Math.abs(a)+Math.abs(b)<4)put(x+a,head,z+b,color,phase);
+    for(const [a,b]of [[-1,0],[1,0],[0,-1],[0,1]])put(x+a,head,z+b,stamen,phase,true);
+    put(x,head,z,pistil,phase,true);put(x,head+1,z,pistil,phase);
+  }
   function finish(id){
     const cells=v.list(),phases=[0,1,2,3].map(p=>cells.filter(c=>c.phase===p));
     const bounds=cells.reduce((b,c)=>({min:b.min.map((n,i)=>Math.min(n,[c.x,c.y,c.z][i])),max:b.max.map((n,i)=>Math.max(n,[c.x,c.y,c.z][i]))}),{min:[Infinity,Infinity,Infinity],max:[-Infinity,-Infinity,-Infinity]});

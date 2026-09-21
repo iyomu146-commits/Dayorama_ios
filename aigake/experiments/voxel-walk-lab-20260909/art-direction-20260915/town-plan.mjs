@@ -2,7 +2,7 @@ import {Voxels,COLORS} from '../voxels.mjs';
 import {hash,clamp} from '../model.mjs';
 import {contentBlueprint} from '../content/blueprints.mjs';
 import {workshop} from '../content/kit.mjs';
-import {plantBlueprint} from '../content/ecology.mjs';
+import {plantBlueprint,WILDFLOWER_COLORS} from '../content/ecology.mjs';
 import {REGIONS} from '../content/catalog.mjs';
 import {insideLoop} from '../tokyo/city.mjs';
 import {tokyoDistrictPlan,tokyoPavement,tokyoStreetDetails} from './tokyo-districts.mjs';
@@ -231,11 +231,12 @@ export function makeTown(p,seed=741){
   if(id==='grove'&&Math.abs(x)<3.2&&z<3.8&&z>-3.8)continue;
   trees.push({x,z,y:surface(x,z),variant:trees.length%4,u:['oasis','tropical'].includes(id)?.125:id==='grove'?.13:.12,birth:trees.length%4===0?hash(seed,i,234)*.8:0});
  }
- const kinds=id==='grove'?['fern','clover','bluebell','mushroom']:id==='harbor'?['beach-grass','sea-lavender','succulent']:id==='canal'?['iris','hydrangea','reed']:id==='tropical'?['beach-grass','succulent']:id==='snow'?['beach-grass']:['clover','bluebell','fern'];
+ const kinds=id==='grove'?Object.keys(WILDFLOWER_COLORS).flatMap(k=>['fern','clover','fern',k]):id==='harbor'?['beach-grass','sea-lavender','succulent']:id==='canal'?['iris','hydrangea','reed']:id==='tropical'?['beach-grass','succulent']:id==='snow'?['beach-grass']:['clover','bluebell','fern'];
  const target=id==='tokyo'?0:id==='oasis'?85:id==='snow'?100:id==='grove'?500:230;
  for(let i=0,n=0;i<7000&&n<target;i++){
   const x=(hash(seed,i,501)*2-1)*9.8,z=(hash(seed,i,502)*2-1)*7.8;
   if(!inside(x,z)||wet(x,z)||deck(x,z)!==null||occupied(x,z,.22)||onPath(x,z)||roads.some(([a,b])=>dist([x,z],a,b)<.58)||paddy(x,z)||field(x,z))continue;
+  if(id==='grove'&&trees.some(t=>Math.hypot(t.x-x,t.z-z)<.5))continue;
   plants.push({id:'plant-'+i,x,z,y:surface(x,z),kind:kinds[i%kinds.length],variant:i%4,u:.075,birth:n<30?0:hash(seed,i,509)});n++;
  }
  // Stones break up large areas at the perimeter without closing the walking routes.
@@ -273,6 +274,24 @@ export function makeTown(p,seed=741){
  for(const {x,y,z}of lamps){box(x,y+.75,z,.08,1.5,.08,C.wood,'lamp');box(x,y+1.53,z,.25,.20,.25,'#e4cf99','lamp-light');box(x,y+1.67,z,.32,.09,.32,C.roof,'lamp');}
  // One crate and a bench beside a path add human scale without blocking doors.
  for(const [i,b]of buildings.entries())if(i%2===0&&!['tokyo','tropical'].includes(id)){const x=b.bounds.max[0]+.36,z=b.bounds.max[1]-.25,y=surface(x,z);if(inside(x,z)&&!wet(x,z)&&!occupied(x,z,.15)&&!onPath(x,z)){for(const xx of [x-.23,x+.23])for(const zz of [z-.1,z+.1])box(xx,y+.12,zz,.06,.24,.06,C.wood,'furniture');box(x,y+.28,z,.60,.10,.30,blend(C.wood,C.wall,.3),'furniture');box(x,y+.43,z-.12,.60,.24,.07,blend(C.wood,C.wall,.3),'furniture');}}
+ // Just two small mushrooms at each of three tree bases. They appear only
+ // after their tree, and avoid paths, rocks, furniture and other plants.
+ if(id==='grove'){
+  let groups=0;
+  const roots=trees.map((t,i)=>({...t,index:i})).sort((a,b)=>hash(seed,a.index,771)-hash(seed,b.index,771));
+  for(const t of roots){
+   if(groups>=3)break;let count=0;
+   for(let i=0;i<12&&count<2;i++){
+    const angle=hash(seed,t.index,772)*Math.PI*2+i*Math.PI/6,r=.54+hash(seed,t.index,i,773)*.10,x=t.x+Math.cos(angle)*r,z=t.z+Math.sin(angle)*r,y=surface(x,z);
+    if(!inside(x,z)||wet(x,z)||deck(x,z)!==null||occupied(x,z,.18)||onPath(x,z)||roads.some(([a,b])=>dist([x,z],a,b)<.65)||Math.abs(y-t.y)>.015)continue;
+    if(boxes.some(b=>!['base','land','water'].includes(b.kind)&&Math.abs(b.x-x)<b.w/2+.14&&Math.abs(b.z-z)<b.d/2+.14&&b.y+b.h/2>y+.02))continue;
+    if(plants.some(p=>p.kind==='mushroom'&&Math.hypot(p.x-x,p.z-z)<.27))continue;
+    for(let j=plants.length-1;j>=0;j--)if(plants[j].kind!=='mushroom'&&Math.hypot(plants[j].x-x,plants[j].z-z)<.30)plants.splice(j,1);
+    plants.push({id:`root-mushroom-${t.index}-${count}`,x,y,z,kind:'mushroom',tree:t.index,variant:count,u:.045,birth:Math.max(t.birth+.02,.12+hash(seed,t.index,i,774)*.75)});count++;
+   }
+   if(count)groups++;
+  }
+ }
  const crop=new Voxels();for(const x of [-1,1])crop.box(x,0,0,x,3,0,id==='satoyama'?'#789568':'#a7a26a');crop.box(0,0,0,0,5,0,id==='satoyama'?'#8eab70':'#c7b573');crop.box(-1,5,0,1,6,0,id==='satoyama'?'#afbb78':'#ddc58b');
  const prototypes=Object.fromEntries([...new Set(plants.map(p=>p.kind))].map(k=>[k,k==='crop'?crop.list():plantBlueprint(k,seed)]));
  return{id,p,seed,half,tiles:city?.tiles||[],rail:city?.rail,walkBudget:city?.walkBudget||20000,boxes,buildings,trees,plants,prototypes,routes,lamps,inside,wet,surface,deck,onPath,waterY,treePrototypes:Array.from({length:4},(_,i)=>treeCells(id,i,seed+i*61)),signature:buildings.reduce((n,b)=>n+b.bp.cells.length*31+Math.round(b.x*100)+Math.round(b.z*100)+b.bp.cells.reduce((n,c)=>(n+parseInt(c.color.slice(1),16))>>>0,0),0)+plants.reduce((n,p)=>n+Math.round(p.x*100)+Math.round(p.z*100),0)};

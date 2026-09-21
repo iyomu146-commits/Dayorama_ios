@@ -5,9 +5,15 @@ import {REGIONS,BY_ID} from './catalog.mjs';
 import {extraPlant,extraTree,extraProp} from './ecology-extra.mjs';
 
 export const FOREST_PLANTS=['fern','clover','bluebell','mushroom'];
+export const WILDFLOWER_COLORS={'wildflower-white':'#f0e7d2','wildflower-yellow':'#e4bd55','wildflower-pink':'#d9859b','wildflower-violet':'#a797cd'};
 export function plantBlueprint(kind,seed=41){
   const k=workshop('grove',seed),{C,box,put,line,ellipsoid,disk}=k;
-  if(kind==='fern'){
+  if(WILDFLOWER_COLORS[kind]){
+    // Keep petals and centres at their authored resolution. Downsampling
+    // them would merge the distinct colours back into a single lump.
+    k.flower(0,0,0,WILDFLOWER_COLORS[kind],kind==='wildflower-yellow'?3:4,{phase:0,leaf:'#64864f'});
+    return k.v.list();
+  }else if(kind==='fern'){
     box(0,0,0,0,6,0,'#748b60');
     for(const y of [2,4,6])for(const side of [-1,1]){const r=6-y/2;line([0,y,0],[side*r,y+2,0],'#8b9e70');for(let x=1;x<=r;x++)put(side*x,y+Math.floor(x/2),1,'#8b9e70');}
   }else if(kind==='clover'){

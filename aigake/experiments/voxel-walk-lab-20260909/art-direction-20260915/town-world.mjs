@@ -69,7 +69,7 @@ export function createTownWorld(host){
  }
  function instances(items,cells,u,name){
   if(!items.length)return;const sorted=[...items].sort((a,b)=>a.birth-b.birth),g=voxelSurface(cells,plan.p,{wind:true,tree:name==='trees',snow:plan.id==='snow'&&name==='trees'}),m=new THREE.InstancedMesh(g,material,items.length);
-  sorted.forEach((p,i)=>{const q=new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0,1,0),hash(plan.seed,i,21)*Math.PI*2);matrix.compose(new THREE.Vector3(p.x,p.y+u/2,p.z),q,new THREE.Vector3(u/.1,u/.1,u/.1));m.setMatrixAt(i,matrix);});m.name=name;m.castShadow=name==='trees';m.customDepthMaterial=looks.depth;m.receiveShadow=true;root.add(m);vegetation.push({mesh:m,items:sorted,kind:name});
+  sorted.forEach((p,i)=>{const size=p.u??u,q=new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0,1,0),hash(plan.seed,i,21)*Math.PI*2);matrix.compose(new THREE.Vector3(p.x,p.y+size/2,p.z),q,new THREE.Vector3(size/.1,size/.1,size/.1));m.setMatrixAt(i,matrix);});m.name=name;m.castShadow=name==='trees';m.customDepthMaterial=looks.depth;m.receiveShadow=true;root.add(m);vegetation.push({mesh:m,items:sorted,kind:name});
  }
  function person(route,index,building,options){
   const a=createResident(route,index,building,plan.seed,options);
