@@ -21,7 +21,21 @@ export function groveBlueprint(id,seed=41){
   }else if(id==='bakery'){
     house({x:-5,w:21,d:17,h:14,rise:8,shape:'hip',roofColor:'#b88a70'});roundHouse({x:13,z:-2,r:6,h:9,rise:6,cap:'dome',color:'#bda48b',roofColor:'#b5967d',door:false,windows:false});chimney(12,-3,10,27,3);
     feature('薪窯の脇の軒下',()=>{k.awning({x:-5,z:9,w:19,y:12,depth:3,color:'#c8b590'});});
-    feature('薪窯とパンの台',()=>{paint(11,3,4,15,7,4,C.dark);box(-18,0,13,-10,4,17,C.wood,3);for(const x of [-16,-12])ellipsoid(x,6,15,1.5,2,1.8,'#d2ae74');for(let y=0;y<=3;y+=2)for(const x of [10,13,16])box(x,y,10,x+1,y+1,16,C.wood,3);});
+    feature('薪窯とパンの台',()=>{
+      paint(11,3,4,15,7,4,C.dark);box(-18,0,13,-10,4,17,C.wood,3);
+      box(-18,5,13,-10,5,17,C.woodLight,3);
+      // A long loaf and a round roll sit directly on the serving board.
+      // Dark lower crust, golden dome, and pale scoring cut into that crust.
+      for(let a=-1;a<=1;a++)for(let b=0;b<=2;b++)for(let d=-2;d<=2;d++){
+        if((a/1.6)**2+((b-.5)/1.65)**2+(d/2.55)**2>1.05)continue;
+        put(-17+a,6+b,15+d,['#9c632f','#bf7e40','#cf9855'][b],3);
+      }
+      for(const z of [14,16])put(-17,8,z,'#e8c185',3,true);
+      for(let y=0;y<3;y++)disk(-12,6+y,15,[2.1,1.5,.85][y],['#9c632f','#bf7e40','#cf9855'][y]);
+      // A scored cross follows the dome; no pale cube protrudes above it.
+      put(-12,8,15,'#e8c185',3,true);for(const [a,d]of [[-1,0],[1,0],[0,-1],[0,1]])put(-12+a,7,15+d,'#e8c185',3,true);
+      for(let y=0;y<=3;y+=2)for(const x of [10,13,16])box(x,y,10,x+1,y+1,16,C.wood,3);
+    });
   }else if(id==='mushroom-house'){
     house({w:29,d:21,h:29,rise:8,floors:2,roofColor:'#8d9b8a'});
     feature('二階の窓の手すり',()=>{for(const x of [-9,9]){

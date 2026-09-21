@@ -13,7 +13,7 @@ export function satoyamaBlueprint(id,seed=41){
     feature('提灯を張る外の棚',()=>{box(13,0,-7,14,18,8,C.wood,1);box(13,18,-7,19,18,8,C.woodLight,3);for(const z of [-4,4]){box(18,14,z,18,18,z,C.wood,3);lantern(18,10,z,3);}});
   }else if(id==='noodle-shop'){
     house({w:21,d:15,h:13,rise:6});
-    feature('格子窓と小さな入口庇',()=>{k.awning({z:8,w:19,y:12,depth:3});for(const x of [-7,7]){k.window(x,4,8,3,5);paint(x,4,9,x,8,9,C.woodLight,3);}});
+    feature('採光窓と小さな入口庇',()=>{k.awning({z:8,w:19,y:12,depth:3});for(const x of [-7,7])k.window(x,4,8,3,5);});
     feature('暖簾と麺打ち台',()=>{box(-9,11,9,9,12,9,C.wood,3);for(const x of [-7,4])box(x,7,9,x+3,10,9,C.accent,3);box(13,0,-2,19,5,10,C.woodLight,3);box(14,6,0,18,6,6,C.trim,3);});
   }else if(id==='tofu-shop'){
     house({x:-5,w:23,d:17,h:14,rise:7,shape:'hip'});
@@ -63,6 +63,3 @@ export function satoyamaBlueprint(id,seed=41){
   const access={"bonsai-nursery":[0,2,5]};if(access[id])k.accessPoint(...access[id],'work / visitor aisle');
   return k.finish(id);
 }
-
-
-

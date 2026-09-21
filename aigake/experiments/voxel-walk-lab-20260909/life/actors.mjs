@@ -146,6 +146,32 @@ function makeAnimal(type,seed){
   }
   pose(0);return{root,pose,legs,head,tail,type,body:{radius:p.length*.55+p.head*.7,height:p.leg+p.body+p.neck+p.head+.15}};
 }
+function makeButterfly(seed){
+  const root=new THREE.Group(),dark='#675441',warm=seed%2===1,base=warm?'#dba36d':'#e7ddb4',light=warm?'#f2d69a':'#f5edd1',spot=warm?'#895b42':'#7d8060';
+  part(root,'thorax',[0,0,.004],[B(0,0,0,.030,.030,.045,dark),B(0,-.003,-.04,.022,.025,.056,'#968365'),B(0,-.003,-.071,.014,.018,.014,dark)]);
+  part(root,'head',[0,.003,.043],[B(0,0,0,.033,.028,.029,dark),B(-.016,.005,.009,.009,.012,.012,'#403c36'),B(.016,.005,.009,.009,.012,.012,'#403c36')]);
+  for(const s of [-1,1]){
+    const antenna=[];for(let i=0;i<4;i++)antenna.push(B(s*(.011+i*.004),.010+i*.005,.057+i*.009,.006,.008,.012,dark));
+    antenna.push(B(s*.024,.028,.088,.009,.010,.010,dark));part(root,'antenna',[0,0,0],antenna);
+  }
+  const masks={fore:['..###..','.#####.','#######','#######','######.','#####..','###....','##.....'],hind:['###...','#####.','######','.#####','..###.']},wings=[];
+  for(const s of [-1,1])for(const kind of ['fore','hind']){
+    const mask=masks[kind],pieces=[],cell=.016,filled=(x,y)=>mask[y]?.[x]==='#';
+    for(let row=0;row<mask.length;row++)for(let col=0;col<mask[row].length;col++)if(filled(col,row)){
+      const edge=[[1,0],[-1,0],[0,1],[0,-1]].some(([x,y])=>!filled(col+x,row+y));
+      const eye=kind==='fore'&&col>=3&&col<=4&&row>=2&&row<=3;
+      const vein=kind==='fore'?col===Math.floor((7-row)*.45):col===Math.floor(row*.6)+1;
+      const color=edge?dark:eye?spot:vein?light:base;
+      pieces.push(B(s*(col+.5)*cell,0,kind==='fore'?(7-row)*cell-.01:-row*cell-.026,cell,.008,cell,color));
+    }
+    const wing=part(root,kind+'-wing',[s*.014,.006,0],pieces);wings.push({g:wing,side:s,kind});
+  }
+  function pose(t,{action='fly'}={}){
+    const resting=action==='nectar'||action==='rest',angle=resting?.78+Math.sin(t*2.0)*.20:.12+(Math.sin(t*11+seed*.07)+1)*.55;
+    for(const w of wings)w.g.rotation.z=w.side*(w.kind==='fore'?angle:angle*.84+.09);
+  }
+  pose(0);return{root,pose,type:'butterfly',wings,body:{radius:.19,height:.18}};
+}
 function makeBird(type){
   const root=new THREE.Group(),insect=['butterfly','bee'].includes(type);let wings=[],feet=[];
   if(insect){part(root,'body',[0,0,0],[B(0,0,0,type==='bee'?.045:.025,.026,.10,type==='bee'?'#b9a16c':'#797668'),...(type==='bee'?[B(0,.004,-.015,.047,.026,.018,'#645e4f'),B(0,.004,.024,.047,.026,.018,'#645e4f')]:[])]);for(const s of [-1,1])wings.push(part(root,'wing',[s*.018,.007,0],[B(s*.038,0,0,type==='bee'?.06:.11,.013,.095,type==='bee'?'#dadbd0':'#cfb38d'),B(s*.053,0,-.06,.075,.013,.064,'#dbca9f')]));}
@@ -233,6 +259,6 @@ function makeCart(seed){
   return{root,type:'cart',body:{radius:.69,height:.9,rise:.035},driver,wheels,pose:(t,state={})=>{driver.pose(t,{...state,action:'push'});wheels.forEach(w=>w.rotation.x=(state.distance||0)/.089);}};
 }
 export function createActor(type='person',{seed=41,item=null,appearance={}}={}){
-  const rig=type==='person'?makeHuman(seed,item,appearance):type==='camel'?makeCamel():animals[type]?makeAnimal(type,seed):type==='cart'?makeCart(seed):type==='turtle'?makeTurtle():['gull','duck','pigeon','owl'].includes(type)?makeRegionalBird(type):makeBird(type);
+  const rig=type==='person'?makeHuman(seed,item,appearance):type==='butterfly'?makeButterfly(seed):type==='camel'?makeCamel():animals[type]?makeAnimal(type,seed):type==='cart'?makeCart(seed):type==='turtle'?makeTurtle():['gull','duck','pigeon','owl'].includes(type)?makeRegionalBird(type):makeBird(type);
   rig.root.name=ACTORS[type];rig.root.userData.actor=type;rig.dispose=()=>{rig.root.traverse(o=>o.geometry?.dispose());rig.root.removeFromParent();};return rig;
 }

@@ -51,7 +51,7 @@ export function canalBlueprint(id,seed=314){
     feature('小さな玄関ポーチ',()=>{box(-13,0,10,7,1,16,C.stone,0);box(-8,0,17,0,0,19,C.floor,0);k.awning({x:-4,z:10,w:13,y:12,depth:5});});
   }else if(id==='antique-shop'){
     house({x:-4,w:17,d:15,h:27,rise:8,shape:'gambrel',floors:2});
-    feature('出窓と古道具の陳列棚',()=>{k.shutters(-4,18,8,5,6);box(9,0,2,18,2,8,C.wood,3);box(9,3,2,18,10,8,C.glass,2);box(8,11,1,19,12,9,C.roof,2);for(const x of [9,14,18])paint(x,3,9,x,10,9,C.woodLight,3);clock(-4,12,8,2);});
+    feature('出窓と古道具の陳列棚',()=>{k.shutters(-4,18,8,5,6);box(9,0,2,18,2,8,C.wood,3);box(9,3,2,18,10,8,C.glass,2);box(8,11,1,19,12,9,C.roof,2);for(const x of [9,18])paint(x,3,9,x,10,9,C.woodLight,3);clock(-4,12,8,2);});
     feature('古い蓄音機',()=>{box(-18,0,12,-10,3,18,C.woodLight,3);disk(-14,4,15,3,C.dark);box(-11,4,12,-11,8,12,C.accent,3);for(let y=8;y<=11;y++)disk(-11,y,12,1+(y-8)*.4,C.accent,3,'round',Math.max(-1,(y-8)*.4-1));});
   }else if(id==='washhouse'){
     hall({w:39,d:17,h:14,rise:6,shape:'hip'});

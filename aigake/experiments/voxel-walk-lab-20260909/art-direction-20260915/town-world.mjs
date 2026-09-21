@@ -134,7 +134,7 @@ export function createTownWorld(host){
   for(const b of buildings){b.progress=focus?.buildingId===b.id?clamp(focus.buildingProgress,0,1):buildingProgress(b,progress);b.full.visible=b.progress===1;const counts=countsAt(b.bp.counts,b.progress*4800);b.phases.forEach((m,i)=>{m.count=counts[i];m.visible=b.progress>0&&b.progress<1;});if(lookMode>0&&b.progress>0&&b.progress<1)b.construction.update(counts);if(b.contact){b.contact.visible=lookMode>0&&b.progress>.08;b.contact.material.uniforms.uOpacity.value=.15*clamp((b.progress-.08)/.1,0,1);}}
   for(const v of vegetation)v.mesh.count=v.items.filter(p=>p.birth<=progress).length;
   actors.forEach(a=>a.g.visible=buildings[a.building].progress===1);
-  pets.forEach(a=>a.g.visible=buildings[a.building].progress===1);
+  pets.forEach(a=>a.g.visible=buildings[a.building].progress===1&&progress>=(a.birth??0));
   lifeFixtures.forEach(a=>a.g.visible=buildings[a.building].progress===1);
   if(viewName==='people'&&!actors.some(a=>a.g.visible))view('home');
   if(viewName==='animals'&&!pets.some(a=>a.g.visible))view('home');

@@ -23,7 +23,7 @@ export function snowBlueprint(id,seed=41){
     feature('雪よけの柵と飼葉桶',()=>{for(let x=-18;x<=18;x+=6)if(x)box(x,0,14,x,8,14,C.wood,3);for(const[a,b]of [[-18,-4],[4,18]])box(a,7,14,b,8,14,C.woodLight,3);box(-7,2,2,7,6,6,C.wood,3);box(-6,7,3,6,7,5,C.accent,3);});
   }else if(id==='aurora-station'){
     house({w:25,d:19,h:25,rise:8,shape:'shed',floors:2,windows:false});
-    feature('空へ向けた大きな観測窓',()=>{paint(-10,14,10,10,24,10,C.glass);for(const x of [-10,0,10])paint(x,14,11,x,24,11,C.trim);box(-10,24,11,10,24,11,C.trim,3);});
+    feature('空へ向けた大きな観測窓',()=>{paint(-10,14,10,10,24,10,C.glass);for(const x of [-10,10])paint(x,14,11,x,24,11,C.trim);box(-10,24,11,10,24,11,C.trim,3);});
     feature('屋外の小さな撮影台',()=>{for(const [x,z]of [[12,14],[20,14],[16,19]])line([x,0,z],[16,8,16],C.wood,3);box(14,8,15,18,10,17,C.dark,3);box(15,9,13,17,10,14,C.roof,3);});
   }else if(id==='ice-sculpture'){
     house({x:-12,w:13,d:15,h:27,rise:1,floors:2,shape:'flat',color:C.trim,windows:false});
@@ -41,5 +41,3 @@ export function snowBlueprint(id,seed=41){
   const access={"reindeer-stable":[0,2,10]};if(access[id])k.accessPoint(...access[id],'work / visitor aisle');
   return k.finish(id);
 }
-
-

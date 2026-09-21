@@ -72,6 +72,6 @@ export function makeDomesticPlan(plan,life){
   else notes.push(b.kind+': no accessible side yard for laundry');
  }
  // Remove ground plants from the route and yard before creating their meshes.
- plan.plants=plan.plants.filter(p=>!laundry.some(q=>Math.hypot(p.x-q.x,p.z-q.z)<q.r+.2||q.route.some(v=>Math.hypot(p.x-v[0],p.z-v[2])<.35)));
+ plan.plants=plan.plants.filter(p=>!laundry.some(q=>Math.hypot(p.x-q.x,p.z-q.z)<q.r+(p.clearanceRadius??.2)||q.route.some(v=>Math.hypot(p.x-v[0],p.z-v[2])<.18+(p.clearanceRadius??.17))));
  return{chimneys,laundry,notes};
 }

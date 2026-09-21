@@ -14,7 +14,7 @@ export function buildBlueprint(input={},seed=41,kind='books'){
     for(let x=-Math.floor(w/2);x<=Math.floor(w/2);x++)for(let y=0;y<h;y++){
       if(y===h-1&&Math.abs(x)>Math.floor(w/2)-1)continue;
       const border=Math.abs(x)===Math.floor(w/2)||y===0||y===h-1;
-      const c=border?C.trim:(x===0||y===Math.floor(h/2)?C.wood:C.light);
+      const c=border?C.trim:C.glass;
       v.put(cx+(side?0:x),cy+y,cz+(side?x:0),c,3,true);
     }
     if(!side){v.box(cx-w/2-1,cy-2,cz,cx+w/2+1,cy-1,cz+2,C.wood,3);for(let i=-3;i<=3;i++){v.put(cx+i,cy,cz+2,i%2?C.leaf:C.flower,3);}}

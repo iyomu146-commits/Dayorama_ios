@@ -52,7 +52,7 @@ export function generate(input,{narrow=false}={}){
       if(!has(xx,zz)||!boundary(xx,zz))continue;
       if(Math.abs(xx-dx)<=half+2&&Math.abs(zz-dz)<=1&&y<=14)continue;
       const trim=Math.abs(a)===r+1||yy===0||yy===6;
-      put(xx,y,zz,trim?C.trim:a===0?C.frame:C.glass,2,trim?'window-frame':'glass');
+      put(xx,y,zz,trim?C.trim:C.glass,2,trim?'window-frame':'glass');
     }
   }
   for(const {x,z} of footprint.values())for(let level=0;level<levels;level++){

@@ -4,10 +4,11 @@ import {REGION_LIFE,regionalWorkers,regionalFamily} from './region-life.mjs';
 import {inRect} from './town-plan.mjs';
 import {insideLoop} from '../tokyo/city.mjs';
 import {crossingWalkers,SHIBUYA_CROSSING} from './tokyo-activity.mjs';
+import {flowerFlights,flowerFlightPose} from './pollinator-flight.mjs';
 
 const distance=(a,b)=>Math.hypot(a.x-b.x,a.z-b.z);
 export function makeLifePlan(plan){
- const config=REGION_LIFE[plan.id],zones=[],workers=[],animals=[],fixtures=[],notes=[];
+ const config=REGION_LIFE[plan.id],zones=[],workers=[],animals=[],fixtures=[],notes=[],pollinators=[];
  if(plan.id==='tokyo')zones.push({...SHIBUYA_CROSSING,y:.34,r:2.65,mode:'land',building:0});
  const obstacles=plan.boxes.filter(b=>!['land','base','water','bridge','pier'].includes(b.kind));
  const ownerFor=kind=>Math.max(0,plan.buildings.findIndex(b=>b.kind===kind));
@@ -66,6 +67,7 @@ export function makeLifePlan(plan){
  }
  for(const def of config.animals){
   const building=ownerFor(def.kind);
+  if(def.type==='butterfly'){pollinators.push({building,count:def.count});continue;}
   if(def.mode==='pen'){
    let zone=findZone(building,1.9,'land',true),count=def.count;
    if(!zone){zone=findZone(building,1.55,'land',true);count=1;}
@@ -122,7 +124,8 @@ export function makeLifePlan(plan){
  // Reserve movement areas before vegetation instances are built. Airborne
  // wildlife keeps the flowers below it; other routes have visible footing.
  const cleared=zones.filter(z=>!['air','sea-air','water','perch'].includes(z.mode));
- plan.plants=plan.plants.filter(p=>!cleared.some(z=>Math.hypot(p.x-z.x,p.z-z.z)<z.r+.28));
+ plan.plants=plan.plants.filter(p=>!cleared.some(z=>Math.hypot(p.x-z.x,p.z-z.z)<z.r+(p.clearanceRadius??.28)));
+ for(const def of pollinators){const visitors=flowerFlights(plan,def.building,def.count,clear,zones);animals.push(...visitors);if(visitors.length<def.count)notes.push('butterfly: no clear flower route');}
  workers.push(...crossingWalkers(plan,workers.length));
  return{workers,animals,fixtures,zones,notes,config,clear};
 }
@@ -134,6 +137,9 @@ export function createLifeAnimal(def,index,seed){
  return{...def,rig,g,index,route,label:ACTORS[def.type],action:'idle',distance:0};
 }
 export function updateLifeAnimal(a,elapsed){
+ if(a.flight){
+  const pose=flowerFlightPose(a.flight,elapsed,a.phase);a.g.position.set(...pose.position);a.g.rotation.set(0,pose.yaw,pose.bank);a.moving=pose.moving;a.action=pose.action;a.distance=pose.distance;a.rig.pose(elapsed,{moving:a.moving,action:a.action,distance:a.distance});return;
+ }
  const speed=a.type==='turtle'?.035:.10,length=a.span*2,wait=a.type==='camel'?6:a.mode==='pen'?7:3,travel=length/speed,cycle=travel*2+wait*2,time=(elapsed+a.phase)%cycle;
  const back=time>=travel+wait,moving=a.span>0&&(time<travel||back&&time<travel*2+wait),s=time<travel?time*speed:!back?length:time<travel*2+wait?length-(time-travel-wait)*speed:0;
  a.distance=Math.floor((elapsed+a.phase)/cycle)*length*2+(time<travel?s:!back?length:time<travel*2+wait?length+(length-s):length*2);

@@ -7,6 +7,7 @@ import {REGIONS} from '../content/catalog.mjs';
 import {insideLoop} from '../tokyo/city.mjs';
 import {tokyoDistrictPlan,tokyoPavement,tokyoStreetDetails} from './tokyo-districts.mjs';
 import {SHIBUYA_CROSSING} from './tokyo-activity.mjs';
+import {vegetationShape,vegetationOverlap,vegetationHitsBox,sceneryBoxes,spaceGroundPlants} from './vegetation-layout.mjs';
 
 export const GRID=.32, HALF=[10.24,8.32];
 export const blend=(a,b,t)=>{const c=s=>[1,3,5].map(i=>parseInt(s.slice(i,i+2),16));return '#'+c(a).map((v,i)=>Math.round(v*(1-t)+c(b)[i]*t).toString(16).padStart(2,'0')).join('');};
@@ -218,6 +219,8 @@ export function makeTown(p,seed=741){
  if(id==='meadow'||id==='satoyama'){
   for(let x=-7.3;x<7.5;x+=.42)for(let z=.7;z<5.65;z+=.43)if((paddy(x,z)||field(x,z))&&!onPath(x,z)&&!occupied(x,z,.3))plants.push({id:'crop-'+plants.length,x,z,y:surface(x,z),kind:'crop',variant:Math.floor(hash(seed,plants.length)*4),u:.075,birth:hash(seed,plants.length,761)*.96+.02});
  }
+ const treePrototypes=Array.from({length:4},(_,i)=>treeCells(id,i,seed+i*61)),treeSites=[],treeObstacles=sceneryBoxes(buildings,boxes);
+ const treeUnit=['oasis','tropical'].includes(id)?.125:id==='grove'?.13:.12,treeShapes=treePrototypes.map(c=>vegetationShape(c,treeUnit));
  for(let i=0;i<5000&&trees.length<treeCounts[id];i++){
   // Palms can use the rear border, while keeping their full canopy clear of roofs.
   const x=(hash(seed,i,231)*2-1)*(id==='oasis'?9.65:9.3),z=(hash(seed,i,232)*2-1)*(id==='oasis'?8.1:7.4);
@@ -229,7 +232,9 @@ export function makeTown(p,seed=741){
   if(!inside(x,z)||wet(x,z)||deck(x,z)!==null||occupied(x,z,canopyClearance)||onPath(x,z)||roads.some(([a,b])=>dist([x,z],a,b)<1)||trees.some(t=>Math.hypot(t.x-x,t.z-z)<1.8)||paddy(x,z)||field(x,z))continue;
   // Keep the central sightline open; taller woodland lives around the perimeter.
   if(id==='grove'&&Math.abs(x)<3.2&&z<3.8&&z>-3.8)continue;
-  trees.push({x,z,y:surface(x,z),variant:trees.length%4,u:['oasis','tropical'].includes(id)?.125:id==='grove'?.13:.12,birth:trees.length%4===0?hash(seed,i,234)*.8:0});
+  const t={x,z,y:surface(x,z),variant:trees.length%4,u:treeUnit,birth:trees.length%4===0?hash(seed,i,234)*.8:0},site={...t,shape:treeShapes[t.variant]};
+  if(treeSites.some(q=>vegetationOverlap(site,q,.04))||treeObstacles.some(q=>vegetationHitsBox(site,q)))continue;
+  trees.push(t);treeSites.push(site);
  }
  const kinds=id==='grove'?Object.keys(WILDFLOWER_COLORS).flatMap(k=>['fern','clover','fern',k]):id==='harbor'?['beach-grass','sea-lavender','succulent']:id==='canal'?['iris','hydrangea','reed']:id==='tropical'?['beach-grass','succulent']:id==='snow'?['beach-grass']:['clover','bluebell','fern'];
  const target=id==='tokyo'?0:id==='oasis'?85:id==='snow'?100:id==='grove'?500:230;
@@ -294,6 +299,9 @@ export function makeTown(p,seed=741){
  }
  const crop=new Voxels();for(const x of [-1,1])crop.box(x,0,0,x,3,0,id==='satoyama'?'#789568':'#a7a26a');crop.box(0,0,0,0,5,0,id==='satoyama'?'#8eab70':'#c7b573');crop.box(-1,5,0,1,6,0,id==='satoyama'?'#afbb78':'#ddc58b');
  const prototypes=Object.fromEntries([...new Set(plants.map(p=>p.kind))].map(k=>[k,k==='crop'?crop.list():plantBlueprint(k,seed)]));
- return{id,p,seed,half,tiles:city?.tiles||[],rail:city?.rail,walkBudget:city?.walkBudget||20000,boxes,buildings,trees,plants,prototypes,routes,lamps,inside,wet,surface,deck,onPath,waterY,treePrototypes:Array.from({length:4},(_,i)=>treeCells(id,i,seed+i*61)),signature:buildings.reduce((n,b)=>n+b.bp.cells.length*31+Math.round(b.x*100)+Math.round(b.z*100)+b.bp.cells.reduce((n,c)=>(n+parseInt(c.color.slice(1),16))>>>0,0),0)+plants.reduce((n,p)=>n+Math.round(p.x*100)+Math.round(p.z*100),0)};
+ const plan={id,p,seed,half,tiles:city?.tiles||[],rail:city?.rail,walkBudget:city?.walkBudget||20000,boxes,buildings,trees,plants,prototypes,routes,lamps,inside,wet,surface,deck,onPath,waterY,treePrototypes};
+ plan.plants=spaceGroundPlants(plan);
+ plan.signature=buildings.reduce((n,b)=>n+b.bp.cells.length*31+Math.round(b.x*100)+Math.round(b.z*100)+b.bp.cells.reduce((n,c)=>(n+parseInt(c.color.slice(1),16))>>>0,0),0)+plan.plants.reduce((n,p)=>n+Math.round(p.x*100)+Math.round(p.z*100),0);
+ return plan;
 }
 export const buildingProgress=(b,value)=>clamp((value-b.start)/(b.end-b.start),0,1);

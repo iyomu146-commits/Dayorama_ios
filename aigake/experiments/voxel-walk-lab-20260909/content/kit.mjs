@@ -2,7 +2,7 @@ import {Voxels,COLORS} from '../voxels.mjs';
 import {REGIONS} from './catalog.mjs';
 
 export function workshop(region='grove',seed=41){
-  const v=new Voxels(seed),theme=REGIONS[region],C={...COLORS,...theme},rooms=[],roofs=[],features=[],openStructures=[],entrances=[],furniture=[],buildings=[],ladders=[],awnings=[],signs=[],fittings=[],chimneys=[];
+  const v=new Voxels(seed),theme=REGIONS[region],C={...COLORS,...theme},rooms=[],roofs=[],features=[],openStructures=[],entrances=[],furniture=[],buildings=[],ladders=[],awnings=[],signs=[],fittings=[],chimneys=[],flowerHeads=[];
   const box=(...a)=>v.box(...a),put=(...a)=>v.put(...a),line=(...a)=>v.line(...a);
   function paint(x0,y0,z0,x1,y1,z1,color,phase=3){for(let x=x0;x<=x1;x++)for(let y=y0;y<=y1;y++)for(let z=z0;z<=z1;z++)put(x,y,z,color,phase,true);}
   function ellipsoid(x,y,z,rx,ry,rz,color,phase=3){
@@ -26,7 +26,7 @@ export function workshop(region='grove',seed=41){
   }
   function window(x,y,z,w=5,h=6,side=false){
     const r=Math.floor(w/2);
-    for(let a=-r;a<=r;a++)for(let b=0;b<h;b++)put(x+(side?0:a),y+b,z+(side?a:0),Math.abs(a)===r||b===0||b===h-1?C.trim:a===0?C.woodLight:C.glass,3,true);
+    for(let a=-r;a<=r;a++)for(let b=0;b<h;b++)put(x+(side?0:a),y+b,z+(side?a:0),Math.abs(a)===r||b===0||b===h-1?C.trim:C.glass,3,true);
   }
   function house({x=0,z=0,w=23,d=17,h=15,y=0,rise=8,shape='gable',floors=1,color=C.wall,roofColor=C.roof,roofOverhang=2,door=true,doorOffset=0,windows=true,foundationMargin=1}={}){
     const hx=Math.floor(w/2),hz=Math.floor(d/2),top=y+h;
@@ -141,6 +141,7 @@ export function workshop(region='grove',seed=41){
   }
   function flower(x,y,z,color=C.flower,height=5,{stamen='#e6b63e',pistil='#97643a',leaf=C.leaf,phase=3}={}){
     const head=y+height+1;
+    flowerHeads.push({x,y:head+1.5,z});
     box(x,y,z,x,head-1,z,leaf,phase);
     put(x+1,y+1,z,leaf,phase);if(height>2)put(x-1,y+2,z,leaf,phase);
     // Four rounded petal lobes, rather than a solid ellipsoid. The centre
@@ -152,7 +153,7 @@ export function workshop(region='grove',seed=41){
   function finish(id){
     const cells=v.list(),phases=[0,1,2,3].map(p=>cells.filter(c=>c.phase===p));
     const bounds=cells.reduce((b,c)=>({min:b.min.map((n,i)=>Math.min(n,[c.x,c.y,c.z][i])),max:b.max.map((n,i)=>Math.max(n,[c.x,c.y,c.z][i]))}),{min:[Infinity,Infinity,Infinity],max:[-Infinity,-Infinity,-Infinity]});
-    return{id,cells,phases,counts:phases.map(p=>p.length),bounds,audit:{rooms,roofs,features,openStructures,entrances,furniture,buildings,ladders,awnings,signs,fittings,chimneys}};
+    return{id,cells,phases,counts:phases.map(p=>p.length),bounds,audit:{rooms,roofs,features,openStructures,entrances,furniture,buildings,ladders,awnings,signs,fittings,chimneys,flowerHeads}};
   }
   return{v,C,box,put,line,paint,ellipsoid,disk,roof,window,house,roundHouse,hall,stairs,chimney,awning,sign,shutters,feature,fitting,opening,book,shelf,pot,bench,chair,table,doorway,threshold,accessPoint,sideDoor,clearBox,accessLadder,flower,finish};
 }
