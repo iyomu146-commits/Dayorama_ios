@@ -92,10 +92,11 @@ export function workshop(region='grove',seed=41){
     fittings.push({name,cells:[...points.values()]});
   }
   function opening(name,reason,geometry={}){openStructures.push({name,reason,...geometry});}
-  function book(x,y,z,w=9,h=5){
-    box(x-Math.floor(w/2),y,z,x+Math.floor(w/2),y,z+3,C.wood,3);
-    for(let a=-Math.floor(w/2);a<=Math.floor(w/2);a++)box(x+a,y+1,z,x+a,y+1+Math.round(Math.abs(a)/2),z+3,C.trim,3);
-    box(x,y+1,z,x,y+2,z+3,C.accent,3);
+  function book(x,y,z,w=9){
+    // Open pages stay one voxel thick; the spine is a crease, not a tall box.
+    const r=Math.max(2,Math.floor(w/2)),depth=2;
+    box(x-r,y,z,x+r,y,z+depth,C.accent,3);
+    for(let a=-r;a<=r;a++)if(a!==0)box(x+a,y+1,z,x+a,y+1,z+depth,C.trim,3);
   }
   function shelf(x,y,z,w=11,h=10){
     box(x,y,z,x+1,y+h,z+3,C.wood,3);box(x+w-1,y,z,x+w,y+h,z+3,C.wood,3);

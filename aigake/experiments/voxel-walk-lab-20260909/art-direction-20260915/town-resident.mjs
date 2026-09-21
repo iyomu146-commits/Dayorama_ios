@@ -25,7 +25,7 @@ export function updateResident(a,elapsed){
   a.distance=phase.distance*a.lengths.at(-1);a.moving=phase.moving;a.action='idle';
   a.rig.pose(elapsed,{moving:a.moving,distance:a.distance,action:a.action});return;
  }
- const pause=a.options.workSeconds?SPEED*a.options.workSeconds:PAUSE,length=a.lengths.at(-1),cycle=length*2+pause+PAUSE,total=Math.max(0,elapsed)*SPEED+a.index*.51,raw=total%cycle;
+ const pause=a.options.workSeconds?SPEED*a.options.workSeconds:PAUSE,length=a.lengths.at(-1),cycle=length*2+pause+PAUSE,total=Math.max(0,elapsed)*SPEED+(a.options.phase??a.index*.51),raw=total%cycle;
  const returning=raw>=length+pause;
  const s=raw<length?raw:!returning?length:raw<length*2+pause?length*2+pause-raw:0;
  a.moving=raw<length||(returning&&raw<length*2+pause);

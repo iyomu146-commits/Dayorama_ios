@@ -5,7 +5,7 @@
   "description": "Dayorama — 毎日から、小さな町ができていく。",
   "scripts": {
     "build:walk": "node scripts/build-walk.mjs",
-    "test:walk": "node --test ../walk/state.test.mjs ../walk/construction.test.mjs ../walk/timelapse.test.mjs ../walk/widget.test.mjs ../walk/debug.test.mjs ../walk/atmosphere.test.mjs ../experiments/voxel-walk-lab-20260909/stargazing/model.test.mjs scripts/health-bridge.test.mjs",
+    "test:walk": "node --test ../walk/state.test.mjs ../walk/construction.test.mjs ../walk/timelapse.test.mjs ../walk/widget.test.mjs ../walk/debug.test.mjs ../walk/atmosphere.test.mjs ../walk/residents.test.mjs ../experiments/voxel-walk-lab-20260909/stargazing/model.test.mjs scripts/health-bridge.test.mjs",
     "test:studio": "node --test ../experiments/voxel-walk-lab-20260909/town-studio/studio.test.mjs ../experiments/voxel-walk-lab-20260909/town-studio/premium.test.mjs ../experiments/voxel-walk-lab-20260909/town-studio/people.test.mjs",
     "verify:ios": "node scripts/verify-ios.mjs",
     "export:ios": "npm run build:walk && node scripts/export-ios.mjs",

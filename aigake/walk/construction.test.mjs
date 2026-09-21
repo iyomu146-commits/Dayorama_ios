@@ -62,3 +62,16 @@ test('legacy completed towns keep excess steps; zero-step saves use the new pace
   else{assert.equal(plan.walkBudget,20000);assert.equal(townSteps(nextTown(s,'oasis',plan.walkBudget)),2400);assert.ok(plan.plants.every(p=>Number.isFinite(p.birth)));}
  }
 });
+
+test('replacing the forest library preserves saved construction slots and completion awards',()=>{
+ const current=makeTown(profiles.find(p=>p.id==='grove'),741);
+ const previous={...current,buildings:current.buildings.map((b,i)=>i===0?{...b,kind:'woodland-library'}:b)};
+ let s=prepareConstruction(fresh(),previous);const oldPlan=constructionPlan(previous,s.construction);
+ s=recordCompletions(withSteps(s,27500),oldPlan.buildings,oldPlan.walkBudget);
+ const saved=restore(JSON.stringify(s)),after=prepareConstruction(saved,current),plan=constructionPlan(current,after.construction);
+ assert.equal(plan.buildings[0].kind,'mushroom-house');assert.equal(plan.buildings.length,5);
+ assert.deepEqual(after,saved);assert.equal(plan.walkBudget,100000);
+ assert.equal(buildingProgress(plan.buildings[0],townSteps(after)/plan.walkBudget),1);
+ assert.ok(Math.abs(buildingProgress(plan.buildings[1],townSteps(after)/plan.walkBudget)-.375)<1e-10);
+ assert.deepEqual(recordCompletions(after,plan.buildings,plan.walkBudget).events,s.events);
+});

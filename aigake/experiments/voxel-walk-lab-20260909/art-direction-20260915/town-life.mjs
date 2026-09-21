@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import {createActor,ACTORS} from '../life/actors.mjs';
-import {REGION_LIFE,regionalWorkers} from './region-life.mjs';
+import {REGION_LIFE,regionalWorkers,regionalFamily} from './region-life.mjs';
 import {inRect} from './town-plan.mjs';
 import {insideLoop} from '../tokyo/city.mjs';
 import {crossingWalkers,SHIBUYA_CROSSING} from './tokyo-activity.mjs';
@@ -107,6 +107,18 @@ export function makeLifePlan(plan){
   if(parts.length)fixture(zone,parts);
   workers.push({route,index,building,options:def,zone});
  }
+ // A parent and child share a clear walking area and the same travel clock.
+ // Parallel routes keep them together without ever passing through each other.
+ const homeKinds=['mushroom-house','canal-home','farmhouse','harbor-inn','mountain-lodge','ryokan','caravanserai','island-cabin','tokyo-residence'];
+ const home=Math.max(0,plan.buildings.findIndex(b=>homeKinds.includes(b.kind)));
+ const familyZone=findZone(home,1.15)||findZone(home,.9);
+ if(familyZone){
+  const span=familyZone.r>1?.6:.36;
+  for(const [i,options]of regionalFamily(plan.id,plan.seed).entries()){
+   const route=[-span,0,span].map(d=>[familyZone.x+(i?1:-1)*.32,familyZone.y,familyZone.z+d]);
+   workers.push({route,index:workers.length,building:home,options,zone:familyZone});
+  }
+ }else notes.push('family: no clear walking area');
  // Reserve movement areas before vegetation instances are built. Airborne
  // wildlife keeps the flowers below it; other routes have visible footing.
  const cleared=zones.filter(z=>!['air','sea-air','water','perch'].includes(z.mode));

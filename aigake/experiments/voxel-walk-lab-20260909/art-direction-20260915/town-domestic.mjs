@@ -20,7 +20,7 @@ export function createDomestic(root,plan,defs){
    for(const x of [-.075,.075])box(pivot,x,-.012,.014,.02,.046,.021,plan.p.palette.wood);
    return pivot;
   });
-  const appearance={...regionalWorkers(plan.id)[0].appearance,backpack:false,apron:false,gender:def.building%2?'female':'male',shirt:'#a18e7f'};
+  const appearance={...regionalWorkers(plan.id)[0].appearance,backpack:false,apron:false,gender:def.building%2?'woman':'man',hairStyle:def.building%2?'ponytail':'short',shirt:'#a18e7f'};
   const rig=createActor('person',{seed:plan.seed+def.building*17,item:'basket',appearance});root.add(rig.root);
   yards.push({...def,g,cloth,rig,trip:Math.max(8,routeLength(def.route)/.35)});
  }

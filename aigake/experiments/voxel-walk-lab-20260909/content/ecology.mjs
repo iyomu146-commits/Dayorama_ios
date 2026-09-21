@@ -16,7 +16,10 @@ export function plantBlueprint(kind,seed=41){
     box(0,0,0,0,7,0,'#7e946b');line([0,2,0],[2,4,0],'#7e946b');
     for(const[y,side]of [[4,-1],[7,1]]){box(0,y,0,side>0?2:0,y,0,'#7e946b');if(side<0)box(-2,y,0,0,y,0,'#7e946b');ellipsoid(side*2,y-1,0,1.4,1.5,1.4,'#b1b7cb',0);}
   }else if(kind==='mushroom'){
-    box(0,0,0,0,3,0,'#ded2b3');disk(0,4,0,3,'#b99b84',0);disk(0,5,0,2,'#b99b84',0);put(1,5,1,'#e4d6ba',0);put(-1,5,-1,'#e4d6ba',0);
+    // Author this small silhouette at its final resolution: scaling 4 and 5
+    // by .65 previously collapsed both cap tiers onto the same height.
+    box(0,0,0,0,2,0,'#ded2b3');disk(0,3,0,2,'#ac8468',0);disk(0,4,0,1,'#bd9876',0);put(0,5,0,'#c9a782',0);
+    return k.v.list();
   }else if(kind==='beach-grass'){
     for(const [x,z,h]of [[-3,-1,5],[0,0,8],[3,1,6],[-1,2,7],[2,-2,5]])line([0,0,0],[x,h,z],'#a6ad81',0);
   }else if(kind==='sea-lavender'){

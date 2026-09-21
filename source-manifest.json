@@ -130,6 +130,7 @@
     "aigake/walk/debug.test.mjs",
     "aigake/walk/health.mjs",
     "aigake/walk/index.html",
+    "aigake/walk/residents.test.mjs",
     "aigake/walk/state.mjs",
     "aigake/walk/state.test.mjs",
     "aigake/walk/timelapse.mjs",

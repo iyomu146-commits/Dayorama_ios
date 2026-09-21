@@ -1,7 +1,7 @@
 import {turn} from './town-plan.mjs';
 import {hash} from '../model.mjs';
 
-export const LAUNDRY_HOMES=new Set(['farmhouse','canal-home','harbor-inn','mountain-lodge','trail-refuge','ryokan']);
+export const LAUNDRY_HOMES=new Set(['mushroom-house','farmhouse','canal-home','harbor-inn','mountain-lodge','trail-refuge','ryokan']);
 const distance=(a,b)=>Math.hypot(a[0]-b[0],a[2]-b[2]);
 export function routeLength(route){return route.slice(1).reduce((sum,p,i)=>sum+distance(p,route[i]),0);}
 export function routePoint(route,fraction){

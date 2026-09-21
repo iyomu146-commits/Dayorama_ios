@@ -84,7 +84,7 @@ function radioTower(seed){
  k.opening('tower-frame','四脚から展望室とアンテナへ連続する鉄骨');return k.finish('tokyo-tower');
 }
 const specs={
- grove:[['woodland-library',-5.4,-4.2,.1],['flowers',.5,-4.5,.11],['bakery',5.8,-3.5,.10],['books',-4.9,1.1,.11],['tea',3.9,.8,.11]],
+ grove:[['mushroom-house',-5.4,-4.2,.1],['flowers',.5,-4.5,.11],['bakery',5.8,-3.5,.10],['books',-4.9,1.1,.11],['tea',3.9,.8,.11]],
  harbor:[['harbor-inn',-4.8,-4.1,.105],['net-loft',.3,-4.8,.11],['sea-museum',5.7,-3.6,.10],['boathouse',-6.1,.15,.10],['fish-market',-.6,-.6,.10],['lighthouse',7.1,3.8,.065]],
  canal:[['clockmaker',-4.6,-5.3,.09,1],['post-office',-4.8,-1.7,.082,1],['canal-home',-4.8,2.1,.09,1],['antique-shop',-4.7,5.45,.084,1],['canal-home',4.6,-5.1,.09,3],['canal-home',4.8,-1.6,.085,3],['music-school',4.6,2.1,.084,3],['canal-home',4.6,5.6,.085,3]],
  meadow:[['barn',-5.9,-3.5,.095],['farmhouse',-.3,-4.4,.10],['windmill',6.1,-2.5,.105],['dairy',-6.2,1.4,.10],['scarecrow-hut',5.9,2.5,.10]],
@@ -110,7 +110,7 @@ export function treeCells(region,variant,seed){
   const birch=region==='grove'&&variant===1,h=19+variant*2;box(0,0,0,1,h,1,birch?'#d7d5bc':wood);
   if(birch)for(let y=3;y<h;y+=4)put(1,y,1,'#727f6b',0,true);
   const colors=region==='satoyama'?['#849165','#a2a169','#77895f']:region==='meadow'?['#698757','#8ca06e','#7b9563']:['#618054','#839765','#708d5b'];
-  for(let n=0;n<5;n++){const a=n*2.399+variant,x=Math.round(Math.cos(a)*(n===0?0:6)),z=Math.round(Math.sin(a)*(n===0?0:5)),y=h+4+(n%3)*4;line([0,h-7,0],[x,y,z],wood,0,2);ell(x,y,z,6+(n%2),5,6,colors[n%3]);}
+  for(let n=0;n<5;n++){const a=n*2.399+variant,x=Math.round(Math.cos(a)*(n===0?0:6)),z=Math.round(Math.sin(a)*(n===0?0:5)),y=h+4+(n%3)*4;line([0,h-7,0],[x,y,z],birch?'#c8c6ab':wood,0,2);ell(x,y,z,6+(n%2),5,6,colors[n%3]);}
   if(region==='canal')for(let n=0;n<12;n++){const a=n*Math.PI/6,x=Math.round(Math.cos(a)*9),z=Math.round(Math.sin(a)*8);box(x,13+n%4,z,x,24,z,'#96ac7b');}
  }
  return v.list();
