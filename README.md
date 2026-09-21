@@ -2,7 +2,7 @@
 
 このフォルダーの内容をGitHubリポジトリのルートに配置してください。`.github` も含めます。
 
-- push / Pull Request：アプリとウィジェットの署名なしビルド。
+- push / Pull Requestではビルドしません。実機確認するときに Actions → Komorebi iOS → Run workflow から、ブランチ `main`・`testflight` オフで手動実行します。
 - Sideloadly：ActionsのArtifactsから `Komorebi-iPhone-Unsigned` を取得し、解凍して `Komorebi-unsigned.ipa` を渡します。CIのSecretsは不要です。
 - `Komorebi-Simulator` はMacのSimulator専用で、iPhoneには入りません。
 - TestFlightを使う場合は署名設定後に Run workflow の `testflight` をオンにします。

@@ -42,7 +42,7 @@ npm run export:ios
 
 ## 1. まず署名なしでビルドする
 
-push / Pull Requestで `Komorebi iOS` が動く。Actionsから `Run workflow` を選び、`testflight` をオフにして手動実行してもよい。Secretsは不要。
+GitHubへのpush / Pull Requestではビルドしない。実機確認したいときに Actions → `Komorebi iOS` → `Run workflow` を開き、ブランチを `main`、`testflight` をオフにして手動実行する。Secretsは不要。
 
 テスト → Web同梱 → Capacitor同期 → Xcode / plist / YAML検証 → Swiftの共有データ検証 → 本体とWidgetのSimulatorビルド → iPhone実機用Releaseビルドを行う。Appの中に `PlugIns/KomorebiWidget.appex` が含まれることも確認する。
 

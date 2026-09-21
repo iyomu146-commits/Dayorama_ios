@@ -39,7 +39,7 @@ assert.match(text(path.join(app,'ios/debug.xcconfig')),/App\/Config\/Komorebi.xc
 assert.match(text(path.join(native,'App.xcodeproj/xcshareddata/xcschemes/App.xcscheme')),/buildImplicitDependencies="YES"/);
 plist.parse(text(path.join(native,'App/PrivacyInfo.xcprivacy')));
 const workflow=YAML.parse(text(path.join(root,'.github/workflows/komorebi-ios.yml')));
-assert.ok(workflow.on.push&&workflow.on.pull_request);assert.equal(workflow.on.workflow_dispatch.inputs.testflight.default,false);
+assert.deepEqual(Object.keys(workflow.on),['workflow_dispatch']);assert.equal(workflow.on.workflow_dispatch.inputs.testflight.default,false);
 assert.equal(workflow.jobs.build.env.KOMOREBI_DEBUG_TOOLS,"${{ inputs.testflight && '0' || '1' }}",'TestFlight builds disable debug tools');
 const build=JSON.parse(text(path.join(app,'www-walk/build.json'))),debugTools=process.env.KOMOREBI_DEBUG_TOOLS==='1';
 assert.equal(build.debugTools,debugTools,'generated debug gate matches build environment');

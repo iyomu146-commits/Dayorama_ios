@@ -1,9 +1,5 @@
 name: Komorebi iOS
 on:
-  push:
-    paths: ['aigake/app/**', 'aigake/walk/**', 'aigake/experiments/voxel-walk-lab-20260909/**', 'aigake/vendor/three/**', '.github/workflows/komorebi-ios.yml']
-  pull_request:
-    paths: ['aigake/app/**', 'aigake/walk/**', 'aigake/experiments/voxel-walk-lab-20260909/**', 'aigake/vendor/three/**', '.github/workflows/komorebi-ios.yml']
   workflow_dispatch:
     inputs:
       testflight:
