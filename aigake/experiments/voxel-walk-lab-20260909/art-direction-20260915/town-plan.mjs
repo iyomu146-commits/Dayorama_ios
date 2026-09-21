@@ -3,6 +3,7 @@ import {hash,clamp} from '../model.mjs';
 import {contentBlueprint} from '../content/blueprints.mjs';
 import {workshop} from '../content/kit.mjs';
 import {plantBlueprint,WILDFLOWER_COLORS} from '../content/ecology.mjs';
+import {forestRock} from '../content/rocks.mjs';
 import {REGIONS} from '../content/catalog.mjs';
 import {insideLoop} from '../tokyo/city.mjs';
 import {tokyoDistrictPlan,tokyoPavement,tokyoStreetDetails} from './tokyo-districts.mjs';
@@ -244,8 +245,20 @@ export function makeTown(p,seed=741){
   if(id==='grove'&&trees.some(t=>Math.hypot(t.x-x,t.z-z)<.5))continue;
   plants.push({id:'plant-'+i,x,z,y:surface(x,z),kind:kinds[i%kinds.length],variant:i%4,u:.075,birth:n<30?0:hash(seed,i,509)});n++;
  }
- // Stones break up large areas at the perimeter without closing the walking routes.
- for(let i=0;i<45;i++){const x=(hash(seed,i,601)*2-1)*9.7,z=(hash(seed,i,602)*2-1)*7.7;if(!inside(x,z)||wet(x,z)||occupied(x,z,.5)||onPath(x,z)||paddy(x,z)||field(x,z)||id==='tokyo')continue;const h=.16+hash(seed,i,603)*.38;box(x,surface(x,z)+h/2,z,.3+h,h,.3+h*.7,blend(C.ground,C.shadow,.16),'stone');}
+ // Three small rocks have irregular grey-brown surfaces and a little moss.
+ // Their complete footprints stay off paths, roots and water, on level ground.
+ if(id==='grove'){
+  const sites=[];
+  for(let i=0;i<750&&sites.length<3;i++){
+   const x=(hash(seed,i,601)*2-1)*8.9,z=(hash(seed,i,602)*2-1)*6.9,y=surface(x,z),r=.57;
+   if(occupied(x,z,r+.12)||trees.some(t=>Math.hypot(t.x-x,t.z-z)<r+.32)||sites.some(s=>Math.hypot(s.x-x,s.z-z)<3.5))continue;
+   if(Math.abs(x)<3&&Math.abs(z)<3)continue;
+   if(Array.from({length:17},(_,j)=>j).some(j=>{const a=j*Math.PI/8,xx=x+(j===16?0:Math.cos(a)*r),zz=z+(j===16?0:Math.sin(a)*r);return !inside(xx,zz)||wet(xx,zz)||deck(xx,zz)!==null||onPath(xx,zz)||Math.abs(surface(xx,zz)-y)>.015;}))continue;
+   const cells=forestRock(seed+i,sites.length),unit=.1,rockId='rock-'+sites.length,rot=sites.length;
+   for(const c of cells){const [xx,zz]=turn(c.x*unit,c.z*unit,rot);boxes.push({x:x+xx,y:y+(c.y+.5)*unit,z:z+zz,w:unit,h:unit,d:unit,color:c.color,kind:'stone',rockId});}
+   sites.push({x,z});
+  }
+ }else for(let i=0;i<45;i++){const x=(hash(seed,i,601)*2-1)*9.7,z=(hash(seed,i,602)*2-1)*7.7;if(!inside(x,z)||wet(x,z)||occupied(x,z,.5)||onPath(x,z)||paddy(x,z)||field(x,z)||id==='tokyo')continue;const h=.16+hash(seed,i,603)*.38;box(x,surface(x,z)+h/2,z,.3+h,h,.3+h*.7,blend(C.ground,C.shadow,.16),'stone');}
  // Tokyo lamps follow each street's perpendicular, not a fixed x offset.
  // Leave the entire lamp cap clear of rendered road cells and retain space
  // around entrance routes. If neither sidewalk is free, omit that lamp.
