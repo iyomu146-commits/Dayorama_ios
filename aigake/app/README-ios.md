@@ -40,6 +40,10 @@ npm run export:ios
 
 この配置なら、追加のWebサーバーや外部のモデルAPIなしでビルドする。`www-walk/` とiOSの `App/public/` はCIが生成する。元の作業リポジトリの旧 `www/` とAndroidは変更せず、書き出し対象から外している。
 
+## 町の音
+
+町の音は `walk/sound.mjs` と `walk/sound-synthesis.mjs` で端末内合成する。通信・音声API・録音許可は不要。設定で効果音と環境音を別々に調整し、ヘッダーのスピーカーで消音できる。建築再生にだけ積み上げ音と完成音を合わせ、シークや既存の町の読み込みでは鳴らさない。iOSの音声セッションは既存の `.ambient` のまま。実機では消音スイッチ、他アプリの音声との同時再生、画面ロック・通話割り込み後の復帰を確認する。
+
 ## 1. まず署名なしでビルドする
 
 GitHubへのpush / Pull Requestではビルドしない。実機確認したいときに Actions → `Komorebi iOS` → `Run workflow` を開き、ブランチを `main`、`testflight` をオフにして手動実行する。Secretsは不要。

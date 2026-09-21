@@ -3,6 +3,7 @@ import Capacitor
 
 class AppViewController: CAPBridgeViewController {
     private var foregroundObserver: NSObjectProtocol?
+    private var backgroundObserver: NSObjectProtocol?
     private var widgetObserver: NSObjectProtocol?
     override func capacitorDidLoad() {
         bridge?.registerPluginInstance(HealthPlugin())
@@ -16,9 +17,15 @@ class AppViewController: CAPBridgeViewController {
         ) { [weak self] _ in
             self?.bridge?.triggerJSEvent(eventName: "komorebi:resume", target: "window")
         }
+        backgroundObserver = NotificationCenter.default.addObserver(
+            forName: UIApplication.willResignActiveNotification, object: nil, queue: .main
+        ) { [weak self] _ in
+            self?.bridge?.triggerJSEvent(eventName: "komorebi:pause", target: "window")
+        }
     }
     deinit {
         if let observer = foregroundObserver { NotificationCenter.default.removeObserver(observer) }
+        if let observer = backgroundObserver { NotificationCenter.default.removeObserver(observer) }
         if let observer = widgetObserver { NotificationCenter.default.removeObserver(observer) }
     }
 }
