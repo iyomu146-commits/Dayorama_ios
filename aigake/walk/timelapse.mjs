@@ -1,9 +1,6 @@
 import {completionStep,constructionPlan} from './construction.mjs';
 
-// Playback descriptors are independent of the step ledger and never award progress.
-export function replayTowns(state){
- return[{region:state.region,seed:state.seed,start:state.townStart,construction:state.construction,availableSteps:Math.max(0,state.total-state.townStart),current:true},...state.album.slice().reverse().map(t=>({...t,availableSteps:Infinity,current:false}))];
-}
+export {unlockedTowns as replayTowns} from './towns.mjs';
 export const replayTownPlan=(base,town)=>town.construction?constructionPlan(base,town.construction):base;
 export function replayClips(town,plan){
  return[{kind:'town',id:'town',ready:town.availableSteps>=plan.walkBudget,duration:Math.min(60000,Math.max(24000,plan.buildings.length*2400))},...plan.buildings.map(b=>({kind:'building',id:b.id,ready:town.availableSteps>=completionStep(b,plan.walkBudget),duration:12000}))];

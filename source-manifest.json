@@ -156,6 +156,8 @@
     "aigake/walk/state.test.mjs",
     "aigake/walk/timelapse.mjs",
     "aigake/walk/timelapse.test.mjs",
+    "aigake/walk/towns.mjs",
+    "aigake/walk/towns.test.mjs",
     "aigake/walk/widget.mjs",
     "aigake/walk/widget.test.mjs"
   ]

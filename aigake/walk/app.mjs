@@ -5,6 +5,7 @@ import {BY_ID} from '../experiments/voxel-walk-lab-20260909/content/catalog.mjs'
 import {dayKey,shiftDay,daysEnding,initialState,restore,connectStepSource,applySnapshot,townSteps,canChangeRegion,changeRegion,pendingRecap,acknowledge,recordCompletions,nextTown,demoState} from './state.mjs';
 import {platform,requestHealth,readHealth,healthErrorMessage,isHealthSigningError} from './health.mjs';
 import {replayTowns,replayTownPlan,replayClips,replayFrame,advanceTimelapse} from './timelapse.mjs';
+import {unlockedTowns,townKey,townToView,townViewProgress} from './towns.mjs';
 import {widgetSnapshot,widgetSignature,publishWidget} from './widget.mjs';
 import {createStargazing} from '../experiments/voxel-walk-lab-20260909/stargazing/game.mjs';
 import {walkUnlocked} from '../experiments/voxel-walk-lab-20260909/stargazing/model.mjs';
@@ -16,6 +17,9 @@ const native=platform()==='ios',mode=walkMode({native,buildDebug:document.queryS
 const {debugTools,debug,demo,simulated,key}=mode,reduced=matchMedia('(prefers-reduced-motion: reduce)');
 let state,world,profiles,plan,tab='town',period=7,selectedDay=dayKey(),animation=null,visualTotal=0,busy=false,lastFrame=0,lastUI=0,noticeTimer,statusNote='',storageFailed=false;
 let timelapse=null,playerLastFrame=null,syncStage='',syncError=false,motionOffered=false,completionNoticeTimer;
+let viewedTownKey=null;
+const viewedTown=()=>townToView(state,viewedTownKey);
+const visiting=()=>!viewedTown().current;
 const townAudio=createTownAudio({onChange:updateSoundUI}),constructionSound=createConstructionSound();
 let soundHour=null,lastSoundTick=0;
 function updateSoundUI({preferences,state:audioState,active,music,assetErrors}=townAudio.status()){
@@ -26,7 +30,7 @@ function updateSoundUI({preferences,state:audioState,active,music,assetErrors}=t
  $('sound-music-period').textContent=music==='night'?'夜':'昼';
  $('sound-error').hidden=!assetErrors.length;$('sound-error').textContent=assetErrors.length?'一部の音を読み込めませんでした':'';
 }
-function soundScene(){const d=new Date();townAudio.tick(timelapse?.town.region||state.region,soundHour??d.getHours()+d.getMinutes()/60);}
+function soundScene(){const d=new Date();townAudio.tick(timelapse?.town.region||viewedTown().region,soundHour??d.getHours()+d.getMinutes()/60);}
 function audibleConstruction(currentPlan,progress,focus,audible){townAudio.construction(constructionSound.update(currentPlan,progress,focus,audible,performance.now()));}
 const stepSourceName=()=>state.stepSource==='pedometer'?'iPhoneの歩数':'ヘルスケア';
 const motionNote='iPhone本体の歩数を使います。Apple Watchは含まず、履歴の取得は直近7日分です。';
@@ -38,7 +42,7 @@ function queueWidget(){
  if(!native||simulated)return;clearTimeout(widgetTimer);widgetTimer=setTimeout(updateWidget,600);
 }
 async function updateWidget(){
- if(simulated||!world||!plan||timelapse||document.hidden||storageFailed)return;
+ if(simulated||!world||!plan||timelapse||visiting()||document.hidden||storageFailed)return;
  if(widgetPublishing){queueWidget();return;}
  const snapshot=widgetSnapshot(state,plan),signature=widgetSignature(snapshot,state.seed)+':'+Math.floor(Date.now()/1800000);
  if(signature===lastWidgetSignature)return;
@@ -55,7 +59,7 @@ function persist(next){try{localStorage.setItem(key,JSON.stringify(next));state=
 function label(b){return b.name||BY_ID[b.kind]?.name||'建物';}
 function currentProfile(){return profiles.find(p=>p.id===state.region)||profiles[0];}
 function progressAt(total){return Math.max(0,Math.min(1,(total-state.townStart)/plan.walkBudget));}
-function setVisual(total,celebrate=false,audible=false){visualTotal=total;const progress=progressAt(total);world.setProgress(progress,null,{celebrate});audibleConstruction(plan,progress,null,audible);}
+function setVisual(total,celebrate=false,audible=false){if(visiting())return;visualTotal=total;const progress=progressAt(total);world.setProgress(progress,null,{celebrate});audibleConstruction(plan,progress,null,audible);}
 function showCompletionMessage(buildings){
  if(!buildings.length)return;clearTimeout(completionNoticeTimer);
  const message=$('scene-message');message.textContent=buildings.length===1?label(buildings[0])+'が完成':buildings.length+'棟が完成';message.hidden=false;
@@ -66,21 +70,48 @@ function buildWorld(){
  townAudio.stopEffects();
  const base=makeTown(currentProfile(),state.seed),next=prepareConstruction(state,base);
  if(next!==state&&!persist(next))throw Error('建築予定を保存できません');
- plan=world.build(currentProfile(),state.seed,{townPlan:constructionPlan(base,state.construction)});world.setLook(2);world.setColor(1);world.setMotion(state.motion&&!reduced.matches);setVisual(Math.max(state.townStart,state.seen));world.view('home');completionEvents();
- $('scene-loading').hidden=true;$('town-name').textContent=currentProfile().name;$('setting-region').textContent=currentProfile().name;
+ plan=constructionPlan(base,state.construction);viewedTownKey=null;restoreTownView();completionEvents();
+ $('scene-loading').hidden=true;$('setting-region').textContent=currentProfile().name;
  soundScene();queueWidget();
+}
+function restoreTownView(){
+ const town=viewedTown(),profile=profiles.find(p=>p.id===town.region),viewPlan=getReplayPlan(town);
+ world.build(profile,town.seed,{townPlan:viewPlan});world.setLook(2);world.setColor(1);world.setMotion(state.motion&&!reduced.matches);
+ if(town.current)setVisual(Math.max(state.townStart,state.seen));else world.setProgress(townViewProgress(town,viewPlan,state.total));
+ world.view('home');$('town-name').textContent=profile.name;
+ $('visit-towns').setAttribute('aria-label',profile.name+' · 地区を切り替える');
+ $('visit-towns').disabled=unlockedTowns(state).length<2;
+}
+function visitTown(key=null){
+ pauseRecap();clearTimeout(completionNoticeTimer);$('scene-message').hidden=true;
+ const town=townToView(state,key);viewedTownKey=town.current?null:townKey(town);
+ restoreTownView();soundScene();selectTab('town');queueWidget();
+}
+function showVisitedTowns(){
+ pauseRecap();const selected=townKey(viewedTown());
+ $('visit-list').replaceChildren(...unlockedTowns(state).map(town=>{
+  const b=document.createElement('button'),text=document.createElement('span'),name=document.createElement('span'),detail=document.createElement('small'),mark=document.createElement('span');
+  name.textContent=profiles.find(p=>p.id===town.region)?.name||town.region;
+  const complete=!town.current||town.availableSteps>=plan.walkBudget;
+  detail.textContent=town.current?'現在の町 · '+(complete?'完成':'建築中'):(town.completed?town.completed.replaceAll('-',' / ')+' 完成':'完成');
+  text.append(name,detail);mark.className='visit-check';mark.textContent='✓';mark.setAttribute('aria-hidden','true');
+  b.setAttribute('aria-pressed',String(townKey(town)===selected));b.append(text,mark);
+  b.onclick=()=>{visitTown(townKey(town));$('visit-dialog').close();};return b;
+ }));$('visit-dialog').showModal();
 }
 function updateTown(){
  if(timelapse)return;
  const today=state.records[dayKey()];$('today-date').textContent=new Intl.DateTimeFormat('ja-JP',{month:'long',day:'numeric',weekday:'short'}).format(new Date());$('today-steps').textContent=today?format(today.steps):'—';
  const s=world.stats(),done=s.buildings.filter(b=>b.progress===1).length,b=s.buildings.find(b=>b.progress>0&&b.progress<1)||s.buildings.find(b=>b.progress<1),target=b&&plan.buildings.find(p=>p.id===b.id);
  $('town-count').textContent=done+' / '+s.buildings.length+' 棟';$('build-name').textContent=b?label(b):'町が完成しました';$('build-phase').textContent=b?['基礎','骨組み','壁・屋根','仕上げ'][b.progress<.14?0:b.progress<.39?1:b.progress<.86?2:3]:'';$('build-progress').value=b?.progress??1;
- $('remaining').textContent=target?'完成まで '+format(Math.max(0,completionStep(target,plan.walkBudget)-(visualTotal-state.townStart)))+'歩':townSteps(state)>plan.walkBudget?'次の町へ '+format(townSteps(state)-plan.walkBudget)+'歩':'全ての建物が完成';
- $('next-town').hidden=townSteps(state)<plan.walkBudget||!!animation;$('replay').hidden=!state.recap||!!animation;
+ const archived=visiting();
+ $('remaining').textContent=archived?'全ての建物が完成':target?'完成まで '+format(Math.max(0,completionStep(target,plan.walkBudget)-(visualTotal-state.townStart)))+'歩':townSteps(state)>plan.walkBudget?'次の町へ '+format(townSteps(state)-plan.walkBudget)+'歩':'全ての建物が完成';
+ $('next-town').hidden=archived||townSteps(state)<plan.walkBudget||!!animation;$('replay').hidden=archived||!state.recap||!!animation;
+ $('return-town').hidden=!archived;$('return-town').textContent='現在の町に戻る'+(pendingRecap(state)?' · 新しい歩数あり':'');
  $('connect-prompt').hidden=state.permissionRequested||simulated;$('preview-link').hidden=native;
  $('source-label').textContent=debug?'デバッグ':demo?'プレビュー':state.lastSync?stepSourceName():'';$('sync').disabled=busy||debug||(!native&&!demo);
  $('debug-town-tools').hidden=!debug;
- $('open-stargazing').hidden=!walkUnlocked(state,plan.walkBudget);$('stars-locked').hidden=state.region!=='stars'||walkUnlocked(state,plan.walkBudget);
+ $('open-stargazing').hidden=!walkUnlocked(state,plan.walkBudget);$('stars-locked').hidden=viewedTown().region!=='stars'||walkUnlocked(state,plan.walkBudget);
 }
 function updateConnection(){
  const loading=syncStage==='permission'?'連携を確認中…':'歩数を読み込み中…';
@@ -117,7 +148,7 @@ function finishRecap(){
  if(done.length>1||!playback.index)showCompletionMessage(done);queueWidget();
 }
 function startRecap(replay=false){
- if(tab!=='town'||animation||storageFailed||timelapse||stargazing.isOpen||$('timelapse-list-dialog').open||$('debug-dialog').open)return;
+ if(tab!=='town'||visiting()||animation||storageFailed||timelapse||stargazing.isOpen||$('visit-dialog').open||$('timelapse-list-dialog').open||$('debug-dialog').open)return;
  const recap=replay?state.recap:pendingRecap(state);if(!recap){setVisual(state.total);return;}
  if(recap.to<=state.townStart)return;
  townAudio.stopEffects();clearTimeout(completionNoticeTimer);$('scene-message').hidden=true;world.clearCompletion();setVisual(Math.max(state.townStart,recap.from));
@@ -176,7 +207,7 @@ function openTimelapse(town,clip,preview=false){
  $('timelapse-region').textContent=profile.name+(preview?' · プレビュー':'');$('timelapse-title').textContent=clip.kind==='town'?'地区全体':label(replayPlan.buildings.find(b=>b.id===clip.id));
  if($('timelapse-list-dialog').open)$('timelapse-list-dialog').close();
  $('timelapse-dialog').showModal();$('timelapse-scene').append($('world'));
- if(!town.current)world.build(profile,town.seed,{townPlan:replayPlan});
+ world.build(profile,town.seed,{townPlan:replayPlan});
  world.setShowcase(clip.kind==='building'?clip.id:null);world.setMotion(state.motion&&!reduced.matches);drawTimelapse();soundScene();
 }
 function drawTimelapse(celebrate=false){
@@ -187,9 +218,8 @@ function drawTimelapse(celebrate=false){
  document.querySelectorAll('[data-playback-speed]').forEach(b=>b.setAttribute('aria-pressed',String(Number(b.dataset.playbackSpeed)===timelapse.speed)));
 }
 function closeTimelapse(){
- if(!timelapse)return;townAudio.stopEffects();const archived=!timelapse.town.current;timelapse=null;playerLastFrame=null;
- sceneHome.prepend($('world'));if(archived)world.build(currentProfile(),state.seed,{townPlan:plan});else world.setShowcase(null);
- setVisual(Math.max(state.townStart,state.seen));world.setMotion(state.motion&&!reduced.matches);world.view('home');soundScene();ui();if(tab==='town')startRecap();queueWidget();
+ if(!timelapse)return;townAudio.stopEffects();timelapse=null;playerLastFrame=null;
+ sceneHome.prepend($('world'));restoreTownView();soundScene();ui();if(tab==='town')startRecap();queueWidget();
 }
 function toggleDebugMode(){
  if(!debugTools||busy)return;pauseRecap();const url=new URL(location.href);
@@ -204,7 +234,7 @@ function openDebugControls(){
 }
 function advanceDebug(amount){
  if(!debug)return;
- try{pauseRecap();const next=addDebugSteps(state,amount);if(!persist(next))return;completionEvents();$('debug-dialog').close();selectTab('town');}
+ try{pauseRecap();const next=addDebugSteps(state,amount);if(!persist(next))return;completionEvents();$('debug-dialog').close();if(visiting())visitTown();else selectTab('town');}
  catch(e){notice(e.message);}
 }
 function resetDebugTown(){
@@ -242,6 +272,8 @@ try{
  $('debug-time').onchange=()=>{const v=$('debug-time').value;soundHour=v==='auto'?null:v==='laundry'?17:Number(v);world.setTime(soundHour,{laundry:v==='laundry'});soundScene();world.view(v==='laundry'?'laundry':'home');$('debug-dialog').close();};
  $('debug-dialog').addEventListener('close',()=>{if(tab==='town')startRecap();});
  $('replay').onclick=()=>startRecap(true);$('skip').onclick=finishRecap;$('next-town').onclick=chooseRegion;$('choose-region').onclick=chooseRegion;
+ $('visit-towns').onclick=showVisitedTowns;$('return-town').onclick=()=>visitTown();
+ $('visit-dialog').addEventListener('close',()=>{if(tab==='town')startRecap();});
  $('open-timelapses').onclick=showTimelapses;$('timelapse-close').onclick=()=>$('timelapse-dialog').close();$('timelapse-dialog').addEventListener('close',closeTimelapse);
  $('open-stargazing').onclick=()=>{pauseRecap();stargazing.open();if(stargazing.isOpen)townAudio.setActive(false);};
  $('timelapse-list-dialog').addEventListener('close',()=>{if(!timelapse&&tab==='town')startRecap();});
@@ -251,14 +283,14 @@ try{
  $('privacy-open').onclick=()=>$('privacy-dialog').showModal();document.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>$(b.dataset.close).close());
  $('motion').onchange=()=>{if(persist({...state,motion:$('motion').checked}))world.setMotion(state.motion&&!reduced.matches);};
  document.querySelectorAll('[data-period]').forEach(b=>b.onclick=()=>{period=Number(b.dataset.period);document.querySelectorAll('[data-period]').forEach(q=>q.setAttribute('aria-pressed',String(q===b)));renderRecords();});
- $('demo-return').onclick=()=>{pauseRecap();const today=dayKey();if(persist(applySnapshot(state,[{day:today,steps:(state.records[today]?.steps||0)+2400}]))){completionEvents();selectTab('town');}};
+ $('demo-return').onclick=()=>{pauseRecap();const today=dayKey();if(persist(applySnapshot(state,[{day:today,steps:(state.records[today]?.steps||0)+2400}]))){completionEvents();if(visiting())visitTown();else selectTab('town');}};
  document.addEventListener('visibilitychange',()=>{playerLastFrame=null;if(document.hidden){pauseRecap();townAudio.setActive(false);if(timelapse){timelapse.playing=false;drawTimelapse();}}else{townAudio.setActive(!stargazing.isOpen);soundScene();townAudio.resume();selectedDay=dayKey();ui();synchronize().then(()=>startRecap());}});window.addEventListener('pagehide',()=>{pauseRecap();townAudio.setActive(false);});
  window.addEventListener('pageshow',()=>{townAudio.setActive(!document.hidden&&!stargazing.isOpen);townAudio.resume();});
  window.addEventListener('komorebi:pause',()=>{pauseRecap();townAudio.setActive(false);playerLastFrame=null;if(timelapse){timelapse.playing=false;drawTimelapse();}});
  // iOS also sends this on a foreground transition even when WebKit's document
  // visibility does not change. The in-flight guard prevents duplicate reads.
  window.addEventListener('komorebi:resume',()=>{townAudio.setActive(!document.hidden&&!stargazing.isOpen);soundScene();townAudio.resume();synchronize().then(()=>{startRecap();queueWidget();});});
- window.addEventListener('komorebi:town',()=>{document.querySelectorAll('dialog[open]').forEach(d=>d.close());selectTab('town');synchronize();});
+ window.addEventListener('komorebi:town',()=>{document.querySelectorAll('dialog[open]').forEach(d=>d.close());if(timelapse)closeTimelapse();visitTown();synchronize();});
  selectTab('town');synchronize();
  function frame(now){requestAnimationFrame(frame);if(!document.hidden&&!stargazing.isOpen&&now-lastSoundTick>1000){soundScene();lastSoundTick=now;}if(document.hidden||stargazing.isOpen||(!timelapse&&tab!=='town')||now-lastFrame<32)return;lastFrame=now;
   if(timelapse){const previousPosition=timelapse.position;timelapse=advanceTimelapse(timelapse,playerLastFrame===null?0:Math.min(250,now-playerLastFrame));playerLastFrame=now;if(timelapse.position!==previousPosition)drawTimelapse(true);world.render(now);return;}
