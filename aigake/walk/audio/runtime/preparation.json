@@ -3,13 +3,13 @@
     "source": "bgm2.wav",
     "output": "bgm.m4a",
     "originalSeconds": 120,
-    "seconds": 44,
+    "seconds": 42,
     "gain": 0.62,
-    "loopCrossfade": 0,
+    "loopCrossfade": 2,
     "sourceStart": 0,
     "sourceEnd": 44,
-    "edgeFadeIn": 0.008,
-    "edgeFadeOut": 0.02
+    "loopCurve": "smooth-equal-power",
+    "openingConsumedByOverlap": 2
   },
   {
     "source": "bgm_night.wav",
