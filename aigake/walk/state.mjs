@@ -32,6 +32,11 @@ export function applySnapshot(previous,rows,at=new Date().toISOString()){
  s.lastSync=at;if(merged.size)s.lastDataSync=at;return s;
 }
 export const townSteps=s=>Math.max(0,s.total-s.townStart);
+export const canChangeRegion=s=>s.album.length>0&&townSteps(s)===0;
+export function changeRegion(s,region){
+ if(!canChangeRegion(s))throw Error('町の完成後に選べます');
+ return{...s,region,construction:null};
+}
 export function pendingRecap(s){return s.total>s.seen?{from:Math.max(s.townStart,s.seen),to:s.total,at:s.lastSync}:null;}
 export function acknowledge(s,recap=pendingRecap(s)){return{...s,seen:s.total,recap:recap||s.recap};}
 export function recordCompletions(s,buildings,budget){

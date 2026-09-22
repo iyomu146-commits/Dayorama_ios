@@ -2,7 +2,7 @@ import {createTownWorld} from '../experiments/voxel-walk-lab-20260909/art-direct
 import {makeTown} from '../experiments/voxel-walk-lab-20260909/art-direction-20260915/town-plan.mjs';
 import {STEPS_PER_BUILDING,completionStep,prepareConstruction,constructionPlan} from './construction.mjs';
 import {BY_ID} from '../experiments/voxel-walk-lab-20260909/content/catalog.mjs';
-import {dayKey,shiftDay,daysEnding,initialState,restore,connectStepSource,applySnapshot,townSteps,pendingRecap,acknowledge,recordCompletions,nextTown,demoState} from './state.mjs';
+import {dayKey,shiftDay,daysEnding,initialState,restore,connectStepSource,applySnapshot,townSteps,canChangeRegion,changeRegion,pendingRecap,acknowledge,recordCompletions,nextTown,demoState} from './state.mjs';
 import {platform,requestHealth,readHealth,healthErrorMessage,isHealthSigningError} from './health.mjs';
 import {replayTowns,replayTownPlan,replayClips,replayFrame,advanceTimelapse} from './timelapse.mjs';
 import {widgetSnapshot,widgetSignature,publishWidget} from './widget.mjs';
@@ -99,6 +99,7 @@ function renderRecords(){
  $('journal').replaceChildren(...events.map(e=>{const li=document.createElement('li'),date=document.createElement('time'),text=document.createElement('div'),name=document.createElement('strong'),region=document.createElement('small'),play=document.createElement('button');date.dateTime=e.day;date.textContent=e.day.slice(5).replace('-','/');const title=e.name||BY_ID[e.kind]?.name||'建物';name.textContent=title+'が完成';region.textContent=profiles.find(p=>p.id===e.region)?.name||'';text.append(name,region);play.className='text-button journal-replay';play.textContent='再生';play.setAttribute('aria-label',title+'のタイムラプス');play.onclick=()=>playCompletedEvent(e);li.append(date,text,play);return li;}));
 }
 function updateSettings(){
+ $('choose-region').disabled=townSteps(state)<plan.walkBudget&&!canChangeRegion(state);
  $('health-settings').hidden=debug;
  $('health-source').textContent=stepSourceName();
  $('health-status').textContent=demo?'サンプル':!native?'iPhoneアプリで利用':state.permissionRequested?state.lastDataSync?'同期済み':state.lastSync?'データなし':'連携設定済み':'未連携';
@@ -141,9 +142,10 @@ async function synchronize(request=false,provider=state.stepSource){
  finally{busy=false;syncStage='';ui();queueWidget();}
 }
 function chooseRegion(){
- const canStart=townSteps(state)>=plan.walkBudget,canChange=state.total===state.townStart;
- $('region-title').textContent=canStart?'次の町':canChange?'地域を選ぶ':'建築中の町';
- $('region-list').replaceChildren(...profiles.map(p=>{const b=document.createElement('button'),name=document.createElement('span'),mark=document.createElement('small');name.textContent=p.name;mark.textContent=canStart||canChange?'1棟 '+format(STEPS_PER_BUILDING)+'歩':p.id===state.region?'建築中':'';b.disabled=!canStart&&!canChange;b.append(name,mark);b.onclick=()=>{pauseRecap();const next=canStart?nextTown(state,p.id,plan.walkBudget):{...state,region:p.id,construction:null};if(!persist(next))return;$('region-dialog').close();buildWorld();selectTab('town');};return b;}));$('region-dialog').showModal();
+ const canStart=townSteps(state)>=plan.walkBudget;
+ if(!canStart&&!canChangeRegion(state))return;
+ $('region-title').textContent=canStart?'次の町':'地域を選ぶ';
+ $('region-list').replaceChildren(...profiles.map(p=>{const b=document.createElement('button'),name=document.createElement('span'),mark=document.createElement('small');name.textContent=p.name;mark.textContent='1棟 '+format(STEPS_PER_BUILDING)+'歩';b.append(name,mark);b.onclick=()=>{pauseRecap();const next=canStart?nextTown(state,p.id,plan.walkBudget):changeRegion(state,p.id);if(!persist(next))return;$('region-dialog').close();buildWorld();selectTab('town');};return b;}));$('region-dialog').showModal();
 }
 function getReplayPlan(town){
  if(town.current)return plan;

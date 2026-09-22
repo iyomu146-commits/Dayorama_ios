@@ -1,7 +1,31 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
-import {initialState,restore,connectStepSource,applySnapshot,pendingRecap,acknowledge,recordCompletions,nextTown,townSteps,shiftDay,daysEnding} from './state.mjs';
+import {initialState,restore,connectStepSource,applySnapshot,pendingRecap,acknowledge,recordCompletions,nextTown,townSteps,canChangeRegion,changeRegion,shiftDay,daysEnding} from './state.mjs';
 const day='2026-09-16',at='2026-09-16T12:00:00+09:00',fresh=()=>initialState('health',day),read=(s,steps)=>applySnapshot(s,[{day,steps}],at);
+test('the first town always starts in grove and remains fixed through its five buildings',()=>{
+ for(const source of ['health','demo','debug']){
+  const s=initialState(source,day);assert.equal(s.region,'grove');assert.equal(canChangeRegion(s),false);
+  assert.throws(()=>changeRegion(s,'oasis'),/町の完成後/);
+ }
+ for(const steps of [1,20000,99999]){
+  const s=read(fresh(),steps);assert.equal(canChangeRegion(s),false);
+  assert.throws(()=>changeRegion(s,'snow'));assert.throws(()=>nextTown(s,'snow',100000));
+ }
+});
+test('finishing the first town unlocks the next region without losing overflow',()=>{
+ const completed=read(fresh(),100000),next=nextTown(completed,'oasis',100000);
+ assert.equal(next.region,'oasis');assert.equal(next.album[0].region,'grove');assert.equal(townSteps(next),0);
+ assert.equal(canChangeRegion(next),true);assert.equal(changeRegion(next,'snow').region,'snow');
+ const overflow=nextTown(read(fresh(),104000),'oasis',100000);
+ assert.equal(townSteps(overflow),4000);assert.equal(canChangeRegion(overflow),false);
+ assert.throws(()=>changeRegion(overflow,'snow'));assert.equal(overflow.total,104000);
+});
+test('existing first-town saves retain their region, progress and records',()=>{
+ const old={...read(fresh(),24000),region:'canal',seen:20000};
+ const loaded=restore(JSON.stringify(old));
+ assert.equal(loaded.region,'canal');assert.equal(loaded.total,24000);assert.equal(loaded.seen,20000);
+ assert.deepEqual(loaded.records,old.records);
+});
 test('same HealthKit total is credited only once',()=>{const a=read(fresh(),2400),b=read(a,2400);assert.equal(b.total,2400);assert.equal(read(b,2600).total,2600);});
 test('a corrected diary never rebuilds or removes earned construction',()=>{let s=read(fresh(),2400);s=read(s,1800);assert.equal(s.records[day].steps,1800);assert.equal(s.total,2400);assert.equal(read(s,2200).total,2400);assert.equal(read(s,2500).total,2500);});
 test('historical records are readable but only enrollment onward builds',()=>{const s=applySnapshot(fresh(),[{day:'2026-09-15',steps:12000},{day,steps:400}],at);assert.equal(s.total,400);assert.equal(s.records['2026-09-15'].steps,12000);assert.equal(s.records['2026-09-15'].credited,0);});

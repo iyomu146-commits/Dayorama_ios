@@ -1,7 +1,7 @@
 // This is the full production allocation. An entry becomes available only when
 // its actual voxel blueprint has been authored and passes the geometry audit.
 export const REGIONS={
-  grove:{name:'木もれびの森',count:14,ground:'#91a479',roof:'#668d85',water:'#92bdb4',wall:'#eddfc5',wood:'#916f50',accent:'#c69b74',trees:['oak','birch'],plants:['fern','clover','bluebell','mushroom'],props:['log-bench','book-cart','birdbath']},
+  grove:{name:'林間の町',count:14,ground:'#91a479',roof:'#668d85',water:'#92bdb4',wall:'#eddfc5',wood:'#916f50',accent:'#c69b74',trees:['oak','birch'],plants:['fern','clover','bluebell','mushroom'],props:['log-bench','book-cart','birdbath']},
   harbor:{name:'潮風の港',count:12,ground:'#a5b499',roof:'#70959d',water:'#86bfc3',wall:'#e8dfca',wood:'#a08566',accent:'#bb826d',trees:['coastal-pine'],plants:['beach-grass','sea-lavender','succulent'],props:['bollard','rope-coil','fish-crate']},
   canal:{name:'運河の職人街',count:10,ground:'#a5b188',roof:'#688d9a',water:'#83b9ba',wall:'#dcc6a9',wood:'#856b58',accent:'#a88d65',trees:['willow'],plants:['iris','reed','hydrangea'],props:['iron-bench','parcel-stack','canal-lamp']},
   meadow:{name:'風渡る牧草地',count:12,ground:'#afbb80',roof:'#ad8070',water:'#96bbaf',wall:'#eee1bb',wood:'#967b51',accent:'#cbb074',trees:['apple','poplar'],plants:['wheat','daisy','poppy','clover'],props:['hay-bale','milk-can','fence']},

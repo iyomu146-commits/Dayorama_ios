@@ -6,7 +6,7 @@ export const TYPES={cottage:'平屋',townhouse:'住居付き',ell:'L字',courtya
 export const SITES={normal:'標準',corner:'角地',narrow:'路地',waterfront:'水辺'};
 export const ADDONS={terrace:'テラス',workshop:'作業場・閲覧室',residence:'居住階'};
 export const KINDS={house:'住宅',bakery:'パン屋',cafe:'喫茶店'};
-export const REGION_NAMES={grove:'森',harbor:'港',canal:'運河',meadow:'牧草地',alpine:'山村',satoyama:'里山',oasis:'オアシス',snow:'雪の村',stars:'星見の丘',tropical:'南の島',tokyo:'東京'};
+export const REGION_NAMES={grove:'林間の町',harbor:'港',canal:'運河',meadow:'牧草地',alpine:'山村',satoyama:'里山',oasis:'オアシス',snow:'雪の村',stars:'星見の丘',tropical:'南の島',tokyo:'東京'};
 export const WATER_REGIONS=['harbor','canal','tropical','oasis'];
 export const BUDGET=20000,EXTENSION_BUDGET=5000,FORMAT='komorebi-town',VERSION=1;
 export const key=(x,z)=>`${x},${z}`;

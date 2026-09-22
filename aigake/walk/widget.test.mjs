@@ -2,10 +2,11 @@ import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {initialState,applySnapshot} from './state.mjs';
 import {widgetSnapshot,widgetSignature} from './widget.mjs';
-const plan={p:{name:'森'},walkBudget:40000,buildings:[{id:'a',kind:'books',startStep:0,endStep:20000},{id:'b',kind:'tea',startStep:20000,endStep:40000}]};
+const plan={p:{name:'林間の町'},walkBudget:40000,buildings:[{id:'a',kind:'books',startStep:0,endStep:20000},{id:'b',kind:'tea',startStep:20000,endStep:40000}]};
 const now=new Date('2026-09-16T12:00:00'),initial=()=>initialState('health','2026-09-16');
 test('widget uses confirmed construction and actual daily steps, never seen or recap position',()=>{
  const s=applySnapshot(initial(),[{day:'2026-09-16',steps:22400}],now.toISOString());s.seen=12000;s.recap={from:0,to:6000};const before=JSON.stringify(s),w=widgetSnapshot(s,plan,now);
+ assert.equal(w.region,'林間の町');
  assert.equal(w.todaySteps,22400);assert.equal(w.completedBuildings,1);assert.equal(w.remainingSteps,17600);assert.equal(w.progress,.12);assert.equal(JSON.stringify(s),before);
 });
 test('demo data is never published and missing today data is not zero',()=>{assert.equal(widgetSnapshot({...initial(),source:'demo'},plan,now),null);assert.equal(widgetSnapshot(initial(),plan,now).todaySteps,null);assert.equal(widgetSnapshot(initial(),plan,now).syncedAt,null);});
