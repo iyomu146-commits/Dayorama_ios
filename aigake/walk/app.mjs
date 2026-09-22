@@ -18,11 +18,13 @@ let state,world,profiles,plan,tab='town',period=7,selectedDay=dayKey(),animation
 let timelapse=null,playerLastFrame=null,syncStage='',syncError=false,motionOffered=false,completionNoticeTimer;
 const townAudio=createTownAudio({onChange:updateSoundUI}),constructionSound=createConstructionSound();
 let soundHour=null,lastSoundTick=0;
-function updateSoundUI({preferences,state:audioState,active}=townAudio.status()){
+function updateSoundUI({preferences,state:audioState,active,music,assetErrors}=townAudio.status()){
  const playing=preferences.enabled&&active&&audioState==='running';
  $('sound-toggle').setAttribute('aria-label',playing?'音を消す':'音を再生');$('sound-toggle').setAttribute('aria-pressed',String(playing));
  $('sound-enabled').checked=preferences.enabled;
- for(const kind of ['effects','ambience']){$('sound-'+kind).value=Math.round(preferences[kind]*100);$('sound-'+kind+'-value').textContent=Math.round(preferences[kind]*100)+'%';}
+ for(const kind of ['effects','bgm','ui']){$('sound-'+kind).value=Math.round(preferences[kind]*100);$('sound-'+kind+'-value').textContent=Math.round(preferences[kind]*100)+'%';}
+ $('sound-music-period').textContent=music==='night'?'夜':'昼';
+ $('sound-error').hidden=!assetErrors.length;$('sound-error').textContent=assetErrors.length?'一部の音を読み込めませんでした':'';
 }
 function soundScene(){const d=new Date();townAudio.tick(timelapse?.town.region||state.region,soundHour??d.getHours()+d.getMinutes()/60);}
 function audibleConstruction(currentPlan,progress,focus,audible){townAudio.construction(constructionSound.update(currentPlan,progress,focus,audible,performance.now()));}
@@ -219,8 +221,15 @@ try{
  document.addEventListener('pointerdown',unlockSound,{passive:true});document.addEventListener('keydown',unlockSound);
  $('sound-toggle').onclick=()=>{const s=townAudio.status();if(s.preferences.enabled&&s.state==='running')townAudio.configure({enabled:false});else{townAudio.configure({enabled:true});soundScene();townAudio.unlock();}};
  $('sound-enabled').onchange=()=>{townAudio.configure({enabled:$('sound-enabled').checked});soundScene();townAudio.unlock();};
- for(const kind of ['effects','ambience'])$('sound-'+kind).oninput=()=>{townAudio.configure({[kind]:Number($('sound-'+kind).value)/100});townAudio.unlock();};
+ for(const kind of ['effects','bgm','ui'])$('sound-'+kind).oninput=()=>{townAudio.configure({[kind]:Number($('sound-'+kind).value)/100});townAudio.unlock();};
  document.querySelectorAll('[data-sound-preview]').forEach(b=>b.onclick=async()=>{townAudio.configure({enabled:true});soundScene();if(!await townAudio.preview(b.dataset.soundPreview))notice('音を再生できませんでした。もう一度お試しください');});
+ document.addEventListener('click',e=>{
+  if(!e.isTrusted)return;const b=e.target.closest?.('button');
+  if(!b||b.matches(':disabled')||b.closest('.sound-settings')||b.id==='sound-toggle'||b.getAttribute('aria-current')==='page'||b.getAttribute('aria-pressed')==='true')return;
+  const back=b.hasAttribute('data-close')||b.id==='timelapse-close';
+  townAudio.unlock().then(ok=>{if(ok)townAudio.interaction(back);});
+ },true);
+ document.addEventListener('change',e=>{if(e.isTrusted&&e.target.matches('select,input[type="checkbox"]')&&!e.target.closest('.sound-settings'))townAudio.interaction();});
  document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>selectTab(b.dataset.tab));$('open-records').onclick=()=>selectTab('records');$('home-view').onclick=()=>world.view('home');$('sync').onclick=()=>synchronize();
  document.querySelectorAll('[data-connect]').forEach(b=>b.onclick=()=>synchronize(true));$('preview-link').onclick=()=>{const u=new URL(location.href);u.searchParams.set('demo','1');location.href=u;};
  $('motion-connect').onclick=()=>synchronize(true,'pedometer');$('switch-step-source').onclick=()=>synchronize(true,state.stepSource==='pedometer'?'healthkit':'pedometer');

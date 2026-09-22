@@ -1,6 +1,7 @@
 import {readFile,writeFile,mkdir,copyFile,rm} from 'node:fs/promises';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
+import {SOUND_ASSETS} from '../../walk/sound-assets.mjs';
 const app=fileURLToPath(new URL('../',import.meta.url)),source=path.dirname(app.replace(/[\\/]$/,'')),out=path.join(app,'www-walk');
 // Delete only the generated output, after checking the resolved destination.
 if(path.dirname(path.resolve(out))!==path.resolve(app)||path.basename(out)!=='www-walk')throw Error('Unsafe output path');
@@ -18,6 +19,11 @@ async function copy(relative){
  }
 }
 await copy('walk/app.mjs');await copy('walk/app.css');
+for(const file of Object.values(SOUND_ASSETS)){
+ if(!/^audio\/runtime\/[a-z0-9-]+\.(wav|m4a)$/.test(file))throw Error('Invalid sound asset path');
+ await copy('walk/'+file);
+}
+await copy('walk/audio/runtime/preparation.json');await copy('walk/audio/README.md');
 await copy('vendor/three/LICENSE');await copy('vendor/three/VERSION.txt');
 await copy('experiments/voxel-walk-lab-20260909/art-direction-20260915/profiles.json');
 for(const file of ['style.css','about.html','data/LICENSE-d3-celestial.txt','data/SKY-SOURCES.txt'])await copy('experiments/voxel-walk-lab-20260909/stargazing/'+file);
