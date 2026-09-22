@@ -3,10 +3,25 @@ import {hash} from '../model.mjs';
 import {workshop} from './kit.mjs';
 import {REGIONS,BY_ID} from './catalog.mjs';
 import {extraPlant,extraTree,extraProp} from './ecology-extra.mjs';
+import {flowerBlueprint} from './flowers.mjs';
 
 export const FOREST_PLANTS=['fern','clover','bluebell','mushroom'];
 export const WILDFLOWER_COLORS={'wildflower-white':'#f0e7d2','wildflower-yellow':'#e4bd55','wildflower-pink':'#d9859b','wildflower-violet':'#a797cd'};
+export const REGIONAL_GROUND_PLANTS={
+ grove:Object.keys(WILDFLOWER_COLORS).flatMap(k=>['fern','clover','fern',k]),
+ harbor:['beach-grass','succulent','beach-grass','sea-lavender','beach-grass','sea-lavender'],
+ canal:['reed','iris','reed','hydrangea','reed','iris'],
+ meadow:['clover','daisy','clover','poppy','clover','daisy'],
+ alpine:['fern','juniper','edelweiss','juniper','heather','edelweiss'],
+ satoyama:['susuki','clover','hydrangea','susuki','fern','hydrangea'],
+ oasis:['aloe','succulent','cactus','aloe','desert-flower','succulent'],
+ snow:['lichen','winter-berry','lichen','snowdrop','winter-berry'],
+ stars:['clover','silver-grass','lavender','clover','moonflower','silver-grass'],
+ tropical:['beach-grass','monstera','hibiscus','succulent','beach-grass','banana'],
+ tokyo:[],
+};
 export function plantBlueprint(kind,seed=41){
+  const flower=flowerBlueprint(kind,seed);if(flower)return flower;
   const k=workshop('grove',seed),{C,box,put,line,ellipsoid,disk}=k;
   if(WILDFLOWER_COLORS[kind]){
     // Keep petals and centres at their authored resolution. Downsampling
@@ -18,9 +33,6 @@ export function plantBlueprint(kind,seed=41){
     for(const y of [2,4,6])for(const side of [-1,1]){const r=6-y/2;line([0,y,0],[side*r,y+2,0],'#8b9e70');for(let x=1;x<=r;x++)put(side*x,y+Math.floor(x/2),1,'#8b9e70');}
   }else if(kind==='clover'){
     for(const[x,z]of [[-2,0],[2,1],[0,-2]]){box(x,0,z,x,2,z,'#829566');for(const[a,b]of [[-1,0],[1,0],[0,1]])ellipsoid(x+a,3,z+b,1,1,1,'#98aa7c',0);}
-  }else if(kind==='bluebell'){
-    box(0,0,0,0,7,0,'#7e946b');line([0,2,0],[2,4,0],'#7e946b');
-    for(const[y,side]of [[4,-1],[7,1]]){box(0,y,0,side>0?2:0,y,0,'#7e946b');if(side<0)box(-2,y,0,0,y,0,'#7e946b');ellipsoid(side*2,y-1,0,1.4,1.5,1.4,'#b1b7cb',0);}
   }else if(kind==='mushroom'){
     // Author this small silhouette at its final resolution: scaling 4 and 5
     // by .65 previously collapsed both cap tiers onto the same height.
@@ -28,16 +40,10 @@ export function plantBlueprint(kind,seed=41){
     return k.v.list();
   }else if(kind==='beach-grass'){
     for(const [x,z,h]of [[-3,-1,5],[0,0,8],[3,1,6],[-1,2,7],[2,-2,5]])line([0,0,0],[x,h,z],'#a6ad81',0);
-  }else if(kind==='sea-lavender'){
-    box(0,0,0,0,6,0,'#889978',0);for(const [x,y,z]of [[-3,5,0],[3,6,1],[0,8,-1]]){line([0,3,0],[x,y,z],'#889978',0);ellipsoid(x,y,z,1.5,1.5,1.5,'#b5a8be',0);}
   }else if(kind==='succulent'){
     disk(0,0,0,2,'#8da49a',0);for(let i=0;i<8;i++){const a=i*Math.PI/4;line([0,1,0],[Math.round(Math.cos(a)*4),2,Math.round(Math.sin(a)*4)],'#9db2a2',0,2);}ellipsoid(0,3,0,2,2,2,'#b6c1a6',0);
-  }else if(kind==='iris'){
-    for(const x of [-2,0,2])line([0,0,0],[x,7-Math.abs(x),0],'#7f9b81',0);box(0,0,0,0,8,0,'#839c78',0);for(const [x,z]of [[-2,0],[2,0],[0,2]])ellipsoid(x,8,z,1.5,2,1.5,'#a6a5c4',0);put(0,9,0,'#d8c993',0);
   }else if(kind==='reed'){
     for(const [x,z,h]of [[-2,0,7],[1,1,10],[2,-1,6]]){box(x,0,z,x,h,z,'#a2ac82',0);box(x,h-2,z,x,h,z,'#a68b6f',0);line([x,2,z],[x+2,5,z],'#a2ac82',0);}
-  }else if(kind==='hydrangea'){
-    box(0,0,0,0,3,0,'#839a7d',0);for(const[x,z]of [[-2,-1],[2,-1],[0,2]]){line([0,1,0],[x,3,z],'#839a7d',0);ellipsoid(x,3,z,2,1.5,2,'#9baea0',0);ellipsoid(x,5,z,2,2,2,x===0?'#c0adc1':'#aebccf',0);}
   }else for(const c of extraPlant(kind,seed))put(c.x,c.y,c.z,c.color,0);
   const compact=new Voxels(seed);for(const c of k.v.list())compact.put(Math.round(c.x*.65),Math.round(c.y*.65),Math.round(c.z*.65),c.color,c.phase);return compact.list();
 }

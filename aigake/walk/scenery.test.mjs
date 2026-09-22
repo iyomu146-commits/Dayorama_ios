@@ -5,6 +5,10 @@ import {registerHooks} from 'node:module';
 registerHooks({resolve(s,c,next){return s==='three'?{url:new URL('../vendor/three/three.module.js',import.meta.url).href,shortCircuit:true}:next(s,c);}});
 const {workshop}=await import('../experiments/voxel-walk-lab-20260909/content/kit.mjs');
 const {REGIONS}=await import('../experiments/voxel-walk-lab-20260909/content/catalog.mjs');
+const {plantBlueprint,REGIONAL_GROUND_PLANTS}=await import('../experiments/voxel-walk-lab-20260909/content/ecology.mjs');
+const {FLOWER_STYLES}=await import('../experiments/voxel-walk-lab-20260909/content/flowers.mjs');
+const {ROCK_PALETTES,regionalRock}=await import('../experiments/voxel-walk-lab-20260909/content/rocks.mjs');
+const {contentBlueprint}=await import('../experiments/voxel-walk-lab-20260909/content/blueprints.mjs');
 const {makeTown}=await import('../experiments/voxel-walk-lab-20260909/art-direction-20260915/town-plan.mjs');
 const {makeLifePlan,createLifeAnimal,updateLifeAnimal}=await import('../experiments/voxel-walk-lab-20260909/art-direction-20260915/town-life.mjs');
 const {makeDomesticPlan}=await import('../experiments/voxel-walk-lab-20260909/art-direction-20260915/town-domestic-plan.mjs');
@@ -14,6 +18,63 @@ const {vegetationShape,vegetationOverlap,vegetationHitsBox,sceneryBoxes}=await i
 const {prepareConstruction,constructionPlan}=await import('./construction.mjs');
 const THREE=await import('three');
 const profiles=JSON.parse(readFileSync(new URL('../experiments/voxel-walk-lab-20260909/art-direction-20260915/profiles.json',import.meta.url))).regions;
+
+function assertConnected(cells,label){
+ const keys=new Set(cells.map(c=>[c.x,c.y,c.z].join(','))),visited=new Set(),queue=[[cells[0].x,cells[0].y,cells[0].z]];
+ assert.equal(keys.size,cells.length,label+' unique voxels');
+ for(let i=0;i<queue.length;i++){
+  const p=queue[i],key=p.join(',');if(visited.has(key))continue;visited.add(key);
+  for(let axis=0;axis<3;axis++)for(const d of [-1,1]){const q=[...p];q[axis]+=d;const k=q.join(',');if(keys.has(k)&&!visited.has(k))queue.push(q);}
+ }
+ assert.equal(visited.size,cells.length,label+' attached petals / stems / surfaces');
+}
+test('regional flowers have attached petals and visible, separately coloured centres',()=>{
+ for(const [kind,style]of Object.entries(FLOWER_STYLES))for(const seed of [741,913,2401]){
+  const cells=plantBlueprint(kind,seed),colors=new Set(cells.map(c=>c.color));
+  assertConnected(cells,kind);assert.equal(Math.min(...cells.map(c=>c.y)),0);
+  assert.ok(style.petals.some(c=>colors.has(c)),kind+' petals');
+  assert.ok(colors.has(style.stamen),kind+' stamens');assert.ok(colors.has(style.pistil),kind+' pistil');
+  assert.ok(Math.max(...cells.map(c=>c.y))<=10,kind+' small enough for ground planting');
+ }
+});
+test('each natural region uses its own flowers and three grounded, non-box rocks',()=>{
+ const expected={harbor:'sea-lavender',canal:'iris',meadow:'daisy',alpine:'edelweiss',satoyama:'hydrangea',oasis:'desert-flower',snow:'snowdrop',stars:'moonflower',tropical:'hibiscus'};
+ for(const p of profiles)for(const seed of [741,913,2401]){
+  const plan=makeTown(p,seed),rocks=plan.boxes.filter(b=>b.rockId),groups=Map.groupBy(rocks,b=>b.rockId);
+  if(p.id==='tokyo'){assert.equal(rocks.length,0);assert.equal(plan.plants.length,0);continue;}
+  assert.equal(groups.size,3,p.id+' '+seed+' rock count');
+  if(expected[p.id])assert.ok(plan.plants.some(plant=>plant.kind===expected[p.id]),p.id+' retains local flowers');
+  for(const plant of plan.plants)if(!['crop','mushroom'].includes(plant.kind))assert.ok(REGIONAL_GROUND_PLANTS[p.id].includes(plant.kind));
+  const obstacles=sceneryBoxes(plan.buildings,plan.boxes.filter(b=>!b.rockId));
+  for(const [id,parts]of groups){
+   const base=Math.min(...parts.map(b=>b.y-b.h/2));
+   assert.ok(parts.length>30,p.id+' rock has shaped surface');
+   for(const b of parts){
+    assert.equal(plan.wet(b.x,b.z),false);assert.equal(plan.onPath(b.x,b.z),false);assert.equal(plan.deck(b.x,b.z),null);
+    assert.ok(Math.abs(plan.surface(b.x,b.z)-base)<.015,p.id+' supported rock base');
+    const box={min:[b.x-b.w/2,b.y-b.h/2,b.z-b.d/2],max:[b.x+b.w/2,b.y+b.h/2,b.z+b.d/2]};
+    assert.ok(!obstacles.some(o=>overlaps(box,o)),p.id+' rock '+id+' clears scenery');
+   }
+  }
+ }
+ for(const region of Object.keys(ROCK_PALETTES))for(let variant=0;variant<3;variant++){
+  const cells=regionalRock(region,741,variant);assertConnected(cells,region);
+  const volume=['x','y','z'].reduce((n,k)=>n*(Math.max(...cells.map(c=>c[k]))-Math.min(...cells.map(c=>c[k]))+1),1);
+  assert.ok(cells.length<volume*.8,region+' has an irregular silhouette');
+  if(region==='snow')assert.ok(cells.some(c=>ROCK_PALETTES.snow.snow.includes(c.color)));
+ }
+});
+test('bespoke tower glazing and the laboratory front keep only their outer supports',()=>{
+ const tower=makeTown(profiles.find(p=>p.id==='tokyo'),741).buildings.find(b=>b.kind==='tokyo-tower').bp;
+ for(const [y,r]of [[42,7],[63,4]])for(let x=-r+1;x<r;x++)for(const z of [-r,r]){
+  const c=tower.cells.find(c=>c.x===x&&c.y===y+2&&c.z===z);assert.equal(c?.surface,3,'tower uninterrupted glass');
+ }
+ const lab=contentBlueprint('meteorite-lab'),k=workshop('stars');
+ for(let y=3;y<10;y++){
+  assert.equal(lab.cells.find(c=>c.x===13&&c.y===y&&c.z===9)?.color,k.C.glass,'laboratory central glazing');
+  assert.equal(lab.cells.some(c=>c.x===13&&c.y===y&&c.z===10),false,'no post in front of glass');
+ }
+});
 
 test('even the narrowest front and side windows contain uninterrupted glass in every region',()=>{
  for(const region of Object.keys(REGIONS))for(const width of [3,5,7])for(const side of [false,true]){
@@ -31,8 +92,8 @@ function worldBoxes(cells,p,angle=0,centerOffset=0){
 }
 const overlaps=(a,b)=>a.min.every((v,i)=>v<b.max[i]-1e-7&&a.max[i]>b.min[i]+1e-7);
 test('rendered vegetation cubes never intersect another plant or tree',()=>{
- for(const profile of profiles){
-  const plan=makeTown(profile,741),groups=[...Array.from({length:4},(_,v)=>({items:plan.trees.filter(t=>t.variant===v),cells:plan.treePrototypes[v]})),...Object.entries(plan.prototypes).map(([kind,cells])=>({items:plan.plants.filter(p=>p.kind===kind),cells}))],grid=new Map();let item=0;
+ for(const profile of profiles)for(const seed of [741,913,2401]){
+  const plan=makeTown(profile,seed),groups=[...Array.from({length:4},(_,v)=>({items:plan.trees.filter(t=>t.variant===v),cells:plan.treePrototypes[v]})),...Object.entries(plan.prototypes).map(([kind,cells])=>({items:plan.plants.filter(p=>p.kind===kind),cells}))],grid=new Map();let item=0;
   for(const group of groups)for(const [index,p]of [...group.items].sort((a,b)=>a.birth-b.birth).entries()){
    const boxes=worldBoxes(group.cells,p,hash(plan.seed,index,21)*Math.PI*2,p.u/2);item++;
    for(const box of boxes){

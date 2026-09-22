@@ -1,26 +1,23 @@
 import {workshop} from './kit.mjs';
 import {REGIONS} from './catalog.mjs';
 import {hash} from '../model.mjs';
+import {flowerBlueprint} from './flowers.mjs';
 
 export function extraPlant(kind,seed){
+  const flower=flowerBlueprint(kind,seed);if(flower)return flower;
   const k=workshop('grove',seed),{box,put,line,disk,ellipsoid}=k,g='#8c9f7e',light='#acb792';
   const stem=(h=7)=>box(0,0,0,0,h,0,g,0);
-  const petals=(y,r,n,c)=>{for(let i=0;i<n;i++){const a=i*Math.PI*2/n;ellipsoid(Math.round(Math.cos(a)*r),y,Math.round(Math.sin(a)*r),1.5,1,1.5,c,0);}put(0,y+1,0,'#cebb82',0);};
   if(['wheat','susuki','silver-grass'].includes(kind)){
     for(const [x,z,h]of [[-2,0,8],[1,1,11],[3,-1,7]]){line([0,0,0],[x,h,z],kind==='wheat'?'#b6ad79':g,0);const c=kind==='wheat'?'#c6b67d':kind==='susuki'?'#c9c4a6':'#d1d6c5';for(let y=h-3;y<=h+1;y++)box(x-(y%2?1:0),y,z,x+1,y,z,c,0);}
-  }else if(['daisy','poppy','edelweiss','desert-flower','moonflower','hibiscus'].includes(kind)){
-    const specs={daisy:[6,2,6,'#e5dfbd'],poppy:[8,3,4,'#c48d7f'],edelweiss:[3,3,6,'#dfe1ce'],'desert-flower':[4,2,5,'#ceb1a4'],moonflower:[9,3,5,'#e1dfc5'],hibiscus:[7,4,5,'#ceaaa0']},[h,r,n,c]=specs[kind];stem(h);line([0,2,0],[3,3,0],g,0);petals(h,r,n,c);if(kind==='hibiscus')box(0,h+1,0,0,h+4,0,'#d1bc88',0);if(kind==='moonflower')line([0,4,0],[-3,6,1],g,0);
-  }else if(['juniper','heather','lavender','winter-berry'].includes(kind)){
-    const h=kind==='juniper'?5:kind==='heather'?6:kind==='lavender'?9:7;
-    for(const [x,z]of [[-3,-1],[2,-2],[0,3]]){line([0,0,0],[x,h,z],g,0);ellipsoid(x,3,z,2,2,2,kind==='juniper'?'#94aaa0':g,0);if(kind==='juniper'){put(x,h,z,'#839bab',0);}else if(kind==='winter-berry'){for(const dx of [-1,1])ellipsoid(x+dx,h,z,1,1,1,'#b98979',0);}else{box(x,h-3,z,x,h+1,z,kind==='heather'?'#b5a2b8':'#aba8c0',0);}}
+  }else if(['juniper','winter-berry'].includes(kind)){
+    const h=kind==='juniper'?5:7;
+    for(const [x,z]of [[-3,-1],[2,-2],[0,3]]){line([0,0,0],[x,h,z],g,0);ellipsoid(x,3,z,2,2,2,kind==='juniper'?'#94aaa0':g,0);if(kind==='juniper'){put(x,h,z,'#839bab',0);}else{for(const dx of [-1,1])ellipsoid(x+dx,h,z,1,1,1,'#b98979',0);}}
   }else if(['moss','lichen'].includes(kind)){
     for(const [x,z,r]of [[-2,-1,3],[2,0,2],[0,3,2]])ellipsoid(x,0,z,r,kind==='moss'?1.5:.7,r,kind==='moss'?'#9daa7d':'#c0c6ad',0);
   }else if(kind==='cactus'){
     box(-1,0,-1,1,10,1,'#91aa94',0);for(const [s,h]of [[-1,5],[1,7]]){line([0,h,0],[s*4,h,0],g,0,2);box(s*4,h,0,s*4,h+4,0,g,0);}put(0,11,0,'#c8b094',0);
   }else if(kind==='aloe'){
     disk(0,0,0,2,g,0);for(let i=0;i<7;i++){const a=i*Math.PI*2/7;line([0,1,0],[Math.round(Math.cos(a)*5),6,Math.round(Math.sin(a)*5)],light,0,2);}stem(7);
-  }else if(kind==='snowdrop'){
-    stem(8);line([0,8,0],[3,7,0],g,0);ellipsoid(3,5,0,2,2,2,'#e4e5d5',0);line([0,0,0],[-3,5,0],light,0);
   }else if(kind==='banana'){
     box(0,0,0,1,12,1,'#a7b290',0);for(const [x,z,h]of [[-6,0,11],[7,0,12],[0,-6,13],[0,6,10]]){line([0,10,0],[x,h,z],g,0,2);ellipsoid(x*.6,h,z*.6,Math.abs(x)>0?4:2,1,Math.abs(z)>0?4:2,light,0);}box(2,7,1,3,10,2,'#c4bf89',0);
   }else if(kind==='monstera'){

@@ -2,8 +2,8 @@ import {Voxels,COLORS} from '../voxels.mjs';
 import {hash,clamp} from '../model.mjs';
 import {contentBlueprint} from '../content/blueprints.mjs';
 import {workshop} from '../content/kit.mjs';
-import {plantBlueprint,WILDFLOWER_COLORS} from '../content/ecology.mjs';
-import {forestRock} from '../content/rocks.mjs';
+import {plantBlueprint,REGIONAL_GROUND_PLANTS} from '../content/ecology.mjs';
+import {regionalRock} from '../content/rocks.mjs';
 import {REGIONS} from '../content/catalog.mjs';
 import {insideLoop} from '../tokyo/city.mjs';
 import {tokyoDistrictPlan,tokyoPavement,tokyoStreetDetails} from './tokyo-districts.mjs';
@@ -82,7 +82,7 @@ function radioTower(seed){
   const spans=i===0?3:2;
   for(let j=1;j<spans;j++){const t=j/spans,yy=Math.round(y0+(y1-y0)*t),xx=Math.round(x0+(x1-x0)*t),zz=Math.round(z0+(z1-z0)*t);for(const s of [-1,1]){line([-xx,yy,s*zz],[xx,yy,s*zz],color,1);line([s*xx,yy,-zz],[s*xx,yy,zz],color,1);}}
  }
- for(const[y,r]of [[42,7],[63,4]]){box(-r,y,-r,r,y,r,red,2);box(-r,y+1,-r,r,y+3,r,C.glass,2);box(-r,y+4,-r,r,y+4,r,white,2);for(let x=-r;x<=r;x+=3)for(const z of [-r,r])paint(x,y+1,z,x,y+3,z,white,3);}
+ for(const[y,r]of [[42,7],[63,4]]){box(-r,y,-r,r,y,r,red,2);box(-r,y+1,-r,r,y+3,r,C.glass,2);box(-r,y+4,-r,r,y+4,r,white,2);for(const x of [-r,r])for(const z of [-r,r])paint(x,y+1,z,x,y+3,z,white,3);}
  box(0,79,0,0,96,0,white,2);for(const y of [82,83,89,90,95])paint(0,y,0,0,y,0,red,3);
  k.opening('tower-frame','四脚から展望室とアンテナへ連続する鉄骨');return k.finish('tokyo-tower');
 }
@@ -239,7 +239,7 @@ export function makeTown(p,seed=741){
   trees.push(t);treeSites.push(site);
  }
  scheduleTreeGrowth(trees);
- const kinds=id==='grove'?Object.keys(WILDFLOWER_COLORS).flatMap(k=>['fern','clover','fern',k]):id==='harbor'?['beach-grass','sea-lavender','succulent']:id==='canal'?['iris','hydrangea','reed']:id==='tropical'?['beach-grass','succulent']:id==='snow'?['beach-grass']:['clover','bluebell','fern'];
+ const kinds=REGIONAL_GROUND_PLANTS[id];
  const target=id==='tokyo'?0:id==='oasis'?85:id==='snow'?100:id==='grove'?500:230;
  for(let i=0,n=0;i<7000&&n<target;i++){
   const x=(hash(seed,i,501)*2-1)*9.8,z=(hash(seed,i,502)*2-1)*7.8;
@@ -247,25 +247,26 @@ export function makeTown(p,seed=741){
   if(id==='grove'&&trees.some(t=>Math.hypot(t.x-x,t.z-z)<.5))continue;
   plants.push({id:'plant-'+i,x,z,y:surface(x,z),kind:kinds[i%kinds.length],variant:i%4,u:.075,birth:n<30?0:hash(seed,i,509)});n++;
  }
- // Three small rocks have irregular grey-brown surfaces and a little moss.
- // Their complete footprints stay off paths, roots and water, on level ground.
- if(id==='grove'){
-  const sites=[];
-  for(let i=0;i<750&&sites.length<3;i++){
+ // Reserve the full rock footprint after furniture and lamps are known.
+ // Keep the accepted forest silhouettes and placement seed, sharing the same
+ // support and collision rules with sandstone, coastal stone and snow caps.
+ function placeRocks(){
+  if(id==='tokyo')return;
+  const sites=[],obstacles=sceneryBoxes(buildings,boxes);
+  for(let i=0;i<2000&&sites.length<3;i++){
    const x=(hash(seed,i,601)*2-1)*8.9,z=(hash(seed,i,602)*2-1)*6.9,y=surface(x,z),r=.57;
    if(occupied(x,z,r+.12)||trees.some(t=>Math.hypot(t.x-x,t.z-z)<r+.32)||sites.some(s=>Math.hypot(s.x-x,s.z-z)<3.5))continue;
-   if(Math.abs(x)<3&&Math.abs(z)<3)continue;
-   if(Array.from({length:17},(_,j)=>j).some(j=>{const a=j*Math.PI/8,xx=x+(j===16?0:Math.cos(a)*r),zz=z+(j===16?0:Math.sin(a)*r);return !inside(xx,zz)||wet(xx,zz)||deck(xx,zz)!==null||onPath(xx,zz)||Math.abs(surface(xx,zz)-y)>.015;}))continue;
-   const cells=forestRock(seed+i,sites.length),unit=.1,rockId='rock-'+sites.length,rot=sites.length;
-   for(const c of cells){const [xx,zz]=turn(c.x*unit,c.z*unit,rot);boxes.push({x:x+xx,y:y+(c.y+.5)*unit,z:z+zz,w:unit,h:unit,d:unit,color:c.color,kind:'stone',rockId});}
+   if(id==='grove'&&Math.abs(x)<3&&Math.abs(z)<3)continue;
+   if(Array.from({length:17},(_,j)=>j).some(j=>{const a=j*Math.PI/8,xx=x+(j===16?0:Math.cos(a)*r),zz=z+(j===16?0:Math.sin(a)*r);return !inside(xx,zz)||wet(xx,zz)||deck(xx,zz)!==null||onPath(xx,zz)||paddy(xx,zz)||field(xx,zz)||Math.abs(surface(xx,zz)-y)>.015;}))continue;
+   const cells=regionalRock(id,seed+i,sites.length),unit=.1,rockId='rock-'+sites.length,rot=sites.length;
+   const site={x,y,z,shape:vegetationShape(cells,unit)};
+   if(treeSites.some(t=>vegetationOverlap(site,t))||obstacles.some(b=>vegetationHitsBox(site,b)))continue;
+   const parts=cells.map(c=>{const [xx,zz]=turn(c.x*unit,c.z*unit,rot);return{x:x+xx,y:y+(c.y+.5)*unit,z:z+zz,w:unit,h:unit,d:unit,color:c.color,kind:'stone',rockId};});
+   // Check actual support cells as well as the perimeter, including terraces.
+   if(parts.some(b=>!inside(b.x,b.z)||wet(b.x,b.z)||deck(b.x,b.z)!==null||onPath(b.x,b.z)||Math.abs(surface(b.x,b.z)-y)>.015))continue;
+   boxes.push(...parts);
    sites.push({x,z});
   }
- }else for(let i=0;i<45;i++){
-  const x=(hash(seed,i,601)*2-1)*9.7,z=(hash(seed,i,602)*2-1)*7.7;
-  if(!inside(x,z)||wet(x,z)||occupied(x,z,.5)||onPath(x,z)||paddy(x,z)||field(x,z)||trees.some(t=>Math.hypot(t.x-x,t.z-z)<.85)||id==='tokyo')continue;
-  const h=.16+hash(seed,i,603)*.38,y=surface(x,z),w=.3+h,d=.3+h*.7;
-  if(treeSites.some(t=>vegetationHitsBox(t,{min:[x-w/2,y,z-d/2],max:[x+w/2,y+h,z+d/2]})))continue;
-  box(x,y+h/2,z,w,h,d,blend(C.ground,C.shadow,.16),'stone');
  }
  // Tokyo lamps follow each street's perpendicular, not a fixed x offset.
  // Leave the entire lamp cap clear of rendered road cells and retain space
@@ -308,6 +309,7 @@ export function makeTown(p,seed=741){
    part(x,y+.28,z,.60,.10,.30,blend(C.wood,C.wall,.3),'furniture');part(x,y+.43,z-.12,.60,.24,.07,blend(C.wood,C.wall,.3),'furniture');
   }
  }
+ placeRocks();
  // Just two small mushrooms at each of three tree bases. They appear only
  // after their tree, and avoid paths, rocks, furniture and other plants.
  if(id==='grove'){

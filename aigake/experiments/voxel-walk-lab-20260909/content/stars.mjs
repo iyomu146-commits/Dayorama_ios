@@ -14,7 +14,7 @@ export function starsBlueprint(id,seed=41){
     feature('閲覧テラスの机',()=>{for(const x of [-11,11]){box(x-5,0,15,x+5,4,19,C.woodLight,3);book(x,5,16,3);}});
   }else if(id==='meteorite-lab'){
     house({x:-8,w:21,d:19,h:16,rise:5,shape:'shed'});
-    feature('低い採光棟と試料の窓',()=>{house({x:13,z:1,w:17,d:17,h:11,rise:3,shape:'shed',color:C.glass,roofColor:C.trim,windows:false,door:false});for(const x of [5,13,21])paint(x,2,10,x,10,10,C.woodLight,3);});
+    feature('低い採光棟と試料の窓',()=>{house({x:13,z:1,w:17,d:17,h:11,rise:3,shape:'shed',color:C.glass,roofColor:C.trim,windows:false,door:false});for(const x of [5,21])paint(x,2,10,x,10,10,C.woodLight,3);});
     feature('試料の測定器',()=>{box(0,0,13,16,4,18,C.woodLight,3);box(6,5,15,7,12,15,C.wood,3);line([6,12,15],[11,10,15],C.trim,3,2);disk(9,5,15,3,C.stone,3);});
   }else if(id==='moon-garden'){
     disk(0,0,0,19,C.floor,0);
