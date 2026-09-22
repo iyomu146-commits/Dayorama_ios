@@ -25,11 +25,17 @@ function activeRange(a){
  const threshold=Math.max(.0005,max*.015),first=levels.findIndex(v=>v>threshold);let last=levels.length-1;while(last>first&&levels[last]<=threshold)last--;return{start:Math.max(0,first*.01),end:(last+1)*.01};
 }
 const reports=[];
-for(const [input,output,music,gain]of [['bgm.wav','bgm',true,.62],['bgm_night.wav','bgm-night',true,.9],['place.wav','place',false,.8],['complete.wav','complete',false,1]]){
+for(const [input,output,music,gain,clipSeconds]of [['bgm2.wav','bgm',true,.62,44],['bgm_night.wav','bgm-night',true,.9],['place.wav','place',false,.8],['complete.wav','complete',false,1]]){
  const a=readWave(path.join(source,input)),originalSeconds=a.samples.length/a.channels/a.rate,range=activeRange(a);
- const end=Math.min(a.samples.length/a.channels,Math.ceil((range.end+(music?.25:input==='place.wav'?.045:.22))*a.rate));
+ if(clipSeconds&&originalSeconds<clipSeconds)throw Error(input+' is shorter than the requested excerpt');
+ const end=clipSeconds?Math.round(clipSeconds*a.rate):Math.min(a.samples.length/a.channels,Math.ceil((range.end+(music?.25:input==='place.wav'?.045:.22))*a.rate));
  a.samples=a.samples.slice(0,end*a.channels);
- if(music){
+ if(music&&clipSeconds){
+  // Keep the exact 0–44 second excerpt and its period. Only soften the splice;
+  // the longer overlap below would remove the opening and shorten the loop.
+  const frames=a.samples.length/a.channels;
+  for(let f=0;f<frames;f++){const edge=Math.min(1,f/(a.rate*.008),(frames-1-f)/(a.rate*.02));for(let c=0;c<a.channels;c++)a.samples[f*a.channels+c]*=Math.max(0,edge);}
+ }else if(music){
   const frames=a.samples.length/a.channels,seam=Math.round(1.2*a.rate),head=a.samples.slice(0,seam*a.channels);
   for(let f=0;f<seam;f++){const t=f/(seam-1),mix=t*t*(3-2*t);for(let c=0;c<a.channels;c++){const i=(frames-seam+f)*a.channels+c;a.samples[i]=a.samples[i]*(1-mix)+head[f*a.channels+c]*mix;}}
   a.samples=a.samples.slice(seam*a.channels);
@@ -40,7 +46,7 @@ for(const [input,output,music,gain]of [['bgm.wav','bgm',true,.62],['bgm_night.wa
  for(let i=0;i<a.samples.length;i++)a.samples[i]*=gain;
  const target=music?path.join(work,output+'.wav'):path.join(out,output+'.wav');wave(target,a);
  if(music){const run=spawnSync(ffmpeg,['-hide_banner','-loglevel','error','-y','-i',target,'-ar','44100','-c:a','aac','-b:a','160k','-movflags','+faststart',path.join(out,output+'.m4a')],{encoding:'utf8',windowsHide:true});if(run.status!==0)throw Error(run.stderr||'FFmpeg failed');}
- reports.push({source:input,output:output+(music?'.m4a':'.wav'),originalSeconds,seconds:a.samples.length/a.channels/a.rate,gain,loopCrossfade:music?1.2:0});
+ reports.push({source:input,output:output+(music?'.m4a':'.wav'),originalSeconds,seconds:a.samples.length/a.channels/a.rate,gain,loopCrossfade:music&&!clipSeconds?1.2:0,...(clipSeconds?{sourceStart:0,sourceEnd:clipSeconds,edgeFadeIn:.008,edgeFadeOut:.02}:{})});
 }
 const ui=synthUI();if(!existsSync(path.join(source,'ui.wav')))wave(path.join(source,'ui.wav'),{samples:ui.channels[0],rate:ui.sampleRate,channels:1});
 writeFileSync(path.join(out,'preparation.json'),JSON.stringify(reports,null,2)+'\n');console.log(JSON.stringify(reports,null,2));

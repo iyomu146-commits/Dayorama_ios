@@ -1,11 +1,15 @@
 [
   {
-    "source": "bgm.wav",
+    "source": "bgm2.wav",
     "output": "bgm.m4a",
-    "originalSeconds": 60,
-    "seconds": 58.31,
+    "originalSeconds": 120,
+    "seconds": 44,
     "gain": 0.62,
-    "loopCrossfade": 1.2
+    "loopCrossfade": 0,
+    "sourceStart": 0,
+    "sourceEnd": 44,
+    "edgeFadeIn": 0.008,
+    "edgeFadeOut": 0.02
   },
   {
     "source": "bgm_night.wav",
