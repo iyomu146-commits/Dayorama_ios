@@ -3,13 +3,15 @@
     "source": "bgm2.wav",
     "output": "bgm.m4a",
     "originalSeconds": 120,
-    "seconds": 42,
+    "seconds": 42.3555625,
     "gain": 0.62,
-    "loopCrossfade": 2,
+    "loopCrossfade": 1.6444375,
     "sourceStart": 0,
     "sourceEnd": 44,
-    "loopCurve": "smooth-equal-power",
-    "openingConsumedByOverlap": 2
+    "loopCurve": "correlation-normalized",
+    "openingConsumedByOverlap": 1.6444375,
+    "matchedPeriod": 42.3555625,
+    "overlapCorrelation": 0.3547
   },
   {
     "source": "bgm_night.wav",

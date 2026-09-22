@@ -30,15 +30,23 @@ for(const [input,output,music,gain,clipSeconds]of [['bgm2.wav','bgm',true,.62,44
  if(clipSeconds&&originalSeconds<clipSeconds)throw Error(input+' is shorter than the requested excerpt');
  const end=clipSeconds?Math.round(clipSeconds*a.rate):Math.min(a.samples.length/a.channels,Math.ceil((range.end+(music?.25:input==='place.wav'?.045:.22))*a.rate));
  a.samples=a.samples.slice(0,end*a.channels);
+ let loopDetails={};
  if(music&&clipSeconds){
-  // Use only the requested excerpt. Overlap its tail and opening instead of
-  // fading both to silence; remove the consumed opening to avoid repeating it.
-  const frames=a.samples.length/a.channels,seam=Math.round(2*a.rate),head=a.samples.slice(0,seam*a.channels);
+  // BGM2 is approximately 85 BPM. Matching its onset/chroma sequences and
+  // waveform within the 0–44s excerpt puts the repeat at 42.3555625s.
+  // A fixed 2s overlap produced a 42s period, about half a beat too early.
+  const frames=a.samples.length/a.channels,period=Math.round(42.3555625*a.rate),seam=frames-period,head=a.samples.slice(0,seam*a.channels);
+  if(seam<=0||seam>=frames/2)throw Error('Invalid BGM2 loop alignment');
+  let dot=0,tailPower=0,headPower=0;
+  for(let i=0;i<head.length;i++){const x=a.samples[period*a.channels+i],y=head[i];dot+=x*y;tailPower+=x*x;headPower+=y*y;}
+  const correlation=Math.max(0,Math.min(.95,dot/Math.sqrt(tailPower*headPower)||0));
   for(let f=0;f<seam;f++){
-   const t=f/(seam-1),theta=t*t*(3-2*t)*Math.PI/2,tailGain=Math.cos(theta),headGain=Math.sin(theta);
+   const t=f/(seam-1),mix=t*t*(3-2*t),norm=Math.sqrt((1-mix)**2+mix**2+2*correlation*mix*(1-mix));
+   const tailGain=(1-mix)/norm,headGain=mix/norm;
    for(let c=0;c<a.channels;c++){const i=(frames-seam+f)*a.channels+c;a.samples[i]=a.samples[i]*tailGain+head[f*a.channels+c]*headGain;}
   }
   a.samples=a.samples.slice(seam*a.channels);
+  loopDetails={sourceStart:0,sourceEnd:clipSeconds,loopCurve:'correlation-normalized',openingConsumedByOverlap:seam/a.rate,matchedPeriod:period/a.rate,overlapCorrelation:Number(correlation.toFixed(4))};
  }else if(music){
   const frames=a.samples.length/a.channels,seam=Math.round(1.2*a.rate),head=a.samples.slice(0,seam*a.channels);
   for(let f=0;f<seam;f++){const t=f/(seam-1),mix=t*t*(3-2*t);for(let c=0;c<a.channels;c++){const i=(frames-seam+f)*a.channels+c;a.samples[i]=a.samples[i]*(1-mix)+head[f*a.channels+c]*mix;}}
@@ -49,8 +57,8 @@ for(const [input,output,music,gain,clipSeconds]of [['bgm2.wav','bgm',true,.62,44
  }
  for(let i=0;i<a.samples.length;i++)a.samples[i]*=gain;
  const target=music?path.join(work,output+'.wav'):path.join(out,output+'.wav');wave(target,a);
- if(music){const run=spawnSync(ffmpeg,['-hide_banner','-loglevel','error','-y','-i',target,'-ar','44100','-c:a','aac','-b:a','160k','-movflags','+faststart',path.join(out,output+'.m4a')],{encoding:'utf8',windowsHide:true});if(run.status!==0)throw Error(run.stderr||'FFmpeg failed');}
- reports.push({source:input,output:output+(music?'.m4a':'.wav'),originalSeconds,seconds:a.samples.length/a.channels/a.rate,gain,loopCrossfade:music?(clipSeconds?2:1.2):0,...(clipSeconds?{sourceStart:0,sourceEnd:clipSeconds,loopCurve:'smooth-equal-power',openingConsumedByOverlap:2}:{})});
+ if(music){const run=spawnSync(ffmpeg,['-hide_banner','-loglevel','error','-y','-i',target,'-ar','44100','-c:a','aac','-b:a','160k','-movflags','+faststart',...(clipSeconds?['-movie_timescale','44100']:[]),path.join(out,output+'.m4a')],{encoding:'utf8',windowsHide:true});if(run.status!==0)throw Error(run.stderr||'FFmpeg failed');}
+ reports.push({source:input,output:output+(music?'.m4a':'.wav'),originalSeconds,seconds:a.samples.length/a.channels/a.rate,gain,loopCrossfade:music?(clipSeconds?loopDetails.openingConsumedByOverlap:1.2):0,...loopDetails});
 }
 const ui=synthUI();if(!existsSync(path.join(source,'ui.wav')))wave(path.join(source,'ui.wav'),{samples:ui.channels[0],rate:ui.sampleRate,channels:1});
 writeFileSync(path.join(out,'preparation.json'),JSON.stringify(reports,null,2)+'\n');console.log(JSON.stringify(reports,null,2));
