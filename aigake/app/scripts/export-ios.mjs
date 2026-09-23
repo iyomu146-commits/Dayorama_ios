@@ -23,6 +23,7 @@ for(const rel of [...manifest.sources,'walk/index.html','walk/README.md','walk/L
 const artStudy='experiments/voxel-walk-lab-20260909/art-comparison-20260923/';
 for(const name of ['index.html','style.css','app.mjs','voxel-worker.mjs','design.test.mjs','refined.test.mjs','scene.test.mjs','refinement-spec.json','scene-spec.json','README.md','reference.png','reference-prompt.txt','sculpt-spec.json','build-spec.mjs','assessment.json','evidence/intake.md','evidence/refinement-review.md','evidence/site-review.md'])await copySource(artStudy+name);
 for(const name of ['density.html','density.css','density-app.mjs','density-worker.mjs','density.test.mjs','evidence/density-review.md'])await copySource(artStudy+name);
+for(const name of ['coarse.html','coarse.css','coarse-app.mjs','coarse-cafe.test.mjs','evidence/coarse-review.md'])await copySource(artStudy+name);
 // Test commands evolve independently of the app's runtime imports. Include their
 // entry points and dependency graph so a fresh GitHub checkout can run them all.
 const pkg=JSON.parse(await readFile(path.join(app,'package.json'),'utf8'));

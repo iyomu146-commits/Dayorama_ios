@@ -3,10 +3,16 @@ import {createDensityView} from './density-render.mjs';
 import {workbenchBounds} from './density-core.mjs';
 const $=id=>document.getElementById(id),fmt=n=>Math.round(n).toLocaleString('ja-JP');
 const worker=new Worker(new URL('./density-worker.mjs',import.meta.url),{type:'module'}),pending=new Map();
-const initialMode=new URLSearchParams(location.search).get('mode'),rangeTools=['fill','paint','erase','copy'];
+const initialMode=new URLSearchParams(location.search).get('mode'),model=new URLSearchParams(location.search).get('model'),rangeTools=['fill','paint','erase','copy'];
 const rangeVariants={place:'fill','erase-one':'erase','paint-one':'paint'},singleVariants={fill:'place',erase:'erase-one',paint:'paint-one'};
 let rangeEnabled=false,editLevel=1,serial=0,busy=false,scope=['blank','district'].includes(initialMode)?initialMode:'building',factor=2,steps=20000,playing=false,playAt=0,playSteps=0,night=false,selection=[],latest,latestComplete,frameStats,measuring=null,results=[],lastStats=0,lastDraws=-1,animationAt=0,ready=false,previewReady=false,previewCount=0;
-const view=createDensityView($('density-view'),{onPick:pick,onFrame:frame});
+const view=createDensityView($('density-view'),{onPick:pick,onFrame:frame,framing:model==='crafted'?{target:[0,2.4,.2],half:4,width:4.8}:undefined});
+if(model==='crafted'){
+ document.querySelector('#density option[value="1"]').textContent='細分化 · 7.5cm';
+ document.querySelector('header span').textContent='15cmの喫茶店を編集';
+ document.querySelector('header .back').href='./coarse.html';document.querySelector('header .back').textContent='喫茶店へ';
+ document.querySelector('.details').innerHTML='<summary>模型と比較の条件</summary><p>15cmの格子上で直接設計した喫茶店です。7.5cmは各粒を8つに分けた編集用の細分化で、形は変わりません。5棟表示は同じ模型を共有し、住民12人を加えます。樹木は含みません。本編の町は変更しません。</p><p>測定は画面更新間隔と形状作成時間です。頂点データは全メモリ使用量ではなく、GPU処理時間・発熱・電池消費は含みません。</p>';
+}
 const status=text=>$('selection-status').textContent=text;
 function lock(){
  const blocked=busy||!!measuring;
@@ -48,7 +54,7 @@ function syncTool(){
 }
 function request(type,extra={},overlay=false){
  busy=true;lock();if(overlay)$('busy').hidden=false;const id=++serial,start=performance.now();
- return new Promise((resolve,reject)=>{pending.set(id,{resolve,reject,start,type,measure:measuring?.phase});worker.postMessage({id,type,factor,scope,merge:$('mesh-mode').value==='merged',steps,...extra});});
+ return new Promise((resolve,reject)=>{pending.set(id,{resolve,reject,start,type,measure:measuring?.phase});worker.postMessage({id,type,factor,scope,model,merge:$('mesh-mode').value==='merged',steps,...extra});});
 }
 worker.onmessage=({data:d})=>{
  const p=pending.get(d.id);if(!p)return;pending.delete(d.id);busy=pending.size>0;$('busy').hidden=true;
@@ -61,7 +67,7 @@ worker.onmessage=({data:d})=>{
   const applyStart=performance.now(),changedScope=scope!==d.scope;scope=d.scope;factor=d.factor;steps=d.steps;
   if(changedScope){rangeEnabled=false;$('tool').value=scope==='blank'?'place':'view';$('range-mode').value=scope==='blank'?'surface':'volume';$('camera').value='corner';clearSelection();}
   view.load(d);latest=d;syncScope();syncTool();const applyMs=performance.now()-applyStart;if(d.complete)d.complete.items=[];d.active.items=[];$('density').value=String(factor);
-  $('model-count').textContent=scope==='district'?`5棟 · 樹5本 · 住民${night?'0':'12'}人`:scope==='blank'?`作品 ${fmt(d.completed.count)}粒`:`建物・テラス ${fmt(d.completed.count)}粒`;
+  $('model-count').textContent=scope==='district'?`5棟 · ${model==='crafted'?'':'樹5本 · '}住民${night?'0':'12'}人`:scope==='blank'?`作品 ${fmt(d.completed.count)}粒`:`建物・テラス ${fmt(d.completed.count)}粒`;
   $('scene-status').textContent=scope==='district'?`手前右の1棟を建築 · ${fmt(d.completed.count*4+d.visible.count)}粒`:scope==='blank'?`${workbenchBounds(factor).width} × ${workbenchBounds(factor).width}`:`主屋の幅${factor===2?32:64}粒`;
   $('mesh-time').textContent=(d.active.meshMs+(d.complete?.meshMs||0)).toFixed(1)+' ms';$('chunk-count').textContent=fmt(d.active.updated);$('response-time').textContent=(performance.now()-p.start).toFixed(0)+' ms';
   const full=d.complete||latestComplete;if(d.complete)latestComplete=d.complete;

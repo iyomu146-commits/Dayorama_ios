@@ -3,8 +3,9 @@ import {voxelizeRefined} from './refined.mjs';
 import {CELL} from './design.mjs';
 import {resample,atSteps,changedChunks,buckets,meshChunk,encodeDensity,decodeDensity} from './density-core.mjs';
 import {DensityWorkspaces} from './density-workspaces.mjs';
-let fine,factor=2,scope='building',merge=true,current=new Map(),chunks=new Map();
-const workspaces=new DensityWorkspaces();
+import {makeCoarseCafe,subdivideCoarse} from './coarse-cafe.mjs';
+let fine,factor=2,scope='building',merge=true,current=new Map(),chunks=new Map(),model='resampled',workspaces=new DensityWorkspaces();
+const libraries=new Map();
 const state=()=>workspaces.get(scope,factor),allowed=c=>scope==='district'||scope==='blank'||['cafe','terrace'].includes(c.group);
 const filtered=map=>new Map([...map].filter(([,c])=>allowed(c)));
 function summary(map){const group={};for(const c of map.values())group[c.group]=(group[c.group]||0)+1;return {count:map.size,group};}
@@ -18,10 +19,17 @@ self.onmessage=({data:d})=>{
  const start=performance.now();
  try{
   let isLoad=['load','import'].includes(d.type),edited=0;
-  if(d.type==='load'){factor=d.factor;scope=d.scope||scope;}
+  if(d.type==='load'){
+   const nextModel=d.model==='crafted'?'crafted':'resampled';
+   if(nextModel!==model){libraries.set(model,workspaces);model=nextModel;workspaces=libraries.get(model)||new DensityWorkspaces();}
+   factor=d.factor;scope=d.scope||scope;
+  }
   if(d.type==='import'){const decoded=decodeDensity(d.text);factor=decoded.factor;scope=decoded.workspace==='blank'?'blank':'building';workspaces.replace(scope,factor,decoded.map);}
   if(isLoad)merge=d.merge??merge;
-  if(scope!=='blank'&&!fine){fine=voxelizeRefined(makeSceneDesign());for(const f of [1,2])workspaces.install('building',f,resample(fine,f));}
+  if(scope!=='blank'&&!workspaces.has('building',factor)){
+   if(model==='crafted'){const coarse=makeCoarseCafe();workspaces.install('building',factor,factor===2?coarse:subdivideCoarse(coarse));}
+   else {fine||=voxelizeRefined(makeSceneDesign());for(const f of [1,2])workspaces.install('building',f,resample(fine,f));}
+  }
   if(d.type==='export'){self.postMessage({id:d.id,type:'export',text:encodeDensity(state().map,factor,scope==='blank'?'blank':'sample')});return;}
   if(d.type==='preview'){const result=workspaces.preview(scope,factor,d.edit);self.postMessage({id:d.id,type:'preview',changed:result.patch.length,blocked:result.blocked,points:result.patch.map(({key,old})=>{const c=result.map.get(key)||old;return [c.x,c.y,c.z];}),tool:d.edit.tool});return;}
   if(d.type==='edit')edited=workspaces.edit(scope,factor,d.edit);
