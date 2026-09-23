@@ -6,7 +6,8 @@ import {roughness} from './palette.mjs?v=finish3';
 // A box has 6 planes, 12 edge strips and 8 corner triangles = 44 triangles.
 export function chamferBox(box,radius,{seed=0,tile=false,sign=1,overlay=false,axis=2,relief=false,backPlane}={}){
  let [x,y,z,w,h,d]=box;
- if(tile){x+=.13;z+=.01;w-=.26;h=1.55;d-=.02;}
+ // Keep a narrow joint; strong bevels plus a wide inset made each tile look detached.
+ if(tile){x+=.03;w-=.06;h=1.9;radius=Math.min(radius,.085);}
  const half=[w/2,h/2,d/2],center=[x+w/2,y+h/2,z+d/2],b=Math.min(radius,...half.map(v=>v*.7));
  const positions=[],normals=[],polys=[],signs=[-1,1];
  for(let axis=0;axis<3;axis++)for(const s of signs){
@@ -18,7 +19,7 @@ export function chamferBox(box,radius,{seed=0,tile=false,sign=1,overlay=false,ax
   for(const [sa,t] of [[-1,0],[1,0],[1,1],[-1,1]]){const p=[0,0,0];p[axis]=sa*(half[axis]-b);p[u]=su*(half[u]-(t?b:0));p[v]=sv*(half[v]-(t?0:b));pts.push(p);}polys.push(pts);
  }
  for(const sx of signs)for(const sy of signs)for(const sz of signs)polys.push([0,1,2].map(a=>[sx,sy,sz].map((s,i)=>s*(half[i]-(i===a?0:b)))));
- const yaw=tile?Math.sin(seed*7.31)*.017:0,tilt=tile?sign*(.035+Math.sin(seed*3.73)*.018):0,raise=tile?.07+Math.sin(seed*11.41)*.065:0;
+ const yaw=tile?Math.sin(seed*7.31)*.005:0,tilt=tile?sign*(.025+Math.sin(seed*3.73)*.009):0,raise=tile?.02+Math.sin(seed*11.41)*.025:0;
  const warp=p=>{const [px,py,pz]=p,yy=py*Math.cos(tilt)-pz*Math.sin(tilt)+(tile?.07*Math.sin(seed*1.37)*px/half[0]+.035*Math.sin(seed*5.17)*px*pz/(half[0]*half[2]):0),zz=py*Math.sin(tilt)+pz*Math.cos(tilt);const q=[px*Math.cos(yaw)+zz*Math.sin(yaw)+center[0],yy+center[1]+raise,-px*Math.sin(yaw)+zz*Math.cos(yaw)+center[2]];if(relief)q[axis]+=.025*Math.sin(seed*3.71)*py/half[1];return q.map(v=>v*CELL);};
  const cross=(a,b)=>[a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]],sub=(a,b)=>a.map((v,i)=>v-b[i]);
  for(let poly of polys){const n=cross(sub(poly[1],poly[0]),sub(poly[2],poly[0])),mid=poly.reduce((a,p)=>a.map((v,i)=>v+p[i]),[0,0,0]);if(n.reduce((s,v,i)=>s+v*mid[i],0)<0)poly=poly.toReversed();

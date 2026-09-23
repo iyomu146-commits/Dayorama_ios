@@ -7,7 +7,7 @@
 - 分析：`analysis.md`、個別設計：`sculpt-spec.json`。厳格な設計検査は通過。
 - 現段階：ユーザーが輪郭を土台に細部制作を承認し、個別の詳細試作まで実装。**正式な品質ゲートの合格記録は保留。**
 - 実装：`model.mjs`。旧5棟共通生成器の建築処理を参照していない。
-- 現在の比較：`evidence/finish3-comparison.png`。初回詳細版の `evidence/detail-comparison.png` と以前の輪郭比較も保持。
+- 現在の描画：`evidence/roof4-match.png`。屋根の目地を詰めた版。修正前の `evidence/finish3-comparison.png`、初回詳細版の `evidence/detail-comparison.png` と以前の輪郭比較も保持。
 
 ## 現在の詳細試作
 

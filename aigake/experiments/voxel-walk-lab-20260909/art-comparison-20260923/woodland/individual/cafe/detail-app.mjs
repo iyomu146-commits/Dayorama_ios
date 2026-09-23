@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
 import {createCafeCells,CELL} from './model.mjs?v=finish3';
 import {PALETTE,PART_NAMES} from './palette.mjs?v=finish3';
-import {buildCafeSurfaces,installSurfaceShader} from './surface-finish.mjs?v=finish3';
+import {buildCafeSurfaces,installSurfaceShader} from './surface-finish.mjs?v=roof4';
 const $=id=>document.getElementById(id),cells=createCafeCells({stage:'detail'}),root=new THREE.Group();root.name='cafe';
 const scene=new THREE.Scene(),camera=new THREE.OrthographicCamera(-5,5,4,-4,.1,200),renderer=new THREE.WebGLRenderer({antialias:true,preserveDrawingBuffer:true,alpha:true});
 renderer.setSize(980,754,false);renderer.setPixelRatio(1);renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1;renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFShadowMap;$('view').append(renderer.domElement);scene.add(root);
