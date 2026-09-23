@@ -1,0 +1,22 @@
+{
+  "cells": 13945,
+  "cellSizeMetres": 0.15,
+  "bevelInCells": 0.055,
+  "voxelTriangles": 231132,
+  "componentTriangles": 24760,
+  "geometryRatio": 9.334894991922456,
+  "partMeshes": 22,
+  "exposedCells": 13101,
+  "checks": [
+    "All materials use identical one-cell dimensions and bevel",
+    "No triangles span multiple cells",
+    "Original cell colors and editable data preserved",
+    "No fractional scale or position jitter",
+    "Fully enclosed cells and contact faces culled",
+    "Deleting cells reveals neighbours; paint changes only color",
+    "Exploded parts recover contact faces",
+    "Component finish metadata has no effect",
+    "Finite geometry and unit normals"
+  ],
+  "scope": "Comparison prototype. The 25,000-triangle component budget does not pass for this geometric per-cell finish. iPhone FPS, memory and thermal behaviour not measured."
+}

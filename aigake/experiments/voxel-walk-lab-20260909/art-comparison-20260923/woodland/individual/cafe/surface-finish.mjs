@@ -3,7 +3,7 @@ import {CELL} from './model.mjs?v=grid5';
 import {roughness} from './palette.mjs?v=grid5';
 import {FINISH_BEVEL} from './architectural-finish.mjs?v=grid5';
 
-// Low-poly chamfers belong to a whole tile/sill, not every editable cube.
+// The same chamfer can be applied to a component or an individual grid cell.
 // A box has 6 planes, 12 edge strips and 8 corner triangles = 44 triangles.
 export function chamferBox(box,radius=FINISH_BEVEL,occupancy=null){
  if(box.length!==6||!box.every(Number.isInteger)||box.slice(3).some(v=>v<1))throw new Error('Finish boxes must occupy whole grid cells');
@@ -44,7 +44,8 @@ export function chamferBox(box,radius=FINISH_BEVEL,occupancy=null){
 }
 
 export const intactFinishUnit=(u,cells)=>u.keys.length>0&&u.keys.every((k,i)=>cells.get(k)?.part===u.part&&cells.get(k)?.finishUnit===u.id&&cells.get(k)?.color===u.colors?.[i]);
-export function buildCafeSurfaces(cells,palette,{finish=true,isolated=false}={}){
+export function buildCafeSurfaces(cells,palette,{finish=true,isolated=false,unit='component'}={}){
+ if(finish&&unit==='voxel')return buildUniformVoxelSurfaces(cells,palette,{isolated});
  const units=finish?(cells.finishUnits||[]).filter(u=>intactFinishUnit(u,cells)):[],replaced=new Set(units.flatMap(u=>u.keys));
  const raw=new Map([...cells].filter(([k])=>!replaced.has(k))),result=[];
  for(const part of new Set([...cells.values()].map(c=>c.part))){
@@ -58,6 +59,29 @@ export function buildCafeSurfaces(cells,palette,{finish=true,isolated=false}={})
    for(let i=0;i<g.positions.length/3;i++){colors.push(...c);surfaces.push(0,r);}
   }
   result.push({part,positions:new Float32Array(positions),normals:new Float32Array(normals),colors:new Float32Array(colors),surfaces:new Float32Array(surfaces),triangles:positions.length/9});
+ }
+ return result;
+}
+
+// Every material, including glass, furniture and plants, uses the identical
+// 1x1x1 envelope and inward bevel. Only colors/roughness differ between cells.
+// Combine buffers by selectable part, not by visual block: no object per cube.
+export function buildUniformVoxelSurfaces(cells,palette,{isolated=false}={}){
+ const parts=new Map();
+ for(const c of cells.values()){if(!parts.has(c.part))parts.set(c.part,[]);parts.get(c.part).push(c);}
+ const result=[];
+ for(const [part,selected] of parts){
+  const occupancy=isolated?new Map(selected.map(c=>[`${c.x},${c.y},${c.z}`,c])):cells;
+  const positions=[],normals=[],colors=[],surfaces=[];let visibleCells=0;
+  for(const c of selected){
+   const g=chamferBox([c.x,c.y,c.z,1,1,1],FINISH_BEVEL,occupancy);
+   if(!g.positions.length)continue;
+   visibleCells++;
+   positions.push(...g.positions);normals.push(...g.normals);
+   const color=palette[c.color],r=roughness(c.color);
+   for(let i=0;i<g.positions.length/3;i++){colors.push(...color);surfaces.push(0,r);}
+  }
+  result.push({part,positions:new Float32Array(positions),normals:new Float32Array(normals),colors:new Float32Array(colors),surfaces:new Float32Array(surfaces),triangles:positions.length/9,sourceCells:selected.length,visibleCells,surfaceUnit:'voxel'});
  }
  return result;
 }
