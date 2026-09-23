@@ -36,3 +36,13 @@ Coarse with merging: 59.9 FPS, p95 16.8ms, zero >50ms intervals in both stages; 
 - At 6,000 steps, the fifth plot shows its timber frame while the other four stay completed. Original comparison versions remain unchanged.
 - Night visibly lights all five window sets and hides the twelve outdoor residents. No browser errors or warnings were reported in the final check.
 - All 22 existing + new data/geometry tests pass. Frame timing, geometry counts, input response and memory figures are kept distinct.
+
+## Scratch editor extension
+
+Added a zero-cell scratch workspace at each density, independent from the reference model. The 4.8m square board is 32×32 / 64×64 cells. The board is only an authoring aid; it is neither editable voxel data nor part of the saved work.
+
+Data tests now include blank startup, top/side placement commands, four-way state isolation (scratch/sample × two densities), undoable clear, brush/copy/symmetry clipping at a fixed physical bound, and blank-vs-legacy file validation. Eight density tests pass.
+
+Browser checks: placed the first coarse cell on the empty board, stacked a second above it, added a third from its side; switched to fine (empty, 64×64) and placed one visibly smaller cell at the same zoom. Returned to coarse, cleared it, and undid the clear to recover its three cells. Selected two empty-board points and filled a 20-cell base. Tested the zoom controls and top view. Existing reference models are not cleared by these operations.
+
+Multi-touch suppression and two-finger navigation are implemented but have not been tested on an actual iPhone. This extension does not add native touch/haptic integration, automatic persistence, or a connection to the published UGC gallery.

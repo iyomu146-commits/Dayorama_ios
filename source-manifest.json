@@ -54,6 +54,7 @@
     "aigake/experiments/voxel-walk-lab-20260909/art-comparison-20260923/density-core.mjs",
     "aigake/experiments/voxel-walk-lab-20260909/art-comparison-20260923/density-render.mjs",
     "aigake/experiments/voxel-walk-lab-20260909/art-comparison-20260923/density-worker.mjs",
+    "aigake/experiments/voxel-walk-lab-20260909/art-comparison-20260923/density-workspaces.mjs",
     "aigake/experiments/voxel-walk-lab-20260909/art-comparison-20260923/density.css",
     "aigake/experiments/voxel-walk-lab-20260909/art-comparison-20260923/density.html",
     "aigake/experiments/voxel-walk-lab-20260909/art-comparison-20260923/density.test.mjs",

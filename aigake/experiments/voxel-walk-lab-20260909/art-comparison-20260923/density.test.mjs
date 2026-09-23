@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {resample,makeTimeline,atSteps,changedChunks,buckets,meshChunk,editBox,encodeDensity,decodeDensity} from './density-core.mjs';
+import {resample,makeTimeline,atSteps,changedChunks,buckets,meshChunk,editBox,encodeDensity,decodeDensity,workbenchBounds} from './density-core.mjs';
+import {DensityWorkspaces} from './density-workspaces.mjs';
 import {makeSceneDesign} from './scene.mjs';
 import {voxelizeRefined} from './refined.mjs';
 const cell=(x,y,z,color='plaster',phase=2)=>({x,y,z,color,phase,group:'cafe',emission:false});
@@ -31,4 +32,25 @@ test('actual scene remains bounded at both densities with preserved glass and a 
   for(let x=-2.8;x<=1.2;x+=.3)for(let z=-1.8;z<=.8;z+=.3){const ix=Math.floor(x/size),iz=Math.floor(z/size);assert.ok(cells.some(c=>c.x===ix&&c.z===iz&&c.y*size>=3.4&&c.phase===3),`roof ${factor}/${ix}/${iz}`);}
   const body=cells.filter(c=>['cafe','terrace'].includes(c.group));assert.ok(body.length<(factor===1?67000:12000));const round=decodeDensity(encodeDensity(map,factor));assert.equal(round.map.size,map.size);
  }
+});
+test('scratch starts empty, stacks cells and keeps both densities separate from the sample',()=>{
+ const works=new DensityWorkspaces();assert.equal(works.get('blank',2).map.size,0);assert.equal(works.has('building',2),false);
+ for(const a of [[0,0,0],[0,1,0],[1,1,0]])works.edit('blank',2,{a,b:a,tool:'fill',color:'wood'});
+ assert.equal(works.get('blank',2).map.size,3);assert.equal(works.get('blank',1).map.size,0);
+ works.install('building',2,[cell(4,4,4)]);works.edit('blank',1,{a:[0,0,0],b:[0,0,0],tool:'fill',color:'brick'});
+ assert.equal(works.get('blank',2).map.size,3);assert.equal(works.get('blank',1).map.get('0,0,0').color,'brick');assert.equal(works.get('district',2).map.size,1);
+ assert.equal(works.clear('blank',2),3);assert.equal(works.get('blank',2).map.size,0);assert.equal(works.undo('blank',2),3);assert.equal(works.get('blank',2).map.size,3);
+ works.undo('blank',2);assert.equal(works.get('blank',2).map.size,2);assert.equal(works.get('blank',1).map.size,1);assert.equal(works.get('building',2).map.size,1);
+ assert.throws(()=>works.clear('building',2));
+});
+test('same physical workbench bounds clip brushes, mirror and copy at each resolution',()=>{
+ const works=new DensityWorkspaces();for(const factor of [1,2]){const bounds=workbenchBounds(factor);assert.equal(bounds.width*.075*factor,4.8);const top=bounds.max;
+  works.edit('blank',factor,{a:top,b:top.map(v=>v+2),tool:'fill',mirror:true});assert.equal(works.get('blank',factor).map.size,2);
+  const before=works.get('blank',factor).history.length;works.edit('blank',factor,{a:top,b:top,tool:'copy',offset:[0,1,0]});assert.equal(works.get('blank',factor).map.size,2);assert.equal(works.get('blank',factor).history.length,before);
+ }
+});
+test('scratch files preserve their workspace and reject out-of-board imports',()=>{
+ const empty=decodeDensity(encodeDensity(new Map(),2,'blank'));assert.equal(empty.workspace,'blank');assert.equal(empty.map.size,0);
+ const text=encodeDensity(mapOf([cell(0,0,0,'glassSea',4)]),1,'blank'),saved=decodeDensity(text);assert.equal(saved.workspace,'blank');assert.equal(saved.factor,1);assert.equal(saved.map.get('0,0,0').emission,true);
+ const d=JSON.parse(text);d.cells[0].x=100;assert.throws(()=>decodeDensity(JSON.stringify(d)));delete d.workspace;assert.equal(decodeDensity(JSON.stringify(d)).workspace,'sample');
 });
