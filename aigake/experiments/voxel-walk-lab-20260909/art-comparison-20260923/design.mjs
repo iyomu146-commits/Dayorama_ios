@@ -2,6 +2,7 @@
 export const CELL=.075, BUDGET=20000;
 export const COLORS={plaster:'#e5d7b6',plaster2:'#d9c8a3',stone:'#b9b09b',stone2:'#ccc3ad',wood:'#a27242',woodLight:'#c39658',woodDark:'#694b34',roof:'#345e62',roofEdge:'#25494e',roofLight:'#47777a',glass:'#749a9b',glassLight:'#aec1b1',metal:'#394841',brick:'#ad7351',brick2:'#c38a63',cloth:'#bc7657',clothLight:'#d0926e',pot:'#b47751',soil:'#5c5340',leaf:'#52744b',leaf2:'#6d8a4c',leaf3:'#8d9c58',leafDark:'#3f6147',grass:'#91a16b',flower:'#e5b9ab',cream:'#f1e6c5',yellow:'#d7b759'};
 Object.assign(COLORS,{roofMuted:'#3a6466',roofSlate:'#3d686b',roofSeam:'#294c51',woodHoney:'#b7884c',bark:'#79694e',barkDark:'#5e513e',barkLight:'#928065',leafGold:'#a5a854',leafLime:'#7d9147',plasterWarm:'#dfcfad',glassSilver:'#96b4ae',glassDeep:'#577d7c',flowerGold:'#d4a85f'});
+Object.assign(COLORS,{earthEdge:'#897c5c',grassSoft:'#899861',grassShade:'#7d8e59',flagWarm:'#c8b99a',flagLight:'#d6c7a8',flagGrey:'#b8b4a0',mortar:'#9e977f',leafOlive:'#66814d',leafOliveLight:'#849952',glassHaze:'#a0b6ac',glassSea:'#7f9e98',glassShadow:'#587e78',ceramic:'#658c7d'});
 export const PHASES=[{name:'基礎',end:2000},{name:'骨組み',end:6000},{name:'壁・窓',end:12000},{name:'屋根',end:17000},{name:'仕上げ',end:20000}];
 const hash=(a,b=0)=>{const v=Math.sin(a*127.1+b*311.7)*43758.5453;return v-Math.floor(v);};
 export function makeDesign(variant=0){
@@ -167,16 +168,23 @@ export function insidePart(p,x,y,z){
   return (x-a[0]-t*dx)**2+(y-a[1]-t*dy)**2+(z-a[2]-t*dz)**2<=r*r;
  }
  const [a,b,c]=inversePoint(p,x,y,z),[w,h,d]=p.s;
+ if(p.shape==='prism')return Math.abs(b)<=h/2&&pointInPolygon(a,c,p.outline);
  if(p.shape==='box')return Math.abs(a)<=w/2&&Math.abs(b)<=h/2&&Math.abs(c)<=d/2;
  if(p.shape==='ellipsoid')return(a/w)**2+(b/h)**2+(c/d)**2<=1;
  if(p.shape==='cylinder'){const r=w*((p.taper??1)+(1-(p.taper??1))*(b/h+.5));return Math.abs(b)<=h/2&&(a/r)**2+(c/(d*r/w))**2<=1;}
  if(p.shape==='hip'){const top=h*Math.max(0,Math.min(1-Math.abs(c)/d,1-Math.max(0,Math.abs(a)-p.ridge)/(w-p.ridge)));return Math.abs(a)<=w&&Math.abs(c)<=d&&b<=top&&b>=top-p.thickness;}
  return false;
 }
+export function pointInPolygon(x,z,points){
+ let inside=false;for(let i=0,j=points.length-1;i<points.length;j=i++){
+  const [ax,az]=points[i],[bx,bz]=points[j];
+  if((az>z)!==(bz>z)&&x<(bx-ax)*(z-az)/(bz-az)+ax)inside=!inside;
+ }return inside;
+}
 export function partBounds(p){
  if(p.shape==='segment')return{min:p.p.map((v,i)=>Math.min(v,p.end[i])-p.s[0]),max:p.p.map((v,i)=>Math.max(v,p.end[i])+p.s[0])};
  // Conservative rotated bounds; occupancy still uses exact analytic local shape.
- const radii=p.shape==='box'?p.s.map(v=>v/2):p.shape==='cylinder'?[p.s[0],p.s[1]/2,p.s[2]]:p.shape==='hip'?[p.s[0],p.s[1]+p.thickness,p.s[2]]:p.s;
+ const radii=p.shape==='box'||p.shape==='prism'?p.s.map(v=>v/2):p.shape==='cylinder'?[p.s[0],p.s[1]/2,p.s[2]]:p.shape==='hip'?[p.s[0],p.s[1]+p.thickness,p.s[2]]:p.s;
  const angle=p.r.some(v=>v!==0),r=Math.hypot(...radii);return{min:p.p.map((v,i)=>v-(angle?r:radii[i])),max:p.p.map((v,i)=>v+(angle?r:radii[i]))};
 }
 export function voxelize(design){

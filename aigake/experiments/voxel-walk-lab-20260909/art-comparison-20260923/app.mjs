@@ -1,11 +1,13 @@
 import {makeDesign,COLORS,BUDGET,PHASES,encodeWork,decodeWork,cellKey} from './design.mjs';
 import {createView} from './render.mjs';
 import {makeRefinedDesign} from './refined.mjs';
+import {makeSceneDesign} from './scene.mjs';
 const $=id=>document.getElementById(id),fmt=n=>Math.round(n).toLocaleString('ja-JP');
 const names={plaster:'漆喰',plaster2:'砂色',stone:'石',stone2:'明るい石',wood:'木',woodLight:'明るい木',woodDark:'濃い木',roof:'青緑',roofEdge:'濃い青緑',roofLight:'明るい青緑',glass:'ガラス',glassLight:'明るいガラス',metal:'鉄',brick:'煉瓦',brick2:'明るい煉瓦',cloth:'赤茶',clothLight:'薄い赤茶',pot:'素焼き',soil:'土',leaf:'葉',leaf2:'若葉',leaf3:'黄緑',leafDark:'濃い葉',grass:'草',flower:'桃色',cream:'白',yellow:'黄色'};
 Object.assign(names,{roofMuted:'青緑・中間',roofSlate:'青緑・灰',roofSeam:'屋根の継ぎ目',woodHoney:'蜂蜜色の木',bark:'樹皮',barkDark:'濃い樹皮',barkLight:'明るい樹皮',leafGold:'黄葉',leafLime:'黄緑の葉',plasterWarm:'暖かい漆喰',glassSilver:'ガラス・空色',glassDeep:'ガラス・深緑',flowerGold:'山吹色'});
+Object.assign(names,{earthEdge:'土の縁',grassSoft:'明るい芝',grassShade:'芝',flagWarm:'砂岩',flagLight:'明るい砂岩',flagGrey:'灰色の石',mortar:'目地',leafOlive:'オリーブ色の葉',leafOliveLight:'明るい葉',glassHaze:'ガラス・薄緑',glassSea:'ガラス・緑',glassShadow:'ガラス・影',ceramic:'青磁'});
 for(const [id,hex] of Object.entries(COLORS)){const o=document.createElement('option');o.value=id;o.textContent=names[id]||id;o.style.color=hex;$('paint').append(o);}$('paint').value='roof';
-let design=makeRefinedDesign(),cells=[],history=[],steps=BUDGET,playing=false,last=0,accumulated=0,night=false,variant=0,views={},ready=false,patches=new Map(),imported=false,revision='refined';
+let design=makeSceneDesign(),cells=[],history=[],steps=BUDGET,playing=false,last=0,accumulated=0,night=false,variant=0,views={},ready=false,patches=new Map(),imported=false,revision='scene';
 const versions=new Map();
 const activeKey=()=>imported?'imported':revision+':'+variant;
 function keepVersion(){versions.set(activeKey(),{design,cells,history,patches,variant});}
@@ -16,10 +18,10 @@ async function buildCells(d){
 }
 function labelVersion(){
  $('revision').value=imported?'imported':revision;
- $('voxel-title').textContent=imported?'読み込んだ作品':revision==='refined'?'ボクセル — 作り込み後':'ボクセル — 改修前';
+ $('voxel-title').textContent=imported?'読み込んだ作品':revision==='scene'?'ボクセル — 窓と敷地':revision==='refined'?'ボクセル — 前回の版':'ボクセル — 初回';
  $('variant').disabled=imported;$('variant').setAttribute('aria-pressed',String(variant===1));
  $('undo').disabled=!history.length;
- $('selected').textContent=imported?'左に読み込んだ作品を表示しています。':revision==='refined'?'屋根・樹・家具を格子に合わせて作り込み':'初回の比較モデル';
+ $('selected').textContent=imported?'左に読み込んだ作品を表示しています。':revision==='scene'?'窓の奥行き・敷石・枝が見える樹冠':revision==='refined'?'前回の屋根・樹・家具の作り込み':'初回の比較モデル';
 }
 async function switchVersion(nextRevision,nextVariant=variant){
  if(!ready)return;keepVersion();stop();ready=false;$('loading').hidden=false;
@@ -27,7 +29,7 @@ async function switchVersion(nextRevision,nextVariant=variant){
  try{
   imported=nextRevision==='imported';revision=nextRevision;variant=nextVariant;
   let v=versions.get(activeKey());
-  if(!v){const d=revision==='refined'?makeRefinedDesign(variant):makeDesign(variant);v={design:d,cells:await buildCells(d),history:[],patches:new Map(),variant};}
+  if(!v){const d=revision==='scene'?makeSceneDesign(variant):revision==='refined'?makeRefinedDesign(variant):makeDesign(variant);v={design:d,cells:await buildCells(d),history:[],patches:new Map(),variant};}
   ({design,cells,history,patches,variant}=v);views.voxel.set(design,cells);views.module.set(makeDesign(variant),[]);
   progress(steps);labelVersion();
  }catch(e){({revision,variant,imported,design,cells,history,patches}=previous);$('selected').textContent=e.message;$('revision').value=imported?'imported':revision;}

@@ -1,0 +1,9 @@
+{
+  "scope": "Third selectable voxel version; improve storefront, paving and canopy without discarding the prior craft pass.",
+  "glass": "Opaque cells with no central mullion. Recess panes approximately 0.28m from the facade, add continuous reveals and an outer sill. No painted interior or hidden non-voxel meshes.",
+  "site": "Flat irregular polygon footprint with a shallow earth edge. Varied polygon flagstones form a front walkway, entry approach and terrace. Building foundations, furniture feet and planters remain supported at their existing heights.",
+  "canopy": "Five crown areas linked by branching timber. Smaller leaf fans, intentional openings between boughs, reduced yellow contrast. Preserve a connected tree and a clear facade.",
+  "construction": "Keep 20,000 steps and five phases. New objects use the existing phase and file contracts. Interior framing remains available during construction.",
+  "comparison": "Initial, first craft pass and storefront/site pass selectable with separate in-memory edits. Same cell size, light and camera. Right-hand modular model remains the initial control.",
+  "checks": ["roof coverage", "temporary framing", "opaque inset panes without mullions", "paving under every furniture foot", "planting clear of entrance", "rooted tree connectivity", "file round-trip", "mobile framing"]
+}

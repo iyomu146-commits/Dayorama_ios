@@ -8,6 +8,7 @@ function color(name){if(!colorCache.has(name))colorCache.set(name,new THREE.Colo
 export function partGeometry(p){
  let g;const [w,h,d]=p.s;
  if(p.shape==='box')g=p.bevel?new RoundedBoxGeometry(w,h,d,2,Math.min(p.bevel,w*.2,h*.2,d*.2)):new THREE.BoxGeometry(w,h,d);
+ else if(p.shape==='prism'){const outline=new THREE.Shape();p.outline.forEach(([x,z],i)=>i?outline.lineTo(x,-z):outline.moveTo(x,-z));outline.closePath();g=new THREE.ExtrudeGeometry(outline,{depth:h,bevelEnabled:false,steps:1});g.rotateX(-Math.PI/2);g.translate(0,-h/2,0);}
  else if(p.shape==='ellipsoid'){g=new THREE.IcosahedronGeometry(1,p.foliage?1:2);g.scale(w,h,d);}
  else if(p.shape==='cylinder'){g=new THREE.CylinderGeometry(1,p.taper??1,h,16);g.scale(w,1,d);}
  else if(p.shape==='segment'){
@@ -66,7 +67,7 @@ export function createView(host,mode,{onCamera,onPick,onStats}={}){
  function allowed(p){
   if(focus==='all')return true;
   if(focus==='cafe')return ['cafe','terrace'].includes(p.group);
-  if(focus==='plants'){const x=p.p?.[0]??(p.x+.5)*CELL,z=p.p?.[2]??(p.z+.5)*CELL;return p.group==='plants'&&Math.hypot(x-1.48,z-1.95)<.65;}
+  if(focus==='plants'){const x=p.p?.[0]??(p.x+.5)*CELL,z=p.p?.[2]??(p.z+.5)*CELL;return p.group==='plants'&&Math.hypot(x-(design?.scene?1.84:1.48),z-1.95)<.65;}
   return p.group===focus;
  }
  function rebuild(){

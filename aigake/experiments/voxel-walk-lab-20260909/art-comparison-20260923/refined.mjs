@@ -126,7 +126,7 @@ export function voxelizeRefined(design){
  // Put seams directly on the occupied roof columns: no aliasing gaps, no detached dots.
  const roof=design.parts.find(p=>p.shape==='hip'),roofCells=cells.filter(c=>c.part===roof.id);
  const top=new Map();for(const c of roofCells){const k=`${c.x},${c.z}`;if(!top.has(k)||top.get(k).y<c.y)top.set(k,c);}
- const seamXs=new Set([-39,-31,-23,-15,-7,1,9,17,25]);
+ const seamXs=new Set(design.scene?[-39,-27,-15,-3,9,21]:[-39,-31,-23,-15,-7,1,9,17,25]);
  for(const c of top.values()){
   const wx=(c.x+.5)*CELL+.7,wz=(c.z+.5)*CELL+.5;
   const onFront=1-Math.abs(wz)/2.13<=1-Math.max(0,Math.abs(wx)-1.23)/1.55;
@@ -137,7 +137,10 @@ export function voxelizeRefined(design){
  }
  for(const c of map.values()){
   const p=parts.get(c.part),x=(c.x+.5)*CELL,y=(c.y+.5)*CELL,z=(c.z+.5)*CELL;
-  if(p?.foliage){
+  if(design.scene&&p?.foliage){
+   const patch=Math.sin(x*1.9+z*.8)+Math.cos(y*1.7-z*1.2);
+   c.color=patch>.85?'leafOliveLight':patch<-.85?'leafDark':'leafOlive';
+  }else if(p?.foliage){
    // Colour varies across broad volumes; it is part of the editable cells, not light baked into an image.
    const patch=Math.sin(x*2.7+Math.sin(z*2))*Math.cos(y*2.3-z*1.7),edge=rand(Math.floor(c.x/2),Math.floor(c.z/2)+Math.floor(c.y/2)*13);
    c.color=patch>.67?'leafGold':patch>.16?'leafLime':patch>-.55?'leaf':'leafDark';
@@ -150,11 +153,13 @@ export function voxelizeRefined(design){
   }else if((c.color==='woodLight'||c.color==='woodHoney')&&p?.shape==='box'){
    const grain=Math.sin(x*4+Math.sin(z*24+y*19)*.7);
    if(grain>.82)c.color='woodHoney';else if(grain<-.85)c.color='woodLight';
+  }else if(design.scene&&p?.name==='敷地'){
+   c.color=c.y< -1?'earthEdge':Math.sin(x*1.2+z*.9)+Math.cos(z*1.8-x*.7)>1?'grassSoft':'grassShade';
   }else if(c.color==='plaster'&&Math.sin(x*2.3+z*1.7)+Math.cos(y*2.2-z*1.2)>1.4)c.color='plasterWarm';
   else if(c.color==='glass'&&p?.emission){
    // A quiet opaque sky reflection, without reinstating a central window bar.
    const relative=y-(p.p[1]??y),sweep=x*.24+z*.15+relative;
-   c.color=sweep>.8?'glassSilver':relative<-.48?'glassDeep':'glass';
+   c.color=design.scene?(relative>.38?'glassHaze':relative<-.62?'glassShadow':Math.abs(x*.65+y-.95)<.12?'glassHaze':'glassSea'):(sweep>.8?'glassSilver':relative<-.48?'glassDeep':'glass');
   }
  }
  return connectedTree([...map.values()]).sort((a,b)=>a.phase-b.phase||(a.order??999)-(b.order??999)||a.y-b.y||a.z-b.z||a.x-b.x);
