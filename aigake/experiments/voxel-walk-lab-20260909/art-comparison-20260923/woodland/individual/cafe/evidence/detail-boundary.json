@@ -1,0 +1,10 @@
+{
+  "expectedUnitFaces": 16592,
+  "compiledUnitFaces": 16592,
+  "compiledAreaInUnitFaces": 16592,
+  "missingFaces": [],
+  "extraFaces": [],
+  "invalidTriangles": [],
+  "passed": true,
+  "meaning": "Compiled surface equals exposed boundary of non-overlapping integer-grid cells. Exact grid proof allowing Float32 encoding error; does not rely on an ambiguous averaged normal at concave stair vertices. This is not a visual-quality approval."
+}

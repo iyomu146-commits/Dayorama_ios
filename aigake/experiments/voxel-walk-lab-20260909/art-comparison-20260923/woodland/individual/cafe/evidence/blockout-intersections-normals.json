@@ -1,0 +1,95 @@
+{
+  "selfIntersecting": true,
+  "meshCount": 1,
+  "insideVertexCount": 649,
+  "undecidedVertexCount": 0,
+  "sampledVertexCount": 3304,
+  "totalVertexCount": 3304,
+  "meshes": [
+    {
+      "name": "cafe-union",
+      "analyzed": true,
+      "error": null,
+      "selfIntersecting": true,
+      "insideVertexCount": 649,
+      "undecidedVertexCount": 0,
+      "outsideVertexCount": 2655,
+      "sampledVertexCount": 3304,
+      "totalVertexCount": 3304,
+      "samplingStride": 1,
+      "triangleCount": 5178,
+      "degenerateTriangleCount": 0,
+      "worstRegions": [
+        {
+          "vertexIndex": 71,
+          "position": [
+            2.55,
+            3.45,
+            -2.1
+          ]
+        },
+        {
+          "vertexIndex": 285,
+          "position": [
+            0.15,
+            3.45,
+            2.1
+          ]
+        },
+        {
+          "vertexIndex": 455,
+          "position": [
+            1.95,
+            3.3,
+            -2.4
+          ]
+        },
+        {
+          "vertexIndex": 624,
+          "position": [
+            2.1,
+            3.75,
+            -2.25
+          ]
+        },
+        {
+          "vertexIndex": 849,
+          "position": [
+            0.9,
+            4.05,
+            -1.8
+          ]
+        },
+        {
+          "vertexIndex": 1074,
+          "position": [
+            0.15,
+            4.35,
+            -1.35
+          ]
+        },
+        {
+          "vertexIndex": 1299,
+          "position": [
+            -0.6,
+            4.65,
+            -0.9
+          ]
+        },
+        {
+          "vertexIndex": 1516,
+          "position": [
+            -1.05,
+            4.95,
+            -0.45
+          ]
+        }
+      ],
+      "normalSource": "vertexNormals",
+      "normalFallbackCount": 0,
+      "epsilon": 0.009881801455200363,
+      "rayDirectionCount": 3
+    }
+  ],
+  "errors": []
+}

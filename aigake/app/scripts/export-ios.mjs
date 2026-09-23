@@ -29,6 +29,11 @@ for(const name of ['IMAGE-GENERATION-RULES.md','content/ART_DIRECTION.md'])await
 for(const name of ['prompts.md','town-voxel-v1.png','town-voxel-v2.png'])await copySource(artStudy+'woodland/references/'+name);
 for(const name of ['index.html','style.css','app.mjs','worker.mjs','scene-model.test.mjs','README.md','analysis.md','assessment.json','sculpt-spec.json','references/regions.json','evidence/intake.md','evidence/blockout-review.md','evidence/current-corner.png'])await copySource(artStudy+'woodland/'+name);
 for(const name of ['refinement-v2.md','before-refinement-corner.png','refinement-cafe-day.png','refinement-cafe-night.png','refinement-cafe-back.png'])await copySource(artStudy+'woodland/evidence/'+name);
+// Exact crops and the individually authored cafe remain a standalone art study.
+for(const name of ['crop_references.py','crops/index.html','crops/manifest.json','crops/home.png','crops/bakery.png','crops/books.png','crops/florist.png','crops/cafe.png'])await copySource(artStudy+'woodland/references/'+name);
+await copySource(artStudy+'woodland/individual/README.md');
+for(const name of ['detail-observations.md'])await copySource(artStudy+'woodland/individual/cafe/evidence/'+name);
+for(const name of ['index.html','detail-app.mjs','app.mjs','model.mjs','palette.mjs','analysis.md','STATUS.md','assessment.json','sculpt-spec.json','.img2threejs/state.json','check-model.mjs','check-boundary.mjs','evidence/user-direction.json','evidence/blockout-review.json','evidence/blockout-comparison.png','evidence/blockout-intersections-normals.json','evidence/blockout-voxel-solids.json','evidence/blockout-boundary.json','evidence/detail-structure.json','evidence/detail-boundary.json','evidence/detail-comparison.png','evidence/detail-v1-comparison.png','evidence/detail-match.png','evidence/detail-front.png','evidence/detail-right.png','evidence/detail-back.png','evidence/detail-left.png','evidence/detail-neutral.png','evidence/detail-grazing.png'])await copySource(artStudy+'woodland/individual/cafe/'+name);
 // Test commands evolve independently of the app's runtime imports. Include their
 // entry points and dependency graph so a fresh GitHub checkout can run them all.
 const pkg=JSON.parse(await readFile(path.join(app,'package.json'),'utf8'));

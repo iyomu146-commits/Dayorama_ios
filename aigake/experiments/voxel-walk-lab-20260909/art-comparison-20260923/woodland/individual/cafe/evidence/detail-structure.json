@@ -1,0 +1,38 @@
+{
+  "checks": [
+    "All cell coordinates are integer, palette IDs resolve",
+    "Every cell is supported through face adjacency from ground",
+    "Front and side windows retain uninterrupted glass, no centre posts",
+    "Entrance route clear above stone steps; awning above door",
+    "Each chair and table has four continuous grounded legs",
+    "Roof has a continuous lower surface across course joints",
+    "Chimney cap has a real empty opening"
+  ],
+  "cells": 13545,
+  "triangles": 11584,
+  "parts": [
+    "plinth",
+    "walls",
+    "front-window",
+    "side-window",
+    "gable",
+    "roof",
+    "door",
+    "handle",
+    "awning",
+    "steps",
+    "fascia",
+    "tiles",
+    "chimney",
+    "ridge",
+    "terrace",
+    "plant-front",
+    "plant-right",
+    "table",
+    "chair-front",
+    "chair-back",
+    "cup",
+    "plant-left"
+  ],
+  "visualAcceptance": "Not assessed by this script. Formal visual quality gate remains pending."
+}

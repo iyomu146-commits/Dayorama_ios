@@ -1,0 +1,10 @@
+{
+  "expectedUnitFaces": 7726,
+  "compiledUnitFaces": 7726,
+  "compiledAreaInUnitFaces": 7726,
+  "missingFaces": [],
+  "extraFaces": [],
+  "invalidTriangles": [],
+  "passed": true,
+  "meaning": "Compiled surface equals exposed boundary of non-overlapping, validated voxel solids. Exact grid proof; does not rely on an ambiguous averaged normal at concave stair vertices."
+}

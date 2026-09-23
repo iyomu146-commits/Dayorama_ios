@@ -1,0 +1,11 @@
+{
+ "passId":"blockout",
+ "action":"pending",
+ "approvalStatus":"User explicitly approved continuing from this displayed blockout: assistant asked 'この輪郭を土台に、細部の制作へ進めてよいですか？' with the source/render comparison; user replied 'どうぞ'. This is acceptance of the blockout as a basis for detail work, not approval of the finished asset or a claim that the failed compiled-mesh diagnostic passed.",
+ "acceptanceAuthority":"No automated quality pass recorded. User authorized starting detailed implementation; this does not approve a quality score.",
+ "score":0.81,
+ "layers":{"silhouetteProportion":0.81,"componentStructure":0.48,"formDetail":0.2,"materialSurface":0.1,"lightingCamera":0.75},
+ "features":[{"featureId":"cafe-silhouette","score":0.81,"visible":true,"notes":"Low wall volume, broad gable, left chimney and right-side depth match the source at blockout level. Eave is heavy and right facade is slightly wider; tile structure and openings deliberately not implemented yet."}],
+ "summary":"Blockout only: macro silhouette sufficiently established to build structure; not a completed cafe. Source and actual browser render were inspected together. Five rendered views retain volume. Each of 30,770 original cube primitives passes self_intersection (246,160 of 246,160 vertices); all 7,726 compiled unit faces equal their non-overlapping occupancy boundary. The generic compiled-union normal-offset test failed at concave stair edges and is preserved, not reported as passed. The exact voxel-solid plus boundary proof is the applicable structural evidence for this integer-grid object. No worn/held attachment exists in this pass.",
+ "remaining":["Closed blockout has no facade openings, furniture, repairs or surface materials.","Backside shape inferred.","Current render is a shape study, not an improved final artwork."]
+}

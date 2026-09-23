@@ -1,0 +1,76 @@
+{
+  "source": "../town-voxel-v2.png",
+  "sourceSha256": "263e2d864a796cbfc8732acbdd61b8397142d284d269a413983f036297f4b856",
+  "sourceSize": [
+    1536,
+    1024
+  ],
+  "method": "Integer rectangle crop only; original RGB pixels, no resampling or regeneration.",
+  "crops": [
+    {
+      "id": "home",
+      "name": "住宅",
+      "rect": [
+        205,
+        48,
+        354,
+        423
+      ],
+      "file": "home.png",
+      "sha256": "d6896d94e0761997261429adfc77cdf2f2f889e6dc91c5eb040c15e1d22d1c60",
+      "pixelEqualityVerified": true
+    },
+    {
+      "id": "bakery",
+      "name": "パン屋",
+      "rect": [
+        562,
+        135,
+        385,
+        333
+      ],
+      "file": "bakery.png",
+      "sha256": "cbe4aba07366333411b47bf5bde19ee0b98559426f89d3029ee698031a844743",
+      "pixelEqualityVerified": true
+    },
+    {
+      "id": "books",
+      "name": "本屋",
+      "rect": [
+        978,
+        125,
+        396,
+        374
+      ],
+      "file": "books.png",
+      "sha256": "f371fa2ef4470f2d8825bb555448c8ab2417875a17dbed217a088abb4306dcc4",
+      "pixelEqualityVerified": true
+    },
+    {
+      "id": "florist",
+      "name": "花屋",
+      "rect": [
+        267,
+        410,
+        453,
+        310
+      ],
+      "file": "florist.png",
+      "sha256": "e54041b375c9edd4c8463253572867205bad167afbe91f5719ca4d3426cde5f2",
+      "pixelEqualityVerified": true
+    },
+    {
+      "id": "cafe",
+      "name": "喫茶店",
+      "rect": [
+        791,
+        400,
+        490,
+        377
+      ],
+      "file": "cafe.png",
+      "sha256": "ef1a243b595699d29212b0ff4fd0559ad30769793aa80c56cccb53bce51f7c43",
+      "pixelEqualityVerified": true
+    }
+  ]
+}

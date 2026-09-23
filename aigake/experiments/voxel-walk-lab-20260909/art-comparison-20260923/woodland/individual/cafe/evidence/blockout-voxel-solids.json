@@ -1,0 +1,10 @@
+{
+  "primitiveCount": 30770,
+  "uniqueOccupancy": 30770,
+  "nonOverlappingInteriors": true,
+  "selfIntersectionFailures": [],
+  "sampledVertexCount": 246160,
+  "totalVertexCount": 246160,
+  "passed": true,
+  "scope": "Every authored integer-grid cube. Adjacent cubes share boundary faces only. No inferred smoothing or normal across concave corners. Generic compiled-union test failure is retained separately; this does not claim it passed."
+}

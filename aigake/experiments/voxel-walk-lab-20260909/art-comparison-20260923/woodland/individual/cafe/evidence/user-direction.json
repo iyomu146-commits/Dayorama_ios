@@ -1,0 +1,7 @@
+{
+ "question":"この輪郭を土台に、細部の制作へ進めてよいですか？",
+ "answer":"どうぞ",
+ "authorized":"Detailed cafe implementation using the displayed blockout and exact source crop.",
+ "notAuthorized":"Inventing visual scores, changing failed diagnostics to pass, or claiming a finished or certified asset.",
+ "execution":"Work on the authorized detail prototype. Formal skill pipeline and numeric visual acceptance remain pending. Preserve original failures and independent voxel-boundary diagnostics. Do not execute record-blockout.py to advance a quality gate."
+}

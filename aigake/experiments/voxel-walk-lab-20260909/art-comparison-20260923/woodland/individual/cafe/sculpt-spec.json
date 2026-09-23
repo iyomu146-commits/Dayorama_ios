@@ -1,0 +1,6514 @@
+{
+  "targetName": "Dayorama cafe from exact crop",
+  "targetId": "dayorama-cafe-from-exact-crop",
+  "schemaVersion": "2.1",
+  "terminologyProfile": {
+    "domain": "real-time procedural Three.js asset",
+    "geometryTerms": [
+      "silhouette",
+      "topology",
+      "primitive",
+      "bevel",
+      "chamfer",
+      "taper",
+      "bend",
+      "boolean cut",
+      "edge loop",
+      "surface normal",
+      "displacement"
+    ],
+    "materialTerms": [
+      "albedo",
+      "baseColor",
+      "roughness",
+      "metalness",
+      "normal map",
+      "bump map",
+      "ambient occlusion",
+      "cavity dirt",
+      "edge wear",
+      "clearcoat"
+    ],
+    "lightingTerms": [
+      "key light",
+      "fill light",
+      "rim light",
+      "HDRI/environment reflection",
+      "contact shadow"
+    ],
+    "descriptionRule": "Use measurable 3D graphics terms. Avoid vague words unless they are paired with concrete geometry/material/shader parameters."
+  },
+  "sourceImage": "../../references/crops/cafe.png",
+  "referenceCamera": {
+    "solved": false,
+    "projection": "orthographic",
+    "fovDegrees": 40,
+    "aspect": 1.29973474801061,
+    "orientation": {
+      "yaw": 24,
+      "pitch": 19,
+      "roll": 0
+    },
+    "positionHint": [
+      13.5,
+      11.5,
+      30
+    ],
+    "note": "Manual line-slope estimate, to be verified by the blockout render. Single generated source has minor perspective inconsistencies."
+  },
+  "suitability": "conditional",
+  "scores": {
+    "object_isolation": 2,
+    "silhouette_readability": 3,
+    "depth_inference": 2,
+    "primitive_decomposition": 3,
+    "material_procedurality": 3,
+    "occlusion_risk": 1,
+    "interaction_fit": 3
+  },
+  "preSpecAssessment": {
+    "objectClass": {
+      "primaryType": "single cafe architectural voxel asset",
+      "primaryDomain": "object",
+      "formLanguage": [
+        "rectilinear",
+        "stepped gable"
+      ],
+      "structureKind": [
+        "shell",
+        "supported furniture"
+      ],
+      "motionPotential": [
+        "construction",
+        "component inspection"
+      ],
+      "materialFamilies": [
+        "plaster",
+        "repair",
+        "brick",
+        "stone",
+        "wood",
+        "slate",
+        "sage",
+        "glass",
+        "cloth",
+        "ivory",
+        "leaf",
+        "petal"
+      ],
+      "notes": "Exact unscaled crop of approved town image; no regenerated asset reference. 15cm editable voxels; visible silhouette and local palette are reconstructed, not photographic texture projection. Hidden rear and left facades are inferred, confidence 0.45. Manual foreground mask is approximate at plant occlusions."
+    },
+    "complexity": {
+      "tier": "complex",
+      "scores": {
+        "silhouetteComplexity": 0,
+        "componentCount": 0,
+        "hierarchyDepth": 0,
+        "repetitionDensity": 0,
+        "materialLayerCount": 0,
+        "localDetailDensity": 0,
+        "occlusionRisk": 0,
+        "actionReadinessNeed": 0
+      },
+      "estimatedCounts": {
+        "macroComponents": 3,
+        "mesoComponents": 13,
+        "microFeatureGroups": 6,
+        "materialLayers": 12,
+        "repetitionSystems": 3
+      },
+      "reasoning": [
+        "Three macro assemblies with explicit facade openings, layered roof, supported furniture and palette locality."
+      ]
+    },
+    "specDepthDecision": {
+      "requiredDepth": "complex",
+      "minimumComponentLevels": [
+        "macro",
+        "meso",
+        "micro"
+      ],
+      "needsRepetitionSystems": true,
+      "needsMaterialLocalOverrides": true,
+      "needsMultipleReviewViews": true,
+      "needsActionReadyHierarchy": true,
+      "rationale": "One source crop, one separately authored model; common infrastructure only compiles occupied cells."
+    },
+    "unknownsToResolveBeforeImplementation": [],
+    "detailInventory": {
+      "scanMethod": "component-zones",
+      "targetMinDetails": 10,
+      "note": "Enumerate every identity-defining small detail before authoring the spec. Each detail must map to a component.localFeatures entry or material.localOverrides entry, never prose only. Use forge/stage1_intake/build_detail_inventory.py to scan zones.",
+      "details": [
+        {
+          "id": "fascia-identity",
+          "name": "Two-cell wooden support under stepped roof ends.",
+          "kind": "ridge",
+          "componentRef": "fascia",
+          "localFeatureRef": "fascia-identity",
+          "mapsTo": {
+            "ref": "fascia-identity"
+          },
+          "evidenceRefs": [
+            "full-object"
+          ]
+        },
+        {
+          "id": "front-window-identity",
+          "name": "13 by 10 uninterrupted glass, ochre inner frame, ivory outer sill.",
+          "kind": "ridge",
+          "componentRef": "front-window",
+          "localFeatureRef": "front-window-identity",
+          "mapsTo": {
+            "ref": "front-window-identity"
+          },
+          "evidenceRefs": [
+            "full-object"
+          ]
+        },
+        {
+          "id": "side-window-identity",
+          "name": "Recessed right-side glass and projecting sill.",
+          "kind": "ridge",
+          "componentRef": "side-window",
+          "localFeatureRef": "side-window-identity",
+          "mapsTo": {
+            "ref": "side-window-identity"
+          },
+          "evidenceRefs": [
+            "full-object"
+          ]
+        },
+        {
+          "id": "door-identity",
+          "name": "Tall right entrance: upper glazed panel, lower wooden panel, no obstruction.",
+          "kind": "ridge",
+          "componentRef": "door",
+          "localFeatureRef": "door-identity",
+          "mapsTo": {
+            "ref": "door-identity"
+          },
+          "evidenceRefs": [
+            "full-object"
+          ]
+        },
+        {
+          "id": "awning-identity",
+          "name": "Alternating cream and terracotta stripes, supported at facade head.",
+          "kind": "ridge",
+          "componentRef": "awning",
+          "localFeatureRef": "awning-identity",
+          "mapsTo": {
+            "ref": "awning-identity"
+          },
+          "evidenceRefs": [
+            "full-object"
+          ]
+        },
+        {
+          "id": "steps-identity",
+          "name": "Two shallow stone doorstep levels connected to the entrance.",
+          "kind": "ridge",
+          "componentRef": "steps",
+          "localFeatureRef": "steps-identity",
+          "mapsTo": {
+            "ref": "steps-identity"
+          },
+          "evidenceRefs": [
+            "full-object"
+          ]
+        },
+        {
+          "id": "chimney-identity",
+          "name": "Brick chimney through roof, pale projecting cap, dark open centre.",
+          "kind": "ridge",
+          "componentRef": "chimney",
+          "localFeatureRef": "chimney-identity",
+          "mapsTo": {
+            "ref": "chimney-identity"
+          },
+          "evidenceRefs": [
+            "full-object"
+          ]
+        },
+        {
+          "id": "table-identity",
+          "name": "Square wooden table with four legs.",
+          "kind": "ridge",
+          "componentRef": "table",
+          "localFeatureRef": "table-identity",
+          "mapsTo": {
+            "ref": "table-identity"
+          },
+          "evidenceRefs": [
+            "full-object"
+          ]
+        },
+        {
+          "id": "chair-front-identity",
+          "name": "Four legs, seat and rear slats, facing table.",
+          "kind": "ridge",
+          "componentRef": "chair-front",
+          "localFeatureRef": "chair-front-identity",
+          "mapsTo": {
+            "ref": "chair-front-identity"
+          },
+          "evidenceRefs": [
+            "full-object"
+          ]
+        },
+        {
+          "id": "chair-back-identity",
+          "name": "Four legs, seat and rear slats, facing table.",
+          "kind": "ridge",
+          "componentRef": "chair-back",
+          "localFeatureRef": "chair-back-identity",
+          "mapsTo": {
+            "ref": "chair-back-identity"
+          },
+          "evidenceRefs": [
+            "full-object"
+          ]
+        },
+        {
+          "id": "roof-repairs-identity",
+          "name": "Sage slate repairs: second and fifth visible lanes, middle courses.",
+          "kind": "ridge",
+          "componentRef": "roof-repairs",
+          "localFeatureRef": "roof-repairs-identity",
+          "mapsTo": {
+            "ref": "roof-repairs-identity"
+          },
+          "evidenceRefs": [
+            "full-object"
+          ]
+        },
+        {
+          "id": "ridge-identity",
+          "name": "Continuous dark teal cap, segmented every four cells.",
+          "kind": "ridge",
+          "componentRef": "ridge",
+          "localFeatureRef": "ridge-identity",
+          "mapsTo": {
+            "ref": "ridge-identity"
+          },
+          "evidenceRefs": [
+            "full-object"
+          ]
+        },
+        {
+          "id": "wall-repairs-identity",
+          "name": "Sparse cream/ochre/brick repair clusters, quiet plaster areas retained.",
+          "kind": "ridge",
+          "componentRef": "wall-repairs",
+          "localFeatureRef": "wall-repairs-identity",
+          "mapsTo": {
+            "ref": "wall-repairs-identity"
+          },
+          "evidenceRefs": [
+            "full-object"
+          ]
+        },
+        {
+          "id": "handle-identity",
+          "name": "Small dark ochre handle at right edge.",
+          "kind": "ridge",
+          "componentRef": "handle",
+          "localFeatureRef": "handle-identity",
+          "mapsTo": {
+            "ref": "handle-identity"
+          },
+          "evidenceRefs": [
+            "full-object"
+          ]
+        },
+        {
+          "id": "cup-identity",
+          "name": "Small pale ceramic cup attached to tabletop.",
+          "kind": "ridge",
+          "componentRef": "cup",
+          "localFeatureRef": "cup-identity",
+          "mapsTo": {
+            "ref": "cup-identity"
+          },
+          "evidenceRefs": [
+            "full-object"
+          ]
+        },
+        {
+          "id": "plants-identity",
+          "name": "Three separate pots: left foliage, front flowers, right foliage; one grid cell stems.",
+          "kind": "ridge",
+          "componentRef": "plants",
+          "localFeatureRef": "plants-identity",
+          "mapsTo": {
+            "ref": "plants-identity"
+          },
+          "evidenceRefs": [
+            "full-object"
+          ]
+        }
+      ]
+    },
+    "anatomy": {
+      "applies": false,
+      "styleHeads": 0,
+      "proportions": {
+        "headUnit": 0,
+        "torso": 0,
+        "legs": 0,
+        "shoulderWidth": 0,
+        "hipWidth": 0
+      },
+      "pose": {
+        "type": "unassessed",
+        "jointAngles": {}
+      },
+      "faceLandmarks": {
+        "eyeLine": 0,
+        "eyeSpacing": 0,
+        "noseBase": 0,
+        "mouthLine": 0,
+        "hairline": 0
+      },
+      "features": [],
+      "confidence": 0,
+      "note": "Only meaningful when objectClass.primaryDomain is character or hybrid. Set applies=true and fill from forge/stage1_intake/extract_landmarks.py. See grimoire/character/reconstruction.md and grimoire/character/likeness_maximization.md."
+    },
+    "sourceImage": "../../references/crops/cafe.png"
+  },
+  "qualityContract": {
+    "qualityBar": "complex",
+    "definitionOfDone": [
+      "Individually authored cafe matches cropped silhouette, roof lane rhythm and asymmetric facade. Four review angles, neutral/day/grazing relighting. Named selectable/explodable components. Editable 15cm occupancy. No claim of exact unseen geometry or measured iPhone performance."
+    ],
+    "minimumSpecDepth": {
+      "macroComponents": 3,
+      "mesoComponents": 8,
+      "microFeatureGroups": 5,
+      "materialLayers": 3,
+      "repetitionSystems": 1,
+      "reviewViewpoints": 4
+    },
+    "featureGroups": [
+      {
+        "id": "overall-silhouette",
+        "name": "Overall silhouette and proportions",
+        "required": true,
+        "qualityCriteria": [
+          "Bounding shape, dominant curves, negative spaces, and scale relationships are explicitly described."
+        ],
+        "evidenceRefs": [
+          "full-object"
+        ],
+        "failureModes": [
+          "model reads as a generic placeholder instead of the reference object",
+          "major proportions are guessed without evidence"
+        ]
+      },
+      {
+        "id": "primary-structure",
+        "name": "Primary structure and hierarchy",
+        "required": true,
+        "qualityCriteria": [
+          "Major parts, joints, seams, contact points, and parent-child relationships are named before code generation."
+        ],
+        "evidenceRefs": [
+          "full-object"
+        ],
+        "failureModes": [
+          "large visible parts are merged into one mesh",
+          "component hierarchy is too shallow for the observed complexity"
+        ]
+      },
+      {
+        "id": "attachment-joint-correctness",
+        "name": "Attachment and joint correctness",
+        "required": true,
+        "qualityCriteria": [
+          "Every visible child appendage, branch, limb, handle, connector, tube, cable, horn, wing, leg, or hinged part has an attachment contract with parent socket, localStart/localEnd, contact type, embed/overlap, and gap tolerance."
+        ],
+        "evidenceRefs": [
+          "full-object"
+        ],
+        "failureModes": [
+          "child part root floats away from the parent",
+          "branch/limb/tube is centered in space instead of pivoting from its root",
+          "parent-child transform mixes world and local coordinates"
+        ]
+      },
+      {
+        "id": "surface-material-response",
+        "name": "Surface material response",
+        "required": true,
+        "qualityCriteria": [
+          "Albedo zones, roughness, normal/bump/displacement intent, cavity dirt, edge wear, and local overrides are specified where visible.",
+          "Important materials define independent albedo, roughness, height/normal, and AO responses instead of reusing one texture for unrelated PBR channels.",
+          "Surface response is decomposed into macro, meso, and micro frequency bands with scale and amplitude tied to object scale."
+        ],
+        "evidenceRefs": [
+          "full-object"
+        ],
+        "failureModes": [
+          "surface looks like flat plastic",
+          "local material variation is missing or not tied to image evidence"
+        ]
+      },
+      {
+        "id": "reference-lookdev",
+        "name": "Reference color, material, and lighting response",
+        "required": true,
+        "qualityCriteria": [
+          "Material-pass names the reference-derived albedo palette, roughness variation, tactile normal/bump/displacement response, and local masks.",
+          "Editable voxel material classes and local cell colors; physical inverse-rendered PBR unavailable from stylized source, explicitly documented.",
+          "Lighting-pass names key/fill/rim or environment light, exposure, tone mapping, background, and contact shadow behavior.",
+          "Neutral, grazing-angle, and reference-matched renders prove that surface relief survives relighting and is not painted into albedo."
+        ],
+        "evidenceRefs": [
+          "full-object"
+        ],
+        "failureModes": [
+          "model has acceptable shape but reads as flat shaded or plastic",
+          "colors are a generic average instead of reference-observed local color zones",
+          "lighting is evenly ambient and cannot reproduce the source value range"
+        ]
+      }
+    ],
+    "visualDeltaChecks": [
+      "silhouette and negative-space delta",
+      "component hierarchy depth delta",
+      "repetition density and distribution delta",
+      "material albedo/roughness/normal response delta",
+      "local feature placement and scale delta"
+    ],
+    "antiShallowSpecRules": [
+      "Do not proceed to code if qualityContract.qualityBar is unassessed.",
+      "Do not proceed to code if the spec only contains a root component for a moderate or complex object.",
+      "Do not proceed to code if required featureGroups are not represented by componentTree, materials, or repetitionSystems.",
+      "Do not proceed to code if visible local features are described only in prose and not attached to components/materials/evidenceRefs.",
+      "Do not proceed past structural-pass if attached child parts lack attachment.parentSocket, localStart, localEnd, embedDepth/overlap, and gapTolerance.",
+      "Do not pass material look-dev when albedo is reused as roughness, height, normal, or AO.",
+      "Do not pass material look-dev without macro, meso, and micro surface frequency bands for close-up materials.",
+      "Do not pass reference-fidelity material look-dev from a source image without usable referencePbr maps or an explicit documented limitation.",
+      "Do not patch a spec with extracted PBR maps when extraction confidence is below the target threshold unless the user explicitly accepts lower fidelity.",
+      "Do not place adjacent separate-geometry parts below 0.02 world-unit seam overlap (source: grimoire/build/geometry_patterns.md).",
+      "Do not satisfy raised or recessed relief, fasteners, or grip structure with a map alone when the feature affects form; use geometry or displacement (source: grimoire/build/geometry_patterns.md).",
+      "Adjacent components must overlap by at least 0.02 world units at shared seams (source: grimoire/build/geometry_patterns.md).",
+      "Raised or recessed relief and fasteners must be geometry, instanced micro-parts, or displacement; a map alone is an approximation (source: grimoire/build/geometry_patterns.md)."
+    ],
+    "mustNotDo": [
+      "Do not proceed to code if qualityContract.qualityBar is unassessed.",
+      "Do not proceed to code if the spec only contains a root component for a moderate or complex object.",
+      "Do not proceed to code if required featureGroups are not represented by componentTree, materials, or repetitionSystems.",
+      "Do not proceed to code if visible local features are described only in prose and not attached to components/materials/evidenceRefs.",
+      "Do not proceed past structural-pass if attached child parts lack attachment.parentSocket, localStart, localEnd, embedDepth/overlap, and gapTolerance.",
+      "Do not pass material look-dev when albedo is reused as roughness, height, normal, or AO.",
+      "Do not pass material look-dev without macro, meso, and micro surface frequency bands for close-up materials.",
+      "Do not pass reference-fidelity material look-dev from a source image without usable referencePbr maps or an explicit documented limitation.",
+      "Do not patch a spec with extracted PBR maps when extraction confidence is below the target threshold unless the user explicitly accepts lower fidelity.",
+      "Do not place adjacent separate-geometry parts below 0.02 world-unit seam overlap (source: grimoire/build/geometry_patterns.md).",
+      "Do not satisfy raised or recessed relief, fasteners, or grip structure with a map alone when the feature affects form; use geometry or displacement (source: grimoire/build/geometry_patterns.md).",
+      "Adjacent components must overlap by at least 0.02 world units at shared seams (source: grimoire/build/geometry_patterns.md).",
+      "Raised or recessed relief and fasteners must be geometry, instanced micro-parts, or displacement; a map alone is an approximation (source: grimoire/build/geometry_patterns.md)."
+    ]
+  },
+  "qualityTargets": {
+    "targetFidelity": 0.7,
+    "mustMatch": [
+      "macro silhouette and proportions",
+      "primary material albedo/roughness response",
+      "reference-derived PBR material response at or above 0.7 confidence when source pixels are usable",
+      "most recognizable local features"
+    ],
+    "niceToHave": [
+      "micro scratches, stains, chips, and dirt masks",
+      "secondary lighting match"
+    ],
+    "fpsTarget": 60,
+    "reviewViewpoints": [
+      "front",
+      "three-quarter",
+      "side",
+      "thickness-axis",
+      "long-axis"
+    ]
+  },
+  "selfCorrectLoop": {
+    "enabled": true,
+    "visualAcceptance": {
+      "reviewer": "ai-vision",
+      "threshold": 0.7,
+      "comparisonArtifactRequired": true,
+      "layerScoresRequired": true,
+      "codePixelDiffIsAcceptanceAuthority": false,
+      "scoringRule": "AI vision must inspect a side-by-side reference/render sheet and score the current pass from 0 to 1. Pixel-diff code may assist diagnostics but cannot approve a pass.",
+      "requiredLayerScores": [
+        "silhouetteProportion",
+        "componentStructure",
+        "formDetail",
+        "materialSurface",
+        "lightingCamera"
+      ],
+      "featureReviewPolicy": {
+        "enabled": true,
+        "reviewUnit": "semantic-subsystem",
+        "maxCriticalFeaturesPerPass": 5,
+        "maxImportantFeaturesPerPass": 3,
+        "criticalDefaultThreshold": 0.8,
+        "importantAverageThreshold": 0.65,
+        "adaptiveEscalation": true,
+        "singleImagePairOnly": true,
+        "selectionRule": "Choose only the most visually salient, identity-defining, user-prioritized, or high-risk semantic systems. Group repeated parts instead of reviewing every mesh. AI vision scores every selected feature from the same full reference/render pair."
+      }
+    },
+    "reviewAfterPasses": [
+      "blockout",
+      "structural-pass",
+      "form-refinement",
+      "material-pass",
+      "surface-pass",
+      "lighting-pass",
+      "interaction-pass",
+      "optimization-pass"
+    ],
+    "allowedActions": [
+      "continue",
+      "refine-spec",
+      "refine-code",
+      "request-input",
+      "stop"
+    ],
+    "specRefineTriggers": [
+      "missing component",
+      "wrong primitive family",
+      "wrong proportions",
+      "material layer under-specified",
+      "local feature not traceable to viewEvidence",
+      "reference ambiguity discovered during implementation"
+    ],
+    "codeRefineTriggers": [
+      "spec is adequate but generated geometry/material does not match",
+      "browser render differs from reference",
+      "performance budget exceeded",
+      "lighting hides geometry or material response"
+    ],
+    "stopCriteria": [
+      "target fidelity reached or user accepts current approximation",
+      "remaining gaps require new reference images or manual art"
+    ],
+    "screenshotPolicy": {
+      "requiredForPasses": [
+        "blockout",
+        "structural-pass",
+        "form-refinement",
+        "material-pass",
+        "surface-pass",
+        "lighting-pass",
+        "interaction-pass"
+      ],
+      "preferredCapture": "in-app-browser-screenshot",
+      "fallbackCapture": "user-supplied-screenshot-path",
+      "minimumEvidence": "Each visual pass needs a reference image, rendered screenshot, side-by-side comparison sheet, AI vision score, layer scores, and critique before choosing continue.",
+      "reviewPairRule": "Compare the same camera/viewpoint whenever possible; do not judge a front reference against a random render angle.",
+      "acceptanceAuthority": "AI vision review of the comparison sheet. Code-generated pixel similarity is not sufficient evidence."
+    }
+  },
+  "featureReviewTargets": [
+    {
+      "id": "cafe-silhouette",
+      "name": "Broad teal gable over low cafe with left chimney",
+      "tier": "critical",
+      "passIds": [
+        "blockout"
+      ],
+      "minimumScore": 0.8,
+      "mustPass": true,
+      "componentRefs": [
+        "building",
+        "roof",
+        "chimney"
+      ],
+      "evidenceRefs": [
+        "full-object"
+      ]
+    },
+    {
+      "id": "cafe-facade",
+      "name": "Large left window, tall door right, open side window",
+      "tier": "critical",
+      "passIds": [
+        "structural-pass",
+        "form-refinement"
+      ],
+      "minimumScore": 0.8,
+      "mustPass": true,
+      "componentRefs": [
+        "front-window",
+        "door",
+        "side-window"
+      ],
+      "evidenceRefs": [
+        "full-object"
+      ]
+    },
+    {
+      "id": "cafe-terrace",
+      "name": "Two supported chairs and table on right",
+      "tier": "critical",
+      "passIds": [
+        "structural-pass",
+        "form-refinement"
+      ],
+      "minimumScore": 0.8,
+      "mustPass": true,
+      "componentRefs": [
+        "terrace",
+        "table",
+        "chair-front",
+        "chair-back"
+      ],
+      "evidenceRefs": [
+        "full-object"
+      ]
+    },
+    {
+      "id": "cafe-roof-palette",
+      "name": "Five tile lanes with sage repairs; plaster patch locality",
+      "tier": "critical",
+      "passIds": [
+        "material-pass",
+        "surface-pass",
+        "lighting-pass"
+      ],
+      "minimumScore": 0.8,
+      "mustPass": true,
+      "componentRefs": [
+        "roof",
+        "walls"
+      ],
+      "evidenceRefs": [
+        "full-object"
+      ]
+    }
+  ],
+  "sculptPipeline": {
+    "passGateMode": "locked-sequential",
+    "passOrder": [
+      "blockout",
+      "structural-pass",
+      "form-refinement",
+      "material-pass",
+      "surface-pass",
+      "lighting-pass",
+      "interaction-pass",
+      "optimization-pass"
+    ],
+    "currentPass": "blockout",
+    "completedPasses": [],
+    "lastCompletedPass": "",
+    "blockedReason": "blockout requires a browser screenshot and self-correction review before structural-pass unlocks",
+    "nextRequiredEvidence": [
+      "blockout browser render screenshot from your agent's browser/screenshot tool",
+      "side-by-side reference/render comparison sheet",
+      "AI vision score >= 0.7 with layer scores and mismatch critique",
+      "critical semantic feature scores from the same image pair meeting their individual thresholds",
+      "reviewHistory entry for blockout with action=continue"
+    ]
+  },
+  "lookDevTargets": {
+    "qualityPriority": "reference-fidelity",
+    "materialPass": {
+      "albedoPaletteRequired": true,
+      "roughnessVariationRequired": true,
+      "normalOrBumpRequired": true,
+      "localOverridesRequired": true,
+      "minimumTextureResolution": 1024,
+      "preferredTextureResolution": 2048,
+      "independentMapChannels": [
+        "albedo",
+        "roughness",
+        "height",
+        "normal",
+        "ambient-occlusion"
+      ],
+      "requiredSurfaceFrequencyBands": [
+        "macro",
+        "meso",
+        "micro"
+      ],
+      "geometryReliefRequiredWhenSilhouetteAffected": true,
+      "referencePbrExtraction": {
+        "requiredWhenSourceImagePresent": false,
+        "acceptedLimitation": "15cm editable voxels; visible silhouette and local palette are reconstructed, not photographic texture projection."
+      },
+      "mustAvoid": [
+        "single flat albedo per material",
+        "uniform roughness",
+        "albedo texture reused as roughness/height/normal/AO",
+        "single-frequency random noise",
+        "plastic-looking smooth bark, stone, cloth, foliage, or aged material",
+        "local color/detail described only in prose without material masks",
+        "claiming exact PBR recovery when confidence is below the target threshold"
+      ]
+    },
+    "lightingPass": {
+      "requiredTerms": [
+        "key light",
+        "fill light",
+        "rim or environment light",
+        "exposure",
+        "tone mapping",
+        "background",
+        "contact shadow"
+      ],
+      "mustAvoid": [
+        "ambient-only lighting",
+        "flat value range",
+        "missing contact shadow",
+        "reference lighting copied without separating material readability"
+      ]
+    },
+    "screenshotReview": [
+      "Compare albedo palette and local color zones.",
+      "Compare roughness/normal/bump response under light.",
+      "Compare cavity dirt, edge wear, stains, moss, scratches, or other local masks.",
+      "Compare key/fill/rim structure, exposure, tone mapping, background, and contact shadows.",
+      "Capture a neutral-light render to verify material readability without reference lighting.",
+      "Capture a grazing-light close-up to expose flat normals, uniform roughness, tiling, and plastic highlights.",
+      "Capture a reference-matched render from the same camera framing as the source."
+    ]
+  },
+  "actionReadiness": {
+    "contract": "Every macro/meso component should be generated as a stable named Object3D pivot node with a mesh child, action metadata, optional sockets, collider proxy, and destruction metadata.",
+    "defaultRigType": "action-ready-static-rig",
+    "rootMotionNode": "root",
+    "requiredComponentFields": [
+      "id",
+      "parent",
+      "transform",
+      "attachment for child appendages, connectors, limbs, tubes, handles, legs, horns, wings, branches, or cables",
+      "actionProfile.animationRole",
+      "actionProfile.pivot",
+      "actionProfile.collider",
+      "actionProfile.destruction"
+    ],
+    "transformChannels": [
+      "translate",
+      "rotate",
+      "scale",
+      "bend",
+      "twist",
+      "detach",
+      "visibility",
+      "material-state"
+    ],
+    "authoringRules": [
+      "Do not collapse independently movable parts into one mesh.",
+      "Put transforms on component pivot groups, not only on raw meshes.",
+      "For attached child parts, put the pivot at the semantic root/socket and build visible geometry from localStart to localEnd.",
+      "Represent hinge, socket, detachable, and breakable intent even when no animation is implemented yet.",
+      "Use simplified collider proxies for runtime physics instead of visual mesh colliders by default."
+    ],
+    "destructionPolicy": {
+      "defaultBreakable": false,
+      "fractureGroupNaming": "Use stable semantic names such as body-shell, left-hinge, glass-panel, branch-segment.",
+      "debrisStrategy": "Prefer detachable component groups and a small number of procedural fragments over random mesh explosion."
+    }
+  },
+  "assumptions": [
+    "Exact unscaled crop of approved town image; no regenerated asset reference.",
+    "15cm editable voxels; visible silhouette and local palette are reconstructed, not photographic texture projection.",
+    "Hidden rear and left facades are inferred, confidence 0.45. Manual foreground mask is approximate at plant occlusions."
+  ],
+  "coordinateFrame": {
+    "units": "metres",
+    "upAxis": "Y",
+    "forwardAxis": "+Z",
+    "origin": "front facade centred in X, ground Y=0",
+    "grid": 0.15
+  },
+  "silhouette": {
+    "boundingShape": "Low cream single-storey shell under a broad stepped teal gable; chimney left of ridge centre; right terrace.",
+    "aspectRatios": [
+      1.5454545454545454,
+      0.8235294117647058
+    ],
+    "symmetry": "Roof bilateral; facade intentionally asymmetric.",
+    "dominantCurves": [
+      "None; coarse grid stepped profile."
+    ],
+    "negativeSpaces": [
+      "Front window left, door right, large side window; four-leg furniture clearances."
+    ],
+    "landmarks": [
+      "Front roof eave image (14,166) to (288,204)",
+      "Front building foot (47,314) to (258,344) in 490x377 crop"
+    ]
+  },
+  "viewEvidence": [
+    {
+      "id": "full-object",
+      "view": "primary",
+      "imageRegion": {
+        "x": 0,
+        "y": 0,
+        "width": 1,
+        "height": 1,
+        "units": "normalized"
+      },
+      "observations": [
+        "Independent cafe shell; front +Z, right +X.",
+        "Five broad tile lanes, six stepped courses each side, continuous ridge.",
+        "Paving and loose furniture to the right, clear doorway.",
+        "Three low brick courses with stone foot.",
+        "Cream plaster shell with actual openings and few connected repair patches.",
+        "Right triangular gable; rear counterpart inferred.",
+        "Two-cell wooden support under stepped roof ends.",
+        "13 by 10 uninterrupted glass, ochre inner frame, ivory outer sill.",
+        "Recessed right-side glass and projecting sill.",
+        "Tall right entrance: upper glazed panel, lower wooden panel, no obstruction.",
+        "Alternating cream and terracotta stripes, supported at facade head.",
+        "Two shallow stone doorstep levels connected to the entrance.",
+        "Brick chimney through roof, pale projecting cap, dark open centre.",
+        "Square wooden table with four legs.",
+        "Four legs, seat and rear slats, facing table.",
+        "Four legs, seat and rear slats, facing table.",
+        "Sage slate repairs: second and fifth visible lanes, middle courses.",
+        "Continuous dark teal cap, segmented every four cells.",
+        "Sparse cream/ochre/brick repair clusters, quiet plaster areas retained.",
+        "Small dark ochre handle at right edge.",
+        "Small pale ceramic cup attached to tabletop.",
+        "Three separate pots: left foliage, front flowers, right foliage; one grid cell stems."
+      ],
+      "confidence": 0.8
+    }
+  ],
+  "componentTree": [
+    {
+      "id": "building",
+      "name": "building",
+      "level": "macro",
+      "role": "building",
+      "importance": 1,
+      "confidence": 0.8,
+      "primitive": "box",
+      "topologyClass": "assembled-solid",
+      "topologyRationale": "Connected occupied cells with shared faces culled; independent part identity retained.",
+      "geometryDescriptor": {
+        "topologyIntent": "Editable integer cube occupancy",
+        "edgeTreatment": {
+          "type": "none",
+          "bevelRadius": 0,
+          "segments": 1
+        },
+        "deformationStack": [],
+        "uvStrategy": "No reference image projection",
+        "normalStrategy": "Axis-aligned flat face normals",
+        "parameters": {
+          "size": [
+            34,
+            22,
+            28
+          ],
+          "pos": [
+            0,
+            0,
+            0
+          ]
+        }
+      },
+      "parent": null,
+      "attachment": null,
+      "dimensions": {
+        "width": 5.1,
+        "height": 3.3,
+        "depth": 4.2,
+        "units": "metres",
+        "confidence": 0.75
+      },
+      "transform": {
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "actionProfile": {
+        "animationRole": "static assembly",
+        "pivot": {
+          "mode": "center",
+          "localPosition": [
+            0,
+            0,
+            0
+          ],
+          "axis": [
+            0,
+            1,
+            0
+          ],
+          "confidence": 0.5
+        },
+        "transformChannels": {
+          "translate": true,
+          "rotate": true,
+          "scale": true,
+          "bend": false,
+          "twist": false,
+          "detach": false,
+          "visibility": true,
+          "materialState": true
+        },
+        "sockets": [],
+        "collider": {
+          "type": "box",
+          "offset": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ],
+          "isTrigger": false,
+          "notes": "Replace with sphere/capsule/compound proxy when the object shape demands it."
+        },
+        "constraints": [],
+        "destruction": {
+          "breakable": false,
+          "fractureGroup": "root",
+          "seamRefs": [],
+          "detachableFragments": [],
+          "breakImpulse": 0,
+          "debrisMaterial": "base"
+        }
+      },
+      "material": "plaster",
+      "materialLayers": [
+        "plaster",
+        "wood",
+        "slate"
+      ],
+      "deformations": [],
+      "joints": [],
+      "seams": [],
+      "localFeatures": [
+        {
+          "id": "building-identity",
+          "type": "assembly",
+          "description": "Independent cafe shell; front +Z, right +X.",
+          "evidenceRefs": [
+            "full-object"
+          ]
+        }
+      ],
+      "surfaceDetail": {
+        "macroRoughness": 0,
+        "microRoughness": 0,
+        "bumpAmplitude": 0,
+        "normalPattern": "",
+        "displacementPattern": "",
+        "occlusionPattern": "",
+        "edgeWearPattern": "",
+        "notes": ""
+      },
+      "evidenceRefs": [
+        "full-object"
+      ],
+      "details": [
+        "Independent cafe shell; front +Z, right +X."
+      ],
+      "fidelityTier": "blockout",
+      "colorMaterialRecipe": {
+        "dominantAlbedo": "rgba(226, 210, 167, 1)",
+        "secondaryAlbedo": "rgba(53, 101, 103, 1)",
+        "materialClass": "stone",
+        "materialClassConfidence": 0.7
+      }
+    },
+    {
+      "id": "roof",
+      "name": "roof",
+      "level": "macro",
+      "role": "roof",
+      "importance": 1,
+      "confidence": 0.75,
+      "primitive": "box",
+      "topologyClass": "assembled-solid",
+      "topologyRationale": "Connected occupied cells with shared faces culled; independent part identity retained.",
+      "geometryDescriptor": {
+        "topologyIntent": "Editable integer cube occupancy",
+        "edgeTreatment": {
+          "type": "none",
+          "bevelRadius": 0,
+          "segments": 1
+        },
+        "deformationStack": [],
+        "uvStrategy": "No reference image projection",
+        "normalStrategy": "Axis-aligned flat face normals",
+        "parameters": {
+          "size": [
+            40,
+            14,
+            36
+          ],
+          "pos": [
+            -20,
+            22,
+            -18
+          ]
+        }
+      },
+      "parent": "building",
+      "attachment": {
+        "parentSocket": "building",
+        "localStart": [
+          -3,
+          3.3,
+          -2.6999999999999997
+        ],
+        "localEnd": [
+          -3,
+          3.3,
+          -2.6999999999999997
+        ],
+        "contactType": "voxel union",
+        "embedDepth": 0.15,
+        "overlap": 0.15,
+        "gapTolerance": 0,
+        "notes": "Authoring volumes share one cell at joints; occupancy union removes duplicate interior geometry."
+      },
+      "dimensions": {
+        "width": 6,
+        "height": 2.1,
+        "depth": 5.3999999999999995,
+        "units": "metres",
+        "confidence": 0.75
+      },
+      "transform": {
+        "position": [
+          -3,
+          3.3,
+          -2.6999999999999997
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "actionProfile": {
+        "animationRole": "static assembly",
+        "pivot": {
+          "mode": "center",
+          "localPosition": [
+            0,
+            0,
+            0
+          ],
+          "axis": [
+            0,
+            1,
+            0
+          ],
+          "confidence": 0.5
+        },
+        "transformChannels": {
+          "translate": true,
+          "rotate": true,
+          "scale": true,
+          "bend": false,
+          "twist": false,
+          "detach": false,
+          "visibility": true,
+          "materialState": true
+        },
+        "sockets": [],
+        "collider": {
+          "type": "box",
+          "offset": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ],
+          "isTrigger": false,
+          "notes": "Replace with sphere/capsule/compound proxy when the object shape demands it."
+        },
+        "constraints": [],
+        "destruction": {
+          "breakable": false,
+          "fractureGroup": "root",
+          "seamRefs": [],
+          "detachableFragments": [],
+          "breakImpulse": 0,
+          "debrisMaterial": "base"
+        }
+      },
+      "material": "plaster",
+      "materialLayers": [
+        "plaster",
+        "wood",
+        "slate"
+      ],
+      "deformations": [],
+      "joints": [],
+      "seams": [],
+      "localFeatures": [
+        {
+          "id": "roof-identity",
+          "type": "assembly",
+          "description": "Five broad tile lanes, six stepped courses each side, continuous ridge.",
+          "evidenceRefs": [
+            "full-object"
+          ]
+        }
+      ],
+      "surfaceDetail": {
+        "macroRoughness": 0,
+        "microRoughness": 0,
+        "bumpAmplitude": 0,
+        "normalPattern": "",
+        "displacementPattern": "",
+        "occlusionPattern": "",
+        "edgeWearPattern": "",
+        "notes": ""
+      },
+      "evidenceRefs": [
+        "full-object"
+      ],
+      "details": [
+        "Five broad tile lanes, six stepped courses each side, continuous ridge."
+      ],
+      "fidelityTier": "blockout",
+      "colorMaterialRecipe": {
+        "dominantAlbedo": "rgba(226, 210, 167, 1)",
+        "secondaryAlbedo": "rgba(53, 101, 103, 1)",
+        "materialClass": "stone",
+        "materialClassConfidence": 0.7
+      }
+    },
+    {
+      "id": "terrace",
+      "name": "terrace",
+      "level": "macro",
+      "role": "terrace",
+      "importance": 1,
+      "confidence": 0.8,
+      "primitive": "box",
+      "topologyClass": "assembled-solid",
+      "topologyRationale": "Connected occupied cells with shared faces culled; independent part identity retained.",
+      "geometryDescriptor": {
+        "topologyIntent": "Editable integer cube occupancy",
+        "edgeTreatment": {
+          "type": "none",
+          "bevelRadius": 0,
+          "segments": 1
+        },
+        "deformationStack": [],
+        "uvStrategy": "No reference image projection",
+        "normalStrategy": "Axis-aligned flat face normals",
+        "parameters": {
+          "size": [
+            18,
+            1,
+            26
+          ],
+          "pos": [
+            18,
+            0,
+            -1
+          ]
+        }
+      },
+      "parent": null,
+      "attachment": null,
+      "dimensions": {
+        "width": 2.6999999999999997,
+        "height": 0.15,
+        "depth": 3.9,
+        "units": "metres",
+        "confidence": 0.75
+      },
+      "transform": {
+        "position": [
+          2.6999999999999997,
+          0,
+          -0.15
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "actionProfile": {
+        "animationRole": "static assembly",
+        "pivot": {
+          "mode": "center",
+          "localPosition": [
+            0,
+            0,
+            0
+          ],
+          "axis": [
+            0,
+            1,
+            0
+          ],
+          "confidence": 0.5
+        },
+        "transformChannels": {
+          "translate": true,
+          "rotate": true,
+          "scale": true,
+          "bend": false,
+          "twist": false,
+          "detach": false,
+          "visibility": true,
+          "materialState": true
+        },
+        "sockets": [],
+        "collider": {
+          "type": "box",
+          "offset": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ],
+          "isTrigger": false,
+          "notes": "Replace with sphere/capsule/compound proxy when the object shape demands it."
+        },
+        "constraints": [],
+        "destruction": {
+          "breakable": false,
+          "fractureGroup": "root",
+          "seamRefs": [],
+          "detachableFragments": [],
+          "breakImpulse": 0,
+          "debrisMaterial": "base"
+        }
+      },
+      "material": "plaster",
+      "materialLayers": [
+        "plaster",
+        "wood",
+        "slate"
+      ],
+      "deformations": [],
+      "joints": [],
+      "seams": [],
+      "localFeatures": [
+        {
+          "id": "terrace-identity",
+          "type": "assembly",
+          "description": "Paving and loose furniture to the right, clear doorway.",
+          "evidenceRefs": [
+            "full-object"
+          ]
+        }
+      ],
+      "surfaceDetail": {
+        "macroRoughness": 0,
+        "microRoughness": 0,
+        "bumpAmplitude": 0,
+        "normalPattern": "",
+        "displacementPattern": "",
+        "occlusionPattern": "",
+        "edgeWearPattern": "",
+        "notes": ""
+      },
+      "evidenceRefs": [
+        "full-object"
+      ],
+      "details": [
+        "Paving and loose furniture to the right, clear doorway."
+      ],
+      "fidelityTier": "blockout",
+      "colorMaterialRecipe": {
+        "dominantAlbedo": "rgba(226, 210, 167, 1)",
+        "secondaryAlbedo": "rgba(53, 101, 103, 1)",
+        "materialClass": "stone",
+        "materialClassConfidence": 0.7
+      }
+    },
+    {
+      "id": "plinth",
+      "name": "plinth",
+      "level": "meso",
+      "role": "plinth",
+      "importance": 0.8,
+      "confidence": 0.75,
+      "primitive": "box",
+      "topologyClass": "assembled-solid",
+      "topologyRationale": "Connected occupied cells with shared faces culled; independent part identity retained.",
+      "geometryDescriptor": {
+        "topologyIntent": "Editable integer cube occupancy",
+        "edgeTreatment": {
+          "type": "none",
+          "bevelRadius": 0,
+          "segments": 1
+        },
+        "deformationStack": [],
+        "uvStrategy": "No reference image projection",
+        "normalStrategy": "Axis-aligned flat face normals",
+        "parameters": {
+          "size": [
+            34,
+            3,
+            28
+          ],
+          "pos": [
+            -17,
+            0,
+            -14
+          ]
+        }
+      },
+      "parent": "building",
+      "attachment": {
+        "parentSocket": "building",
+        "localStart": [
+          -2.55,
+          0,
+          -2.1
+        ],
+        "localEnd": [
+          -2.55,
+          0,
+          -2.1
+        ],
+        "contactType": "voxel union",
+        "embedDepth": 0.15,
+        "overlap": 0.15,
+        "gapTolerance": 0,
+        "notes": "Authoring volumes share one cell at joints; occupancy union removes duplicate interior geometry."
+      },
+      "dimensions": {
+        "width": 5.1,
+        "height": 0.44999999999999996,
+        "depth": 4.2,
+        "units": "metres",
+        "confidence": 0.75
+      },
+      "transform": {
+        "position": [
+          -2.55,
+          0,
+          -2.1
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "actionProfile": {
+        "animationRole": "static assembly",
+        "pivot": {
+          "mode": "center",
+          "localPosition": [
+            0,
+            0,
+            0
+          ],
+          "axis": [
+            0,
+            1,
+            0
+          ],
+          "confidence": 0.5
+        },
+        "transformChannels": {
+          "translate": true,
+          "rotate": true,
+          "scale": true,
+          "bend": false,
+          "twist": false,
+          "detach": false,
+          "visibility": true,
+          "materialState": true
+        },
+        "sockets": [],
+        "collider": {
+          "type": "box",
+          "offset": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ],
+          "isTrigger": false,
+          "notes": "Replace with sphere/capsule/compound proxy when the object shape demands it."
+        },
+        "constraints": [],
+        "destruction": {
+          "breakable": false,
+          "fractureGroup": "root",
+          "seamRefs": [],
+          "detachableFragments": [],
+          "breakImpulse": 0,
+          "debrisMaterial": "base"
+        }
+      },
+      "material": "wood",
+      "materialLayers": [
+        "plaster",
+        "wood",
+        "slate"
+      ],
+      "deformations": [],
+      "joints": [],
+      "seams": [],
+      "localFeatures": [
+        {
+          "id": "plinth-identity",
+          "type": "assembly",
+          "description": "Three low brick courses with stone foot.",
+          "evidenceRefs": [
+            "full-object"
+          ]
+        }
+      ],
+      "surfaceDetail": {
+        "macroRoughness": 0,
+        "microRoughness": 0,
+        "bumpAmplitude": 0,
+        "normalPattern": "",
+        "displacementPattern": "",
+        "occlusionPattern": "",
+        "edgeWearPattern": "",
+        "notes": ""
+      },
+      "evidenceRefs": [
+        "full-object"
+      ],
+      "details": [
+        "Three low brick courses with stone foot."
+      ],
+      "fidelityTier": "blockout",
+      "colorMaterialRecipe": {
+        "dominantAlbedo": "rgba(226, 210, 167, 1)",
+        "secondaryAlbedo": "rgba(53, 101, 103, 1)",
+        "materialClass": "stone",
+        "materialClassConfidence": 0.7
+      }
+    },
+    {
+      "id": "walls",
+      "name": "walls",
+      "level": "meso",
+      "role": "walls",
+      "importance": 0.8,
+      "confidence": 0.75,
+      "primitive": "box",
+      "topologyClass": "assembled-solid",
+      "topologyRationale": "Connected occupied cells with shared faces culled; independent part identity retained.",
+      "geometryDescriptor": {
+        "topologyIntent": "Editable integer cube occupancy",
+        "edgeTreatment": {
+          "type": "none",
+          "bevelRadius": 0,
+          "segments": 1
+        },
+        "deformationStack": [],
+        "uvStrategy": "No reference image projection",
+        "normalStrategy": "Axis-aligned flat face normals",
+        "parameters": {
+          "size": [
+            34,
+            19,
+            28
+          ],
+          "pos": [
+            -17,
+            3,
+            -14
+          ]
+        }
+      },
+      "parent": "building",
+      "attachment": {
+        "parentSocket": "building",
+        "localStart": [
+          -2.55,
+          0.44999999999999996,
+          -2.1
+        ],
+        "localEnd": [
+          -2.55,
+          0.44999999999999996,
+          -2.1
+        ],
+        "contactType": "voxel union",
+        "embedDepth": 0.15,
+        "overlap": 0.15,
+        "gapTolerance": 0,
+        "notes": "Authoring volumes share one cell at joints; occupancy union removes duplicate interior geometry."
+      },
+      "dimensions": {
+        "width": 5.1,
+        "height": 2.85,
+        "depth": 4.2,
+        "units": "metres",
+        "confidence": 0.75
+      },
+      "transform": {
+        "position": [
+          -2.55,
+          0.44999999999999996,
+          -2.1
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "actionProfile": {
+        "animationRole": "static assembly",
+        "pivot": {
+          "mode": "center",
+          "localPosition": [
+            0,
+            0,
+            0
+          ],
+          "axis": [
+            0,
+            1,
+            0
+          ],
+          "confidence": 0.5
+        },
+        "transformChannels": {
+          "translate": true,
+          "rotate": true,
+          "scale": true,
+          "bend": false,
+          "twist": false,
+          "detach": false,
+          "visibility": true,
+          "materialState": true
+        },
+        "sockets": [],
+        "collider": {
+          "type": "box",
+          "offset": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ],
+          "isTrigger": false,
+          "notes": "Replace with sphere/capsule/compound proxy when the object shape demands it."
+        },
+        "constraints": [],
+        "destruction": {
+          "breakable": false,
+          "fractureGroup": "root",
+          "seamRefs": [],
+          "detachableFragments": [],
+          "breakImpulse": 0,
+          "debrisMaterial": "base"
+        }
+      },
+      "material": "wood",
+      "materialLayers": [
+        "plaster",
+        "wood",
+        "slate"
+      ],
+      "deformations": [],
+      "joints": [],
+      "seams": [],
+      "localFeatures": [
+        {
+          "id": "walls-identity",
+          "type": "assembly",
+          "description": "Cream plaster shell with actual openings and few connected repair patches.",
+          "evidenceRefs": [
+            "full-object"
+          ]
+        }
+      ],
+      "surfaceDetail": {
+        "macroRoughness": 0,
+        "microRoughness": 0,
+        "bumpAmplitude": 0,
+        "normalPattern": "",
+        "displacementPattern": "",
+        "occlusionPattern": "",
+        "edgeWearPattern": "",
+        "notes": ""
+      },
+      "evidenceRefs": [
+        "full-object"
+      ],
+      "details": [
+        "Cream plaster shell with actual openings and few connected repair patches."
+      ],
+      "fidelityTier": "blockout",
+      "colorMaterialRecipe": {
+        "dominantAlbedo": "rgba(226, 210, 167, 1)",
+        "secondaryAlbedo": "rgba(53, 101, 103, 1)",
+        "materialClass": "stone",
+        "materialClassConfidence": 0.7
+      }
+    },
+    {
+      "id": "gable",
+      "name": "gable",
+      "level": "meso",
+      "role": "gable",
+      "importance": 0.8,
+      "confidence": 0.75,
+      "primitive": "box",
+      "topologyClass": "assembled-solid",
+      "topologyRationale": "Connected occupied cells with shared faces culled; independent part identity retained.",
+      "geometryDescriptor": {
+        "topologyIntent": "Editable integer cube occupancy",
+        "edgeTreatment": {
+          "type": "none",
+          "bevelRadius": 0,
+          "segments": 1
+        },
+        "deformationStack": [],
+        "uvStrategy": "No reference image projection",
+        "normalStrategy": "Axis-aligned flat face normals",
+        "parameters": {
+          "size": [
+            2,
+            12,
+            28
+          ],
+          "pos": [
+            15,
+            22,
+            -14
+          ]
+        }
+      },
+      "parent": "building",
+      "attachment": {
+        "parentSocket": "building",
+        "localStart": [
+          2.25,
+          3.3,
+          -2.1
+        ],
+        "localEnd": [
+          2.25,
+          3.3,
+          -2.1
+        ],
+        "contactType": "voxel union",
+        "embedDepth": 0.15,
+        "overlap": 0.15,
+        "gapTolerance": 0,
+        "notes": "Authoring volumes share one cell at joints; occupancy union removes duplicate interior geometry."
+      },
+      "dimensions": {
+        "width": 0.3,
+        "height": 1.7999999999999998,
+        "depth": 4.2,
+        "units": "metres",
+        "confidence": 0.75
+      },
+      "transform": {
+        "position": [
+          2.25,
+          3.3,
+          -2.1
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "actionProfile": {
+        "animationRole": "static assembly",
+        "pivot": {
+          "mode": "center",
+          "localPosition": [
+            0,
+            0,
+            0
+          ],
+          "axis": [
+            0,
+            1,
+            0
+          ],
+          "confidence": 0.5
+        },
+        "transformChannels": {
+          "translate": true,
+          "rotate": true,
+          "scale": true,
+          "bend": false,
+          "twist": false,
+          "detach": false,
+          "visibility": true,
+          "materialState": true
+        },
+        "sockets": [],
+        "collider": {
+          "type": "box",
+          "offset": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ],
+          "isTrigger": false,
+          "notes": "Replace with sphere/capsule/compound proxy when the object shape demands it."
+        },
+        "constraints": [],
+        "destruction": {
+          "breakable": false,
+          "fractureGroup": "root",
+          "seamRefs": [],
+          "detachableFragments": [],
+          "breakImpulse": 0,
+          "debrisMaterial": "base"
+        }
+      },
+      "material": "wood",
+      "materialLayers": [
+        "plaster",
+        "wood",
+        "slate"
+      ],
+      "deformations": [],
+      "joints": [],
+      "seams": [],
+      "localFeatures": [
+        {
+          "id": "gable-identity",
+          "type": "assembly",
+          "description": "Right triangular gable; rear counterpart inferred.",
+          "evidenceRefs": [
+            "full-object"
+          ]
+        }
+      ],
+      "surfaceDetail": {
+        "macroRoughness": 0,
+        "microRoughness": 0,
+        "bumpAmplitude": 0,
+        "normalPattern": "",
+        "displacementPattern": "",
+        "occlusionPattern": "",
+        "edgeWearPattern": "",
+        "notes": ""
+      },
+      "evidenceRefs": [
+        "full-object"
+      ],
+      "details": [
+        "Right triangular gable; rear counterpart inferred."
+      ],
+      "fidelityTier": "blockout",
+      "colorMaterialRecipe": {
+        "dominantAlbedo": "rgba(226, 210, 167, 1)",
+        "secondaryAlbedo": "rgba(53, 101, 103, 1)",
+        "materialClass": "stone",
+        "materialClassConfidence": 0.7
+      }
+    },
+    {
+      "id": "fascia",
+      "name": "fascia",
+      "level": "meso",
+      "role": "fascia",
+      "importance": 0.8,
+      "confidence": 0.75,
+      "primitive": "box",
+      "topologyClass": "assembled-solid",
+      "topologyRationale": "Connected occupied cells with shared faces culled; independent part identity retained.",
+      "geometryDescriptor": {
+        "topologyIntent": "Editable integer cube occupancy",
+        "edgeTreatment": {
+          "type": "none",
+          "bevelRadius": 0,
+          "segments": 1
+        },
+        "deformationStack": [],
+        "uvStrategy": "No reference image projection",
+        "normalStrategy": "Axis-aligned flat face normals",
+        "parameters": {
+          "size": [
+            2,
+            14,
+            36
+          ],
+          "pos": [
+            18,
+            21,
+            -18
+          ]
+        }
+      },
+      "parent": "roof",
+      "attachment": {
+        "parentSocket": "roof",
+        "localStart": [
+          2.6999999999999997,
+          3.15,
+          -2.6999999999999997
+        ],
+        "localEnd": [
+          2.6999999999999997,
+          3.15,
+          -2.6999999999999997
+        ],
+        "contactType": "voxel union",
+        "embedDepth": 0.15,
+        "overlap": 0.15,
+        "gapTolerance": 0,
+        "notes": "Authoring volumes share one cell at joints; occupancy union removes duplicate interior geometry."
+      },
+      "dimensions": {
+        "width": 0.3,
+        "height": 2.1,
+        "depth": 5.3999999999999995,
+        "units": "metres",
+        "confidence": 0.75
+      },
+      "transform": {
+        "position": [
+          2.6999999999999997,
+          3.15,
+          -2.6999999999999997
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "actionProfile": {
+        "animationRole": "static assembly",
+        "pivot": {
+          "mode": "center",
+          "localPosition": [
+            0,
+            0,
+            0
+          ],
+          "axis": [
+            0,
+            1,
+            0
+          ],
+          "confidence": 0.5
+        },
+        "transformChannels": {
+          "translate": true,
+          "rotate": true,
+          "scale": true,
+          "bend": false,
+          "twist": false,
+          "detach": false,
+          "visibility": true,
+          "materialState": true
+        },
+        "sockets": [],
+        "collider": {
+          "type": "box",
+          "offset": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ],
+          "isTrigger": false,
+          "notes": "Replace with sphere/capsule/compound proxy when the object shape demands it."
+        },
+        "constraints": [],
+        "destruction": {
+          "breakable": false,
+          "fractureGroup": "root",
+          "seamRefs": [],
+          "detachableFragments": [],
+          "breakImpulse": 0,
+          "debrisMaterial": "base"
+        }
+      },
+      "material": "wood",
+      "materialLayers": [
+        "plaster",
+        "wood",
+        "slate"
+      ],
+      "deformations": [],
+      "joints": [],
+      "seams": [],
+      "localFeatures": [
+        {
+          "id": "fascia-identity",
+          "type": "assembly",
+          "description": "Two-cell wooden support under stepped roof ends.",
+          "evidenceRefs": [
+            "full-object"
+          ]
+        }
+      ],
+      "surfaceDetail": {
+        "macroRoughness": 0,
+        "microRoughness": 0,
+        "bumpAmplitude": 0,
+        "normalPattern": "",
+        "displacementPattern": "",
+        "occlusionPattern": "",
+        "edgeWearPattern": "",
+        "notes": ""
+      },
+      "evidenceRefs": [
+        "full-object"
+      ],
+      "details": [
+        "Two-cell wooden support under stepped roof ends."
+      ],
+      "fidelityTier": "blockout",
+      "colorMaterialRecipe": {
+        "dominantAlbedo": "rgba(226, 210, 167, 1)",
+        "secondaryAlbedo": "rgba(53, 101, 103, 1)",
+        "materialClass": "stone",
+        "materialClassConfidence": 0.7
+      }
+    },
+    {
+      "id": "front-window",
+      "name": "front-window",
+      "level": "meso",
+      "role": "front-window",
+      "importance": 0.8,
+      "confidence": 0.75,
+      "primitive": "box",
+      "topologyClass": "assembled-solid",
+      "topologyRationale": "Connected occupied cells with shared faces culled; independent part identity retained.",
+      "geometryDescriptor": {
+        "topologyIntent": "Editable integer cube occupancy",
+        "edgeTreatment": {
+          "type": "none",
+          "bevelRadius": 0,
+          "segments": 1
+        },
+        "deformationStack": [],
+        "uvStrategy": "No reference image projection",
+        "normalStrategy": "Axis-aligned flat face normals",
+        "parameters": {
+          "size": [
+            17,
+            14,
+            3
+          ],
+          "pos": [
+            -14,
+            5,
+            12
+          ]
+        }
+      },
+      "parent": "walls",
+      "attachment": {
+        "parentSocket": "walls",
+        "localStart": [
+          -2.1,
+          0.75,
+          1.7999999999999998
+        ],
+        "localEnd": [
+          -2.1,
+          0.75,
+          1.7999999999999998
+        ],
+        "contactType": "voxel union",
+        "embedDepth": 0.15,
+        "overlap": 0.15,
+        "gapTolerance": 0,
+        "notes": "Authoring volumes share one cell at joints; occupancy union removes duplicate interior geometry."
+      },
+      "dimensions": {
+        "width": 2.55,
+        "height": 2.1,
+        "depth": 0.44999999999999996,
+        "units": "metres",
+        "confidence": 0.75
+      },
+      "transform": {
+        "position": [
+          -2.1,
+          0.75,
+          1.7999999999999998
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "actionProfile": {
+        "animationRole": "static assembly",
+        "pivot": {
+          "mode": "center",
+          "localPosition": [
+            0,
+            0,
+            0
+          ],
+          "axis": [
+            0,
+            1,
+            0
+          ],
+          "confidence": 0.5
+        },
+        "transformChannels": {
+          "translate": true,
+          "rotate": true,
+          "scale": true,
+          "bend": false,
+          "twist": false,
+          "detach": false,
+          "visibility": true,
+          "materialState": true
+        },
+        "sockets": [],
+        "collider": {
+          "type": "box",
+          "offset": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ],
+          "isTrigger": false,
+          "notes": "Replace with sphere/capsule/compound proxy when the object shape demands it."
+        },
+        "constraints": [],
+        "destruction": {
+          "breakable": false,
+          "fractureGroup": "root",
+          "seamRefs": [],
+          "detachableFragments": [],
+          "breakImpulse": 0,
+          "debrisMaterial": "base"
+        }
+      },
+      "material": "wood",
+      "materialLayers": [
+        "plaster",
+        "wood",
+        "slate"
+      ],
+      "deformations": [],
+      "joints": [],
+      "seams": [],
+      "localFeatures": [
+        {
+          "id": "front-window-identity",
+          "type": "assembly",
+          "description": "13 by 10 uninterrupted glass, ochre inner frame, ivory outer sill.",
+          "evidenceRefs": [
+            "full-object"
+          ]
+        }
+      ],
+      "surfaceDetail": {
+        "macroRoughness": 0,
+        "microRoughness": 0,
+        "bumpAmplitude": 0,
+        "normalPattern": "",
+        "displacementPattern": "",
+        "occlusionPattern": "",
+        "edgeWearPattern": "",
+        "notes": ""
+      },
+      "evidenceRefs": [
+        "full-object"
+      ],
+      "details": [
+        "13 by 10 uninterrupted glass, ochre inner frame, ivory outer sill."
+      ],
+      "fidelityTier": "blockout",
+      "colorMaterialRecipe": {
+        "dominantAlbedo": "rgba(226, 210, 167, 1)",
+        "secondaryAlbedo": "rgba(53, 101, 103, 1)",
+        "materialClass": "stone",
+        "materialClassConfidence": 0.7
+      }
+    },
+    {
+      "id": "side-window",
+      "name": "side-window",
+      "level": "meso",
+      "role": "side-window",
+      "importance": 0.8,
+      "confidence": 0.75,
+      "primitive": "box",
+      "topologyClass": "assembled-solid",
+      "topologyRationale": "Connected occupied cells with shared faces culled; independent part identity retained.",
+      "geometryDescriptor": {
+        "topologyIntent": "Editable integer cube occupancy",
+        "edgeTreatment": {
+          "type": "none",
+          "bevelRadius": 0,
+          "segments": 1
+        },
+        "deformationStack": [],
+        "uvStrategy": "No reference image projection",
+        "normalStrategy": "Axis-aligned flat face normals",
+        "parameters": {
+          "size": [
+            3,
+            14,
+            15
+          ],
+          "pos": [
+            15,
+            5,
+            -8
+          ]
+        }
+      },
+      "parent": "walls",
+      "attachment": {
+        "parentSocket": "walls",
+        "localStart": [
+          2.25,
+          0.75,
+          -1.2
+        ],
+        "localEnd": [
+          2.25,
+          0.75,
+          -1.2
+        ],
+        "contactType": "voxel union",
+        "embedDepth": 0.15,
+        "overlap": 0.15,
+        "gapTolerance": 0,
+        "notes": "Authoring volumes share one cell at joints; occupancy union removes duplicate interior geometry."
+      },
+      "dimensions": {
+        "width": 0.44999999999999996,
+        "height": 2.1,
+        "depth": 2.25,
+        "units": "metres",
+        "confidence": 0.75
+      },
+      "transform": {
+        "position": [
+          2.25,
+          0.75,
+          -1.2
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "actionProfile": {
+        "animationRole": "static assembly",
+        "pivot": {
+          "mode": "center",
+          "localPosition": [
+            0,
+            0,
+            0
+          ],
+          "axis": [
+            0,
+            1,
+            0
+          ],
+          "confidence": 0.5
+        },
+        "transformChannels": {
+          "translate": true,
+          "rotate": true,
+          "scale": true,
+          "bend": false,
+          "twist": false,
+          "detach": false,
+          "visibility": true,
+          "materialState": true
+        },
+        "sockets": [],
+        "collider": {
+          "type": "box",
+          "offset": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ],
+          "isTrigger": false,
+          "notes": "Replace with sphere/capsule/compound proxy when the object shape demands it."
+        },
+        "constraints": [],
+        "destruction": {
+          "breakable": false,
+          "fractureGroup": "root",
+          "seamRefs": [],
+          "detachableFragments": [],
+          "breakImpulse": 0,
+          "debrisMaterial": "base"
+        }
+      },
+      "material": "wood",
+      "materialLayers": [
+        "plaster",
+        "wood",
+        "slate"
+      ],
+      "deformations": [],
+      "joints": [],
+      "seams": [],
+      "localFeatures": [
+        {
+          "id": "side-window-identity",
+          "type": "assembly",
+          "description": "Recessed right-side glass and projecting sill.",
+          "evidenceRefs": [
+            "full-object"
+          ]
+        }
+      ],
+      "surfaceDetail": {
+        "macroRoughness": 0,
+        "microRoughness": 0,
+        "bumpAmplitude": 0,
+        "normalPattern": "",
+        "displacementPattern": "",
+        "occlusionPattern": "",
+        "edgeWearPattern": "",
+        "notes": ""
+      },
+      "evidenceRefs": [
+        "full-object"
+      ],
+      "details": [
+        "Recessed right-side glass and projecting sill."
+      ],
+      "fidelityTier": "blockout",
+      "colorMaterialRecipe": {
+        "dominantAlbedo": "rgba(226, 210, 167, 1)",
+        "secondaryAlbedo": "rgba(53, 101, 103, 1)",
+        "materialClass": "stone",
+        "materialClassConfidence": 0.7
+      }
+    },
+    {
+      "id": "door",
+      "name": "door",
+      "level": "meso",
+      "role": "door",
+      "importance": 0.8,
+      "confidence": 0.75,
+      "primitive": "box",
+      "topologyClass": "assembled-solid",
+      "topologyRationale": "Connected occupied cells with shared faces culled; independent part identity retained.",
+      "geometryDescriptor": {
+        "topologyIntent": "Editable integer cube occupancy",
+        "edgeTreatment": {
+          "type": "none",
+          "bevelRadius": 0,
+          "segments": 1
+        },
+        "deformationStack": [],
+        "uvStrategy": "No reference image projection",
+        "normalStrategy": "Axis-aligned flat face normals",
+        "parameters": {
+          "size": [
+            9,
+            18,
+            3
+          ],
+          "pos": [
+            5,
+            2,
+            12
+          ]
+        }
+      },
+      "parent": "walls",
+      "attachment": {
+        "parentSocket": "walls",
+        "localStart": [
+          0.75,
+          0.3,
+          1.7999999999999998
+        ],
+        "localEnd": [
+          0.75,
+          0.3,
+          1.7999999999999998
+        ],
+        "contactType": "voxel union",
+        "embedDepth": 0.15,
+        "overlap": 0.15,
+        "gapTolerance": 0,
+        "notes": "Authoring volumes share one cell at joints; occupancy union removes duplicate interior geometry."
+      },
+      "dimensions": {
+        "width": 1.3499999999999999,
+        "height": 2.6999999999999997,
+        "depth": 0.44999999999999996,
+        "units": "metres",
+        "confidence": 0.75
+      },
+      "transform": {
+        "position": [
+          0.75,
+          0.3,
+          1.7999999999999998
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "actionProfile": {
+        "animationRole": "static assembly",
+        "pivot": {
+          "mode": "center",
+          "localPosition": [
+            0,
+            0,
+            0
+          ],
+          "axis": [
+            0,
+            1,
+            0
+          ],
+          "confidence": 0.5
+        },
+        "transformChannels": {
+          "translate": true,
+          "rotate": true,
+          "scale": true,
+          "bend": false,
+          "twist": false,
+          "detach": false,
+          "visibility": true,
+          "materialState": true
+        },
+        "sockets": [],
+        "collider": {
+          "type": "box",
+          "offset": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ],
+          "isTrigger": false,
+          "notes": "Replace with sphere/capsule/compound proxy when the object shape demands it."
+        },
+        "constraints": [],
+        "destruction": {
+          "breakable": false,
+          "fractureGroup": "root",
+          "seamRefs": [],
+          "detachableFragments": [],
+          "breakImpulse": 0,
+          "debrisMaterial": "base"
+        }
+      },
+      "material": "wood",
+      "materialLayers": [
+        "plaster",
+        "wood",
+        "slate"
+      ],
+      "deformations": [],
+      "joints": [],
+      "seams": [],
+      "localFeatures": [
+        {
+          "id": "door-identity",
+          "type": "assembly",
+          "description": "Tall right entrance: upper glazed panel, lower wooden panel, no obstruction.",
+          "evidenceRefs": [
+            "full-object"
+          ]
+        }
+      ],
+      "surfaceDetail": {
+        "macroRoughness": 0,
+        "microRoughness": 0,
+        "bumpAmplitude": 0,
+        "normalPattern": "",
+        "displacementPattern": "",
+        "occlusionPattern": "",
+        "edgeWearPattern": "",
+        "notes": ""
+      },
+      "evidenceRefs": [
+        "full-object"
+      ],
+      "details": [
+        "Tall right entrance: upper glazed panel, lower wooden panel, no obstruction."
+      ],
+      "fidelityTier": "blockout",
+      "colorMaterialRecipe": {
+        "dominantAlbedo": "rgba(226, 210, 167, 1)",
+        "secondaryAlbedo": "rgba(53, 101, 103, 1)",
+        "materialClass": "stone",
+        "materialClassConfidence": 0.7
+      }
+    },
+    {
+      "id": "awning",
+      "name": "awning",
+      "level": "meso",
+      "role": "awning",
+      "importance": 0.8,
+      "confidence": 0.75,
+      "primitive": "box",
+      "topologyClass": "assembled-solid",
+      "topologyRationale": "Connected occupied cells with shared faces culled; independent part identity retained.",
+      "geometryDescriptor": {
+        "topologyIntent": "Editable integer cube occupancy",
+        "edgeTreatment": {
+          "type": "none",
+          "bevelRadius": 0,
+          "segments": 1
+        },
+        "deformationStack": [],
+        "uvStrategy": "No reference image projection",
+        "normalStrategy": "Axis-aligned flat face normals",
+        "parameters": {
+          "size": [
+            36,
+            3,
+            5
+          ],
+          "pos": [
+            -18,
+            19,
+            14
+          ]
+        }
+      },
+      "parent": "walls",
+      "attachment": {
+        "parentSocket": "walls",
+        "localStart": [
+          -2.6999999999999997,
+          2.85,
+          2.1
+        ],
+        "localEnd": [
+          -2.6999999999999997,
+          2.85,
+          2.1
+        ],
+        "contactType": "voxel union",
+        "embedDepth": 0.15,
+        "overlap": 0.15,
+        "gapTolerance": 0,
+        "notes": "Authoring volumes share one cell at joints; occupancy union removes duplicate interior geometry."
+      },
+      "dimensions": {
+        "width": 5.3999999999999995,
+        "height": 0.44999999999999996,
+        "depth": 0.75,
+        "units": "metres",
+        "confidence": 0.75
+      },
+      "transform": {
+        "position": [
+          -2.6999999999999997,
+          2.85,
+          2.1
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "actionProfile": {
+        "animationRole": "static assembly",
+        "pivot": {
+          "mode": "center",
+          "localPosition": [
+            0,
+            0,
+            0
+          ],
+          "axis": [
+            0,
+            1,
+            0
+          ],
+          "confidence": 0.5
+        },
+        "transformChannels": {
+          "translate": true,
+          "rotate": true,
+          "scale": true,
+          "bend": false,
+          "twist": false,
+          "detach": false,
+          "visibility": true,
+          "materialState": true
+        },
+        "sockets": [],
+        "collider": {
+          "type": "box",
+          "offset": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ],
+          "isTrigger": false,
+          "notes": "Replace with sphere/capsule/compound proxy when the object shape demands it."
+        },
+        "constraints": [],
+        "destruction": {
+          "breakable": false,
+          "fractureGroup": "root",
+          "seamRefs": [],
+          "detachableFragments": [],
+          "breakImpulse": 0,
+          "debrisMaterial": "base"
+        }
+      },
+      "material": "wood",
+      "materialLayers": [
+        "plaster",
+        "wood",
+        "slate"
+      ],
+      "deformations": [],
+      "joints": [],
+      "seams": [],
+      "localFeatures": [
+        {
+          "id": "awning-identity",
+          "type": "assembly",
+          "description": "Alternating cream and terracotta stripes, supported at facade head.",
+          "evidenceRefs": [
+            "full-object"
+          ]
+        }
+      ],
+      "surfaceDetail": {
+        "macroRoughness": 0,
+        "microRoughness": 0,
+        "bumpAmplitude": 0,
+        "normalPattern": "",
+        "displacementPattern": "",
+        "occlusionPattern": "",
+        "edgeWearPattern": "",
+        "notes": ""
+      },
+      "evidenceRefs": [
+        "full-object"
+      ],
+      "details": [
+        "Alternating cream and terracotta stripes, supported at facade head."
+      ],
+      "fidelityTier": "blockout",
+      "colorMaterialRecipe": {
+        "dominantAlbedo": "rgba(226, 210, 167, 1)",
+        "secondaryAlbedo": "rgba(53, 101, 103, 1)",
+        "materialClass": "stone",
+        "materialClassConfidence": 0.7
+      }
+    },
+    {
+      "id": "steps",
+      "name": "steps",
+      "level": "meso",
+      "role": "steps",
+      "importance": 0.8,
+      "confidence": 0.75,
+      "primitive": "box",
+      "topologyClass": "assembled-solid",
+      "topologyRationale": "Connected occupied cells with shared faces culled; independent part identity retained.",
+      "geometryDescriptor": {
+        "topologyIntent": "Editable integer cube occupancy",
+        "edgeTreatment": {
+          "type": "none",
+          "bevelRadius": 0,
+          "segments": 1
+        },
+        "deformationStack": [],
+        "uvStrategy": "No reference image projection",
+        "normalStrategy": "Axis-aligned flat face normals",
+        "parameters": {
+          "size": [
+            13,
+            2,
+            7
+          ],
+          "pos": [
+            3,
+            0,
+            15
+          ]
+        }
+      },
+      "parent": "plinth",
+      "attachment": {
+        "parentSocket": "plinth",
+        "localStart": [
+          0.44999999999999996,
+          0,
+          2.25
+        ],
+        "localEnd": [
+          0.44999999999999996,
+          0,
+          2.25
+        ],
+        "contactType": "voxel union",
+        "embedDepth": 0.15,
+        "overlap": 0.15,
+        "gapTolerance": 0,
+        "notes": "Authoring volumes share one cell at joints; occupancy union removes duplicate interior geometry."
+      },
+      "dimensions": {
+        "width": 1.95,
+        "height": 0.3,
+        "depth": 1.05,
+        "units": "metres",
+        "confidence": 0.75
+      },
+      "transform": {
+        "position": [
+          0.44999999999999996,
+          0,
+          2.25
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "actionProfile": {
+        "animationRole": "static assembly",
+        "pivot": {
+          "mode": "center",
+          "localPosition": [
+            0,
+            0,
+            0
+          ],
+          "axis": [
+            0,
+            1,
+            0
+          ],
+          "confidence": 0.5
+        },
+        "transformChannels": {
+          "translate": true,
+          "rotate": true,
+          "scale": true,
+          "bend": false,
+          "twist": false,
+          "detach": false,
+          "visibility": true,
+          "materialState": true
+        },
+        "sockets": [],
+        "collider": {
+          "type": "box",
+          "offset": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ],
+          "isTrigger": false,
+          "notes": "Replace with sphere/capsule/compound proxy when the object shape demands it."
+        },
+        "constraints": [],
+        "destruction": {
+          "breakable": false,
+          "fractureGroup": "root",
+          "seamRefs": [],
+          "detachableFragments": [],
+          "breakImpulse": 0,
+          "debrisMaterial": "base"
+        }
+      },
+      "material": "wood",
+      "materialLayers": [
+        "plaster",
+        "wood",
+        "slate"
+      ],
+      "deformations": [],
+      "joints": [],
+      "seams": [],
+      "localFeatures": [
+        {
+          "id": "steps-identity",
+          "type": "assembly",
+          "description": "Two shallow stone doorstep levels connected to the entrance.",
+          "evidenceRefs": [
+            "full-object"
+          ]
+        }
+      ],
+      "surfaceDetail": {
+        "macroRoughness": 0,
+        "microRoughness": 0,
+        "bumpAmplitude": 0,
+        "normalPattern": "",
+        "displacementPattern": "",
+        "occlusionPattern": "",
+        "edgeWearPattern": "",
+        "notes": ""
+      },
+      "evidenceRefs": [
+        "full-object"
+      ],
+      "details": [
+        "Two shallow stone doorstep levels connected to the entrance."
+      ],
+      "fidelityTier": "blockout",
+      "colorMaterialRecipe": {
+        "dominantAlbedo": "rgba(226, 210, 167, 1)",
+        "secondaryAlbedo": "rgba(53, 101, 103, 1)",
+        "materialClass": "stone",
+        "materialClassConfidence": 0.7
+      }
+    },
+    {
+      "id": "chimney",
+      "name": "chimney",
+      "level": "meso",
+      "role": "chimney",
+      "importance": 0.8,
+      "confidence": 0.75,
+      "primitive": "box",
+      "topologyClass": "assembled-solid",
+      "topologyRationale": "Connected occupied cells with shared faces culled; independent part identity retained.",
+      "geometryDescriptor": {
+        "topologyIntent": "Editable integer cube occupancy",
+        "edgeTreatment": {
+          "type": "none",
+          "bevelRadius": 0,
+          "segments": 1
+        },
+        "deformationStack": [],
+        "uvStrategy": "No reference image projection",
+        "normalStrategy": "Axis-aligned flat face normals",
+        "parameters": {
+          "size": [
+            5,
+            8,
+            5
+          ],
+          "pos": [
+            -13,
+            30,
+            -5
+          ]
+        }
+      },
+      "parent": "roof",
+      "attachment": {
+        "parentSocket": "roof",
+        "localStart": [
+          -1.95,
+          4.5,
+          -0.75
+        ],
+        "localEnd": [
+          -1.95,
+          4.5,
+          -0.75
+        ],
+        "contactType": "voxel union",
+        "embedDepth": 0.15,
+        "overlap": 0.15,
+        "gapTolerance": 0,
+        "notes": "Authoring volumes share one cell at joints; occupancy union removes duplicate interior geometry."
+      },
+      "dimensions": {
+        "width": 0.75,
+        "height": 1.2,
+        "depth": 0.75,
+        "units": "metres",
+        "confidence": 0.75
+      },
+      "transform": {
+        "position": [
+          -1.95,
+          4.5,
+          -0.75
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "actionProfile": {
+        "animationRole": "static assembly",
+        "pivot": {
+          "mode": "center",
+          "localPosition": [
+            0,
+            0,
+            0
+          ],
+          "axis": [
+            0,
+            1,
+            0
+          ],
+          "confidence": 0.5
+        },
+        "transformChannels": {
+          "translate": true,
+          "rotate": true,
+          "scale": true,
+          "bend": false,
+          "twist": false,
+          "detach": false,
+          "visibility": true,
+          "materialState": true
+        },
+        "sockets": [],
+        "collider": {
+          "type": "box",
+          "offset": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ],
+          "isTrigger": false,
+          "notes": "Replace with sphere/capsule/compound proxy when the object shape demands it."
+        },
+        "constraints": [],
+        "destruction": {
+          "breakable": false,
+          "fractureGroup": "root",
+          "seamRefs": [],
+          "detachableFragments": [],
+          "breakImpulse": 0,
+          "debrisMaterial": "base"
+        }
+      },
+      "material": "wood",
+      "materialLayers": [
+        "plaster",
+        "wood",
+        "slate"
+      ],
+      "deformations": [],
+      "joints": [],
+      "seams": [],
+      "localFeatures": [
+        {
+          "id": "chimney-identity",
+          "type": "assembly",
+          "description": "Brick chimney through roof, pale projecting cap, dark open centre.",
+          "evidenceRefs": [
+            "full-object"
+          ]
+        }
+      ],
+      "surfaceDetail": {
+        "macroRoughness": 0,
+        "microRoughness": 0,
+        "bumpAmplitude": 0,
+        "normalPattern": "",
+        "displacementPattern": "",
+        "occlusionPattern": "",
+        "edgeWearPattern": "",
+        "notes": ""
+      },
+      "evidenceRefs": [
+        "full-object"
+      ],
+      "details": [
+        "Brick chimney through roof, pale projecting cap, dark open centre."
+      ],
+      "fidelityTier": "blockout",
+      "colorMaterialRecipe": {
+        "dominantAlbedo": "rgba(226, 210, 167, 1)",
+        "secondaryAlbedo": "rgba(53, 101, 103, 1)",
+        "materialClass": "stone",
+        "materialClassConfidence": 0.7
+      }
+    },
+    {
+      "id": "table",
+      "name": "table",
+      "level": "meso",
+      "role": "table",
+      "importance": 0.8,
+      "confidence": 0.75,
+      "primitive": "box",
+      "topologyClass": "assembled-solid",
+      "topologyRationale": "Connected occupied cells with shared faces culled; independent part identity retained.",
+      "geometryDescriptor": {
+        "topologyIntent": "Editable integer cube occupancy",
+        "edgeTreatment": {
+          "type": "none",
+          "bevelRadius": 0,
+          "segments": 1
+        },
+        "deformationStack": [],
+        "uvStrategy": "No reference image projection",
+        "normalStrategy": "Axis-aligned flat face normals",
+        "parameters": {
+          "size": [
+            8,
+            8,
+            8
+          ],
+          "pos": [
+            23,
+            1,
+            4
+          ]
+        }
+      },
+      "parent": "terrace",
+      "attachment": null,
+      "dimensions": {
+        "width": 1.2,
+        "height": 1.2,
+        "depth": 1.2,
+        "units": "metres",
+        "confidence": 0.75
+      },
+      "transform": {
+        "position": [
+          3.4499999999999997,
+          0.15,
+          0.6
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "actionProfile": {
+        "animationRole": "static assembly",
+        "pivot": {
+          "mode": "center",
+          "localPosition": [
+            0,
+            0,
+            0
+          ],
+          "axis": [
+            0,
+            1,
+            0
+          ],
+          "confidence": 0.5
+        },
+        "transformChannels": {
+          "translate": true,
+          "rotate": true,
+          "scale": true,
+          "bend": false,
+          "twist": false,
+          "detach": false,
+          "visibility": true,
+          "materialState": true
+        },
+        "sockets": [],
+        "collider": {
+          "type": "box",
+          "offset": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ],
+          "isTrigger": false,
+          "notes": "Replace with sphere/capsule/compound proxy when the object shape demands it."
+        },
+        "constraints": [],
+        "destruction": {
+          "breakable": false,
+          "fractureGroup": "root",
+          "seamRefs": [],
+          "detachableFragments": [],
+          "breakImpulse": 0,
+          "debrisMaterial": "base"
+        }
+      },
+      "material": "wood",
+      "materialLayers": [
+        "plaster",
+        "wood",
+        "slate"
+      ],
+      "deformations": [],
+      "joints": [],
+      "seams": [],
+      "localFeatures": [
+        {
+          "id": "table-identity",
+          "type": "assembly",
+          "description": "Square wooden table with four legs.",
+          "evidenceRefs": [
+            "full-object"
+          ]
+        }
+      ],
+      "surfaceDetail": {
+        "macroRoughness": 0,
+        "microRoughness": 0,
+        "bumpAmplitude": 0,
+        "normalPattern": "",
+        "displacementPattern": "",
+        "occlusionPattern": "",
+        "edgeWearPattern": "",
+        "notes": ""
+      },
+      "evidenceRefs": [
+        "full-object"
+      ],
+      "details": [
+        "Square wooden table with four legs."
+      ],
+      "fidelityTier": "blockout",
+      "colorMaterialRecipe": {
+        "dominantAlbedo": "rgba(226, 210, 167, 1)",
+        "secondaryAlbedo": "rgba(53, 101, 103, 1)",
+        "materialClass": "stone",
+        "materialClassConfidence": 0.7
+      }
+    },
+    {
+      "id": "chair-front",
+      "name": "chair-front",
+      "level": "meso",
+      "role": "chair-front",
+      "importance": 0.8,
+      "confidence": 0.75,
+      "primitive": "box",
+      "topologyClass": "assembled-solid",
+      "topologyRationale": "Connected occupied cells with shared faces culled; independent part identity retained.",
+      "geometryDescriptor": {
+        "topologyIntent": "Editable integer cube occupancy",
+        "edgeTreatment": {
+          "type": "none",
+          "bevelRadius": 0,
+          "segments": 1
+        },
+        "deformationStack": [],
+        "uvStrategy": "No reference image projection",
+        "normalStrategy": "Axis-aligned flat face normals",
+        "parameters": {
+          "size": [
+            6,
+            10,
+            6
+          ],
+          "pos": [
+            24,
+            1,
+            13
+          ]
+        }
+      },
+      "parent": "terrace",
+      "attachment": null,
+      "dimensions": {
+        "width": 0.8999999999999999,
+        "height": 1.5,
+        "depth": 0.8999999999999999,
+        "units": "metres",
+        "confidence": 0.75
+      },
+      "transform": {
+        "position": [
+          3.5999999999999996,
+          0.15,
+          1.95
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "actionProfile": {
+        "animationRole": "static assembly",
+        "pivot": {
+          "mode": "center",
+          "localPosition": [
+            0,
+            0,
+            0
+          ],
+          "axis": [
+            0,
+            1,
+            0
+          ],
+          "confidence": 0.5
+        },
+        "transformChannels": {
+          "translate": true,
+          "rotate": true,
+          "scale": true,
+          "bend": false,
+          "twist": false,
+          "detach": false,
+          "visibility": true,
+          "materialState": true
+        },
+        "sockets": [],
+        "collider": {
+          "type": "box",
+          "offset": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ],
+          "isTrigger": false,
+          "notes": "Replace with sphere/capsule/compound proxy when the object shape demands it."
+        },
+        "constraints": [],
+        "destruction": {
+          "breakable": false,
+          "fractureGroup": "root",
+          "seamRefs": [],
+          "detachableFragments": [],
+          "breakImpulse": 0,
+          "debrisMaterial": "base"
+        }
+      },
+      "material": "wood",
+      "materialLayers": [
+        "plaster",
+        "wood",
+        "slate"
+      ],
+      "deformations": [],
+      "joints": [],
+      "seams": [],
+      "localFeatures": [
+        {
+          "id": "chair-front-identity",
+          "type": "assembly",
+          "description": "Four legs, seat and rear slats, facing table.",
+          "evidenceRefs": [
+            "full-object"
+          ]
+        }
+      ],
+      "surfaceDetail": {
+        "macroRoughness": 0,
+        "microRoughness": 0,
+        "bumpAmplitude": 0,
+        "normalPattern": "",
+        "displacementPattern": "",
+        "occlusionPattern": "",
+        "edgeWearPattern": "",
+        "notes": ""
+      },
+      "evidenceRefs": [
+        "full-object"
+      ],
+      "details": [
+        "Four legs, seat and rear slats, facing table."
+      ],
+      "fidelityTier": "blockout",
+      "colorMaterialRecipe": {
+        "dominantAlbedo": "rgba(226, 210, 167, 1)",
+        "secondaryAlbedo": "rgba(53, 101, 103, 1)",
+        "materialClass": "stone",
+        "materialClassConfidence": 0.7
+      }
+    },
+    {
+      "id": "chair-back",
+      "name": "chair-back",
+      "level": "meso",
+      "role": "chair-back",
+      "importance": 0.8,
+      "confidence": 0.75,
+      "primitive": "box",
+      "topologyClass": "assembled-solid",
+      "topologyRationale": "Connected occupied cells with shared faces culled; independent part identity retained.",
+      "geometryDescriptor": {
+        "topologyIntent": "Editable integer cube occupancy",
+        "edgeTreatment": {
+          "type": "none",
+          "bevelRadius": 0,
+          "segments": 1
+        },
+        "deformationStack": [],
+        "uvStrategy": "No reference image projection",
+        "normalStrategy": "Axis-aligned flat face normals",
+        "parameters": {
+          "size": [
+            6,
+            10,
+            6
+          ],
+          "pos": [
+            24,
+            1,
+            -3
+          ]
+        }
+      },
+      "parent": "terrace",
+      "attachment": null,
+      "dimensions": {
+        "width": 0.8999999999999999,
+        "height": 1.5,
+        "depth": 0.8999999999999999,
+        "units": "metres",
+        "confidence": 0.75
+      },
+      "transform": {
+        "position": [
+          3.5999999999999996,
+          0.15,
+          -0.44999999999999996
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "actionProfile": {
+        "animationRole": "static assembly",
+        "pivot": {
+          "mode": "center",
+          "localPosition": [
+            0,
+            0,
+            0
+          ],
+          "axis": [
+            0,
+            1,
+            0
+          ],
+          "confidence": 0.5
+        },
+        "transformChannels": {
+          "translate": true,
+          "rotate": true,
+          "scale": true,
+          "bend": false,
+          "twist": false,
+          "detach": false,
+          "visibility": true,
+          "materialState": true
+        },
+        "sockets": [],
+        "collider": {
+          "type": "box",
+          "offset": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ],
+          "isTrigger": false,
+          "notes": "Replace with sphere/capsule/compound proxy when the object shape demands it."
+        },
+        "constraints": [],
+        "destruction": {
+          "breakable": false,
+          "fractureGroup": "root",
+          "seamRefs": [],
+          "detachableFragments": [],
+          "breakImpulse": 0,
+          "debrisMaterial": "base"
+        }
+      },
+      "material": "wood",
+      "materialLayers": [
+        "plaster",
+        "wood",
+        "slate"
+      ],
+      "deformations": [],
+      "joints": [],
+      "seams": [],
+      "localFeatures": [
+        {
+          "id": "chair-back-identity",
+          "type": "assembly",
+          "description": "Four legs, seat and rear slats, facing table.",
+          "evidenceRefs": [
+            "full-object"
+          ]
+        }
+      ],
+      "surfaceDetail": {
+        "macroRoughness": 0,
+        "microRoughness": 0,
+        "bumpAmplitude": 0,
+        "normalPattern": "",
+        "displacementPattern": "",
+        "occlusionPattern": "",
+        "edgeWearPattern": "",
+        "notes": ""
+      },
+      "evidenceRefs": [
+        "full-object"
+      ],
+      "details": [
+        "Four legs, seat and rear slats, facing table."
+      ],
+      "fidelityTier": "blockout",
+      "colorMaterialRecipe": {
+        "dominantAlbedo": "rgba(226, 210, 167, 1)",
+        "secondaryAlbedo": "rgba(53, 101, 103, 1)",
+        "materialClass": "stone",
+        "materialClassConfidence": 0.7
+      }
+    },
+    {
+      "id": "roof-repairs",
+      "name": "roof-repairs",
+      "level": "micro",
+      "role": "roof-repairs",
+      "importance": 0.8,
+      "confidence": 0.75,
+      "primitive": "box",
+      "topologyClass": "assembled-solid",
+      "topologyRationale": "Connected occupied cells with shared faces culled; independent part identity retained.",
+      "geometryDescriptor": {
+        "topologyIntent": "Editable integer cube occupancy",
+        "edgeTreatment": {
+          "type": "none",
+          "bevelRadius": 0,
+          "segments": 1
+        },
+        "deformationStack": [],
+        "uvStrategy": "No reference image projection",
+        "normalStrategy": "Axis-aligned flat face normals",
+        "parameters": {
+          "size": [
+            7,
+            2,
+            3
+          ],
+          "pos": [
+            -12,
+            26,
+            8
+          ]
+        }
+      },
+      "parent": "roof",
+      "attachment": {
+        "parentSocket": "roof",
+        "localStart": [
+          -1.7999999999999998,
+          3.9,
+          1.2
+        ],
+        "localEnd": [
+          -1.7999999999999998,
+          3.9,
+          1.2
+        ],
+        "contactType": "voxel union",
+        "embedDepth": 0.15,
+        "overlap": 0.15,
+        "gapTolerance": 0,
+        "notes": "Authoring volumes share one cell at joints; occupancy union removes duplicate interior geometry."
+      },
+      "dimensions": {
+        "width": 1.05,
+        "height": 0.3,
+        "depth": 0.44999999999999996,
+        "units": "metres",
+        "confidence": 0.75
+      },
+      "transform": {
+        "position": [
+          -1.7999999999999998,
+          3.9,
+          1.2
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "actionProfile": {
+        "animationRole": "static assembly",
+        "pivot": {
+          "mode": "center",
+          "localPosition": [
+            0,
+            0,
+            0
+          ],
+          "axis": [
+            0,
+            1,
+            0
+          ],
+          "confidence": 0.5
+        },
+        "transformChannels": {
+          "translate": true,
+          "rotate": true,
+          "scale": true,
+          "bend": false,
+          "twist": false,
+          "detach": false,
+          "visibility": true,
+          "materialState": true
+        },
+        "sockets": [],
+        "collider": {
+          "type": "box",
+          "offset": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ],
+          "isTrigger": false,
+          "notes": "Replace with sphere/capsule/compound proxy when the object shape demands it."
+        },
+        "constraints": [],
+        "destruction": {
+          "breakable": false,
+          "fractureGroup": "root",
+          "seamRefs": [],
+          "detachableFragments": [],
+          "breakImpulse": 0,
+          "debrisMaterial": "base"
+        }
+      },
+      "material": "wood",
+      "materialLayers": [
+        "plaster",
+        "wood",
+        "slate"
+      ],
+      "deformations": [],
+      "joints": [],
+      "seams": [],
+      "localFeatures": [
+        {
+          "id": "roof-repairs-identity",
+          "type": "assembly",
+          "description": "Sage slate repairs: second and fifth visible lanes, middle courses.",
+          "evidenceRefs": [
+            "full-object"
+          ]
+        }
+      ],
+      "surfaceDetail": {
+        "macroRoughness": 0,
+        "microRoughness": 0,
+        "bumpAmplitude": 0,
+        "normalPattern": "",
+        "displacementPattern": "",
+        "occlusionPattern": "",
+        "edgeWearPattern": "",
+        "notes": ""
+      },
+      "evidenceRefs": [
+        "full-object"
+      ],
+      "details": [
+        "Sage slate repairs: second and fifth visible lanes, middle courses."
+      ],
+      "fidelityTier": "blockout",
+      "colorMaterialRecipe": {
+        "dominantAlbedo": "rgba(226, 210, 167, 1)",
+        "secondaryAlbedo": "rgba(53, 101, 103, 1)",
+        "materialClass": "stone",
+        "materialClassConfidence": 0.7
+      }
+    },
+    {
+      "id": "ridge",
+      "name": "ridge",
+      "level": "micro",
+      "role": "ridge",
+      "importance": 0.8,
+      "confidence": 0.75,
+      "primitive": "box",
+      "topologyClass": "assembled-solid",
+      "topologyRationale": "Connected occupied cells with shared faces culled; independent part identity retained.",
+      "geometryDescriptor": {
+        "topologyIntent": "Editable integer cube occupancy",
+        "edgeTreatment": {
+          "type": "none",
+          "bevelRadius": 0,
+          "segments": 1
+        },
+        "deformationStack": [],
+        "uvStrategy": "No reference image projection",
+        "normalStrategy": "Axis-aligned flat face normals",
+        "parameters": {
+          "size": [
+            40,
+            2,
+            2
+          ],
+          "pos": [
+            -20,
+            34,
+            -1
+          ]
+        }
+      },
+      "parent": "roof",
+      "attachment": {
+        "parentSocket": "roof",
+        "localStart": [
+          -3,
+          5.1,
+          -0.15
+        ],
+        "localEnd": [
+          -3,
+          5.1,
+          -0.15
+        ],
+        "contactType": "voxel union",
+        "embedDepth": 0.15,
+        "overlap": 0.15,
+        "gapTolerance": 0,
+        "notes": "Authoring volumes share one cell at joints; occupancy union removes duplicate interior geometry."
+      },
+      "dimensions": {
+        "width": 6,
+        "height": 0.3,
+        "depth": 0.3,
+        "units": "metres",
+        "confidence": 0.75
+      },
+      "transform": {
+        "position": [
+          -3,
+          5.1,
+          -0.15
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "actionProfile": {
+        "animationRole": "static assembly",
+        "pivot": {
+          "mode": "center",
+          "localPosition": [
+            0,
+            0,
+            0
+          ],
+          "axis": [
+            0,
+            1,
+            0
+          ],
+          "confidence": 0.5
+        },
+        "transformChannels": {
+          "translate": true,
+          "rotate": true,
+          "scale": true,
+          "bend": false,
+          "twist": false,
+          "detach": false,
+          "visibility": true,
+          "materialState": true
+        },
+        "sockets": [],
+        "collider": {
+          "type": "box",
+          "offset": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ],
+          "isTrigger": false,
+          "notes": "Replace with sphere/capsule/compound proxy when the object shape demands it."
+        },
+        "constraints": [],
+        "destruction": {
+          "breakable": false,
+          "fractureGroup": "root",
+          "seamRefs": [],
+          "detachableFragments": [],
+          "breakImpulse": 0,
+          "debrisMaterial": "base"
+        }
+      },
+      "material": "wood",
+      "materialLayers": [
+        "plaster",
+        "wood",
+        "slate"
+      ],
+      "deformations": [],
+      "joints": [],
+      "seams": [],
+      "localFeatures": [
+        {
+          "id": "ridge-identity",
+          "type": "assembly",
+          "description": "Continuous dark teal cap, segmented every four cells.",
+          "evidenceRefs": [
+            "full-object"
+          ]
+        }
+      ],
+      "surfaceDetail": {
+        "macroRoughness": 0,
+        "microRoughness": 0,
+        "bumpAmplitude": 0,
+        "normalPattern": "",
+        "displacementPattern": "",
+        "occlusionPattern": "",
+        "edgeWearPattern": "",
+        "notes": ""
+      },
+      "evidenceRefs": [
+        "full-object"
+      ],
+      "details": [
+        "Continuous dark teal cap, segmented every four cells."
+      ],
+      "fidelityTier": "blockout",
+      "colorMaterialRecipe": {
+        "dominantAlbedo": "rgba(226, 210, 167, 1)",
+        "secondaryAlbedo": "rgba(53, 101, 103, 1)",
+        "materialClass": "stone",
+        "materialClassConfidence": 0.7
+      }
+    },
+    {
+      "id": "wall-repairs",
+      "name": "wall-repairs",
+      "level": "micro",
+      "role": "wall-repairs",
+      "importance": 0.8,
+      "confidence": 0.75,
+      "primitive": "box",
+      "topologyClass": "assembled-solid",
+      "topologyRationale": "Connected occupied cells with shared faces culled; independent part identity retained.",
+      "geometryDescriptor": {
+        "topologyIntent": "Editable integer cube occupancy",
+        "edgeTreatment": {
+          "type": "none",
+          "bevelRadius": 0,
+          "segments": 1
+        },
+        "deformationStack": [],
+        "uvStrategy": "No reference image projection",
+        "normalStrategy": "Axis-aligned flat face normals",
+        "parameters": {
+          "size": [
+            4,
+            2,
+            1
+          ],
+          "pos": [
+            1,
+            9,
+            14
+          ]
+        }
+      },
+      "parent": "walls",
+      "attachment": {
+        "parentSocket": "walls",
+        "localStart": [
+          0.15,
+          1.3499999999999999,
+          2.1
+        ],
+        "localEnd": [
+          0.15,
+          1.3499999999999999,
+          2.1
+        ],
+        "contactType": "voxel union",
+        "embedDepth": 0.15,
+        "overlap": 0.15,
+        "gapTolerance": 0,
+        "notes": "Authoring volumes share one cell at joints; occupancy union removes duplicate interior geometry."
+      },
+      "dimensions": {
+        "width": 0.6,
+        "height": 0.3,
+        "depth": 0.15,
+        "units": "metres",
+        "confidence": 0.75
+      },
+      "transform": {
+        "position": [
+          0.15,
+          1.3499999999999999,
+          2.1
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "actionProfile": {
+        "animationRole": "static assembly",
+        "pivot": {
+          "mode": "center",
+          "localPosition": [
+            0,
+            0,
+            0
+          ],
+          "axis": [
+            0,
+            1,
+            0
+          ],
+          "confidence": 0.5
+        },
+        "transformChannels": {
+          "translate": true,
+          "rotate": true,
+          "scale": true,
+          "bend": false,
+          "twist": false,
+          "detach": false,
+          "visibility": true,
+          "materialState": true
+        },
+        "sockets": [],
+        "collider": {
+          "type": "box",
+          "offset": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ],
+          "isTrigger": false,
+          "notes": "Replace with sphere/capsule/compound proxy when the object shape demands it."
+        },
+        "constraints": [],
+        "destruction": {
+          "breakable": false,
+          "fractureGroup": "root",
+          "seamRefs": [],
+          "detachableFragments": [],
+          "breakImpulse": 0,
+          "debrisMaterial": "base"
+        }
+      },
+      "material": "wood",
+      "materialLayers": [
+        "plaster",
+        "wood",
+        "slate"
+      ],
+      "deformations": [],
+      "joints": [],
+      "seams": [],
+      "localFeatures": [
+        {
+          "id": "wall-repairs-identity",
+          "type": "assembly",
+          "description": "Sparse cream/ochre/brick repair clusters, quiet plaster areas retained.",
+          "evidenceRefs": [
+            "full-object"
+          ]
+        }
+      ],
+      "surfaceDetail": {
+        "macroRoughness": 0,
+        "microRoughness": 0,
+        "bumpAmplitude": 0,
+        "normalPattern": "",
+        "displacementPattern": "",
+        "occlusionPattern": "",
+        "edgeWearPattern": "",
+        "notes": ""
+      },
+      "evidenceRefs": [
+        "full-object"
+      ],
+      "details": [
+        "Sparse cream/ochre/brick repair clusters, quiet plaster areas retained."
+      ],
+      "fidelityTier": "blockout",
+      "colorMaterialRecipe": {
+        "dominantAlbedo": "rgba(226, 210, 167, 1)",
+        "secondaryAlbedo": "rgba(53, 101, 103, 1)",
+        "materialClass": "stone",
+        "materialClassConfidence": 0.7
+      }
+    },
+    {
+      "id": "handle",
+      "name": "handle",
+      "level": "micro",
+      "role": "handle",
+      "importance": 0.8,
+      "confidence": 0.75,
+      "primitive": "box",
+      "topologyClass": "assembled-solid",
+      "topologyRationale": "Connected occupied cells with shared faces culled; independent part identity retained.",
+      "geometryDescriptor": {
+        "topologyIntent": "Editable integer cube occupancy",
+        "edgeTreatment": {
+          "type": "none",
+          "bevelRadius": 0,
+          "segments": 1
+        },
+        "deformationStack": [],
+        "uvStrategy": "No reference image projection",
+        "normalStrategy": "Axis-aligned flat face normals",
+        "parameters": {
+          "size": [
+            1,
+            1,
+            1
+          ],
+          "pos": [
+            11,
+            9,
+            15
+          ]
+        }
+      },
+      "parent": "door",
+      "attachment": {
+        "parentSocket": "door",
+        "localStart": [
+          1.65,
+          1.3499999999999999,
+          2.25
+        ],
+        "localEnd": [
+          1.65,
+          1.3499999999999999,
+          2.25
+        ],
+        "contactType": "voxel union",
+        "embedDepth": 0.15,
+        "overlap": 0.15,
+        "gapTolerance": 0,
+        "notes": "Authoring volumes share one cell at joints; occupancy union removes duplicate interior geometry."
+      },
+      "dimensions": {
+        "width": 0.15,
+        "height": 0.15,
+        "depth": 0.15,
+        "units": "metres",
+        "confidence": 0.75
+      },
+      "transform": {
+        "position": [
+          1.65,
+          1.3499999999999999,
+          2.25
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "actionProfile": {
+        "animationRole": "static assembly",
+        "pivot": {
+          "mode": "center",
+          "localPosition": [
+            0,
+            0,
+            0
+          ],
+          "axis": [
+            0,
+            1,
+            0
+          ],
+          "confidence": 0.5
+        },
+        "transformChannels": {
+          "translate": true,
+          "rotate": true,
+          "scale": true,
+          "bend": false,
+          "twist": false,
+          "detach": false,
+          "visibility": true,
+          "materialState": true
+        },
+        "sockets": [],
+        "collider": {
+          "type": "box",
+          "offset": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ],
+          "isTrigger": false,
+          "notes": "Replace with sphere/capsule/compound proxy when the object shape demands it."
+        },
+        "constraints": [],
+        "destruction": {
+          "breakable": false,
+          "fractureGroup": "root",
+          "seamRefs": [],
+          "detachableFragments": [],
+          "breakImpulse": 0,
+          "debrisMaterial": "base"
+        }
+      },
+      "material": "wood",
+      "materialLayers": [
+        "plaster",
+        "wood",
+        "slate"
+      ],
+      "deformations": [],
+      "joints": [],
+      "seams": [],
+      "localFeatures": [
+        {
+          "id": "handle-identity",
+          "type": "assembly",
+          "description": "Small dark ochre handle at right edge.",
+          "evidenceRefs": [
+            "full-object"
+          ]
+        }
+      ],
+      "surfaceDetail": {
+        "macroRoughness": 0,
+        "microRoughness": 0,
+        "bumpAmplitude": 0,
+        "normalPattern": "",
+        "displacementPattern": "",
+        "occlusionPattern": "",
+        "edgeWearPattern": "",
+        "notes": ""
+      },
+      "evidenceRefs": [
+        "full-object"
+      ],
+      "details": [
+        "Small dark ochre handle at right edge."
+      ],
+      "fidelityTier": "blockout",
+      "colorMaterialRecipe": {
+        "dominantAlbedo": "rgba(226, 210, 167, 1)",
+        "secondaryAlbedo": "rgba(53, 101, 103, 1)",
+        "materialClass": "stone",
+        "materialClassConfidence": 0.7
+      }
+    },
+    {
+      "id": "cup",
+      "name": "cup",
+      "level": "micro",
+      "role": "cup",
+      "importance": 0.8,
+      "confidence": 0.75,
+      "primitive": "box",
+      "topologyClass": "assembled-solid",
+      "topologyRationale": "Connected occupied cells with shared faces culled; independent part identity retained.",
+      "geometryDescriptor": {
+        "topologyIntent": "Editable integer cube occupancy",
+        "edgeTreatment": {
+          "type": "none",
+          "bevelRadius": 0,
+          "segments": 1
+        },
+        "deformationStack": [],
+        "uvStrategy": "No reference image projection",
+        "normalStrategy": "Axis-aligned flat face normals",
+        "parameters": {
+          "size": [
+            2,
+            2,
+            2
+          ],
+          "pos": [
+            27,
+            9,
+            7
+          ]
+        }
+      },
+      "parent": "table",
+      "attachment": null,
+      "dimensions": {
+        "width": 0.3,
+        "height": 0.3,
+        "depth": 0.3,
+        "units": "metres",
+        "confidence": 0.75
+      },
+      "transform": {
+        "position": [
+          4.05,
+          1.3499999999999999,
+          1.05
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "actionProfile": {
+        "animationRole": "static assembly",
+        "pivot": {
+          "mode": "center",
+          "localPosition": [
+            0,
+            0,
+            0
+          ],
+          "axis": [
+            0,
+            1,
+            0
+          ],
+          "confidence": 0.5
+        },
+        "transformChannels": {
+          "translate": true,
+          "rotate": true,
+          "scale": true,
+          "bend": false,
+          "twist": false,
+          "detach": false,
+          "visibility": true,
+          "materialState": true
+        },
+        "sockets": [],
+        "collider": {
+          "type": "box",
+          "offset": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ],
+          "isTrigger": false,
+          "notes": "Replace with sphere/capsule/compound proxy when the object shape demands it."
+        },
+        "constraints": [],
+        "destruction": {
+          "breakable": false,
+          "fractureGroup": "root",
+          "seamRefs": [],
+          "detachableFragments": [],
+          "breakImpulse": 0,
+          "debrisMaterial": "base"
+        }
+      },
+      "material": "wood",
+      "materialLayers": [
+        "plaster",
+        "wood",
+        "slate"
+      ],
+      "deformations": [],
+      "joints": [],
+      "seams": [],
+      "localFeatures": [
+        {
+          "id": "cup-identity",
+          "type": "assembly",
+          "description": "Small pale ceramic cup attached to tabletop.",
+          "evidenceRefs": [
+            "full-object"
+          ]
+        }
+      ],
+      "surfaceDetail": {
+        "macroRoughness": 0,
+        "microRoughness": 0,
+        "bumpAmplitude": 0,
+        "normalPattern": "",
+        "displacementPattern": "",
+        "occlusionPattern": "",
+        "edgeWearPattern": "",
+        "notes": ""
+      },
+      "evidenceRefs": [
+        "full-object"
+      ],
+      "details": [
+        "Small pale ceramic cup attached to tabletop."
+      ],
+      "fidelityTier": "blockout",
+      "colorMaterialRecipe": {
+        "dominantAlbedo": "rgba(226, 210, 167, 1)",
+        "secondaryAlbedo": "rgba(53, 101, 103, 1)",
+        "materialClass": "stone",
+        "materialClassConfidence": 0.7
+      }
+    },
+    {
+      "id": "plants",
+      "name": "plants",
+      "level": "micro",
+      "role": "plants",
+      "importance": 0.8,
+      "confidence": 0.75,
+      "primitive": "box",
+      "topologyClass": "assembled-solid",
+      "topologyRationale": "Connected occupied cells with shared faces culled; independent part identity retained.",
+      "geometryDescriptor": {
+        "topologyIntent": "Editable integer cube occupancy",
+        "edgeTreatment": {
+          "type": "none",
+          "bevelRadius": 0,
+          "segments": 1
+        },
+        "deformationStack": [],
+        "uvStrategy": "No reference image projection",
+        "normalStrategy": "Axis-aligned flat face normals",
+        "parameters": {
+          "size": [
+            3,
+            7,
+            3
+          ],
+          "pos": [
+            35,
+            1,
+            3
+          ]
+        }
+      },
+      "parent": "terrace",
+      "attachment": null,
+      "dimensions": {
+        "width": 0.44999999999999996,
+        "height": 1.05,
+        "depth": 0.44999999999999996,
+        "units": "metres",
+        "confidence": 0.75
+      },
+      "transform": {
+        "position": [
+          5.25,
+          0.15,
+          0.44999999999999996
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "actionProfile": {
+        "animationRole": "static assembly",
+        "pivot": {
+          "mode": "center",
+          "localPosition": [
+            0,
+            0,
+            0
+          ],
+          "axis": [
+            0,
+            1,
+            0
+          ],
+          "confidence": 0.5
+        },
+        "transformChannels": {
+          "translate": true,
+          "rotate": true,
+          "scale": true,
+          "bend": false,
+          "twist": false,
+          "detach": false,
+          "visibility": true,
+          "materialState": true
+        },
+        "sockets": [],
+        "collider": {
+          "type": "box",
+          "offset": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ],
+          "isTrigger": false,
+          "notes": "Replace with sphere/capsule/compound proxy when the object shape demands it."
+        },
+        "constraints": [],
+        "destruction": {
+          "breakable": false,
+          "fractureGroup": "root",
+          "seamRefs": [],
+          "detachableFragments": [],
+          "breakImpulse": 0,
+          "debrisMaterial": "base"
+        }
+      },
+      "material": "wood",
+      "materialLayers": [
+        "plaster",
+        "wood",
+        "slate"
+      ],
+      "deformations": [],
+      "joints": [],
+      "seams": [],
+      "localFeatures": [
+        {
+          "id": "plants-identity",
+          "type": "assembly",
+          "description": "Three separate pots: left foliage, front flowers, right foliage; one grid cell stems.",
+          "evidenceRefs": [
+            "full-object"
+          ]
+        }
+      ],
+      "surfaceDetail": {
+        "macroRoughness": 0,
+        "microRoughness": 0,
+        "bumpAmplitude": 0,
+        "normalPattern": "",
+        "displacementPattern": "",
+        "occlusionPattern": "",
+        "edgeWearPattern": "",
+        "notes": ""
+      },
+      "evidenceRefs": [
+        "full-object"
+      ],
+      "details": [
+        "Three separate pots: left foliage, front flowers, right foliage; one grid cell stems."
+      ],
+      "fidelityTier": "blockout",
+      "colorMaterialRecipe": {
+        "dominantAlbedo": "rgba(226, 210, 167, 1)",
+        "secondaryAlbedo": "rgba(53, 101, 103, 1)",
+        "materialClass": "stone",
+        "materialClassConfidence": 0.7
+      }
+    }
+  ],
+  "materials": [
+    {
+      "id": "plaster",
+      "name": "plaster",
+      "type": "standard",
+      "shaderModel": "MeshStandardMaterial / PBR approximation",
+      "baseColor": "#e2d2a7",
+      "color": "#e2d2a7",
+      "albedo": {
+        "dominant": "#e2d2a7",
+        "secondary": [],
+        "samplingNotes": "Observed crop hue family; selected reflectance without baked source shading."
+      },
+      "colorVariation": {
+        "palette": [
+          "#e2d2a7"
+        ],
+        "pattern": "Individually authored tile and connected repair assignments",
+        "amplitude": 0.08,
+        "heightCorrelation": 0
+      },
+      "textureResolution": 1024,
+      "textureProjection": {
+        "mode": "uv",
+        "repeat": [
+          2,
+          2
+        ],
+        "anisotropy": 8,
+        "texelDensityIntent": "Preserve stable world/object-scale detail; do not stretch micro detail with component scale."
+      },
+      "surfaceFrequencyBands": [
+        {
+          "id": "macro",
+          "frequency": 1,
+          "amplitude": 0.15,
+          "role": "Roof/wall color zones"
+        },
+        {
+          "id": "meso",
+          "frequency": 6.67,
+          "amplitude": 0.15,
+          "role": "Editable tile and brick courses"
+        },
+        {
+          "id": "micro",
+          "frequency": 28,
+          "amplitude": 0.02,
+          "role": "Reserved roughness response, no tiny geometry"
+        }
+      ],
+      "roughness": {
+        "base": 0.9,
+        "variation": 0.02,
+        "map": "None; independent constant scalar",
+        "localResponse": "Flat geometry with matte/satin distinction"
+      },
+      "metalness": {
+        "base": 0,
+        "variation": 0
+      },
+      "normal": {
+        "pattern": "Actual voxel course and frame geometry",
+        "strength": 0,
+        "scale": 1,
+        "space": "object"
+      },
+      "bump": {
+        "pattern": "none",
+        "amplitude": 0,
+        "scale": 1
+      },
+      "displacement": {
+        "pattern": "none",
+        "amplitude": 0,
+        "scale": 1,
+        "silhouetteAffects": false
+      },
+      "ambientOcclusion": {
+        "cavityStrength": 0.25,
+        "contactShadowBias": 0.35,
+        "notes": "Darken creases, seams, intersections, and recessed local features."
+      },
+      "wear": {
+        "edgeWear": 0,
+        "scratches": [],
+        "chips": []
+      },
+      "dirt": {
+        "amount": 0,
+        "cavityBias": 0,
+        "color": "#2F2A22"
+      },
+      "localOverrides": [
+        {
+          "id": "plaster-local",
+          "region": "Explicit authored cells from crop",
+          "roughness": 0.85,
+          "evidenceRefs": [
+            "full-object"
+          ]
+        }
+      ],
+      "shaderNotes": [
+        "Prefer MeshPhysicalMaterial when clearcoat, sheen, transmission, or thin-surface response is observed; otherwise use MeshStandardMaterial-compatible PBR channels.",
+        "Generate albedo, roughness, height/normal, and AO independently; never alias albedo into roughness.",
+        "Use normal/bump/displacement only when they map to observed surface relief.",
+        "Use displacement geometry when the observed relief changes the close-up silhouette; texture-only relief is insufficient there."
+      ],
+      "notes": "Physical PBR extraction unavailable from stylized coarse crop; user goal is editable voxel palette, no texture maps claimed."
+    },
+    {
+      "id": "repair",
+      "name": "repair",
+      "type": "standard",
+      "shaderModel": "MeshStandardMaterial / PBR approximation",
+      "baseColor": "#cdb990",
+      "color": "#cdb990",
+      "albedo": {
+        "dominant": "#cdb990",
+        "secondary": [],
+        "samplingNotes": "Observed crop hue family; selected reflectance without baked source shading."
+      },
+      "colorVariation": {
+        "palette": [
+          "#cdb990"
+        ],
+        "pattern": "Individually authored tile and connected repair assignments",
+        "amplitude": 0.08,
+        "heightCorrelation": 0
+      },
+      "textureResolution": 1024,
+      "textureProjection": {
+        "mode": "uv",
+        "repeat": [
+          2,
+          2
+        ],
+        "anisotropy": 8,
+        "texelDensityIntent": "Preserve stable world/object-scale detail; do not stretch micro detail with component scale."
+      },
+      "surfaceFrequencyBands": [
+        {
+          "id": "macro",
+          "frequency": 1,
+          "amplitude": 0.15,
+          "role": "Roof/wall color zones"
+        },
+        {
+          "id": "meso",
+          "frequency": 6.67,
+          "amplitude": 0.15,
+          "role": "Editable tile and brick courses"
+        },
+        {
+          "id": "micro",
+          "frequency": 28,
+          "amplitude": 0.02,
+          "role": "Reserved roughness response, no tiny geometry"
+        }
+      ],
+      "roughness": {
+        "base": 0.9,
+        "variation": 0.02,
+        "map": "None; independent constant scalar",
+        "localResponse": "Flat geometry with matte/satin distinction"
+      },
+      "metalness": {
+        "base": 0,
+        "variation": 0
+      },
+      "normal": {
+        "pattern": "Actual voxel course and frame geometry",
+        "strength": 0,
+        "scale": 1,
+        "space": "object"
+      },
+      "bump": {
+        "pattern": "none",
+        "amplitude": 0,
+        "scale": 1
+      },
+      "displacement": {
+        "pattern": "none",
+        "amplitude": 0,
+        "scale": 1,
+        "silhouetteAffects": false
+      },
+      "ambientOcclusion": {
+        "cavityStrength": 0.25,
+        "contactShadowBias": 0.35,
+        "notes": "Darken creases, seams, intersections, and recessed local features."
+      },
+      "wear": {
+        "edgeWear": 0,
+        "scratches": [],
+        "chips": []
+      },
+      "dirt": {
+        "amount": 0,
+        "cavityBias": 0,
+        "color": "#2F2A22"
+      },
+      "localOverrides": [
+        {
+          "id": "repair-local",
+          "region": "Explicit authored cells from crop",
+          "roughness": 0.85,
+          "evidenceRefs": [
+            "full-object"
+          ]
+        }
+      ],
+      "shaderNotes": [
+        "Prefer MeshPhysicalMaterial when clearcoat, sheen, transmission, or thin-surface response is observed; otherwise use MeshStandardMaterial-compatible PBR channels.",
+        "Generate albedo, roughness, height/normal, and AO independently; never alias albedo into roughness.",
+        "Use normal/bump/displacement only when they map to observed surface relief.",
+        "Use displacement geometry when the observed relief changes the close-up silhouette; texture-only relief is insufficient there."
+      ],
+      "notes": "Physical PBR extraction unavailable from stylized coarse crop; user goal is editable voxel palette, no texture maps claimed."
+    },
+    {
+      "id": "brick",
+      "name": "brick",
+      "type": "standard",
+      "shaderModel": "MeshStandardMaterial / PBR approximation",
+      "baseColor": "#ab6744",
+      "color": "#ab6744",
+      "albedo": {
+        "dominant": "#ab6744",
+        "secondary": [],
+        "samplingNotes": "Observed crop hue family; selected reflectance without baked source shading."
+      },
+      "colorVariation": {
+        "palette": [
+          "#ab6744"
+        ],
+        "pattern": "Individually authored tile and connected repair assignments",
+        "amplitude": 0.08,
+        "heightCorrelation": 0
+      },
+      "textureResolution": 1024,
+      "textureProjection": {
+        "mode": "uv",
+        "repeat": [
+          2,
+          2
+        ],
+        "anisotropy": 8,
+        "texelDensityIntent": "Preserve stable world/object-scale detail; do not stretch micro detail with component scale."
+      },
+      "surfaceFrequencyBands": [
+        {
+          "id": "macro",
+          "frequency": 1,
+          "amplitude": 0.15,
+          "role": "Roof/wall color zones"
+        },
+        {
+          "id": "meso",
+          "frequency": 6.67,
+          "amplitude": 0.15,
+          "role": "Editable tile and brick courses"
+        },
+        {
+          "id": "micro",
+          "frequency": 28,
+          "amplitude": 0.02,
+          "role": "Reserved roughness response, no tiny geometry"
+        }
+      ],
+      "roughness": {
+        "base": 0.9,
+        "variation": 0.02,
+        "map": "None; independent constant scalar",
+        "localResponse": "Flat geometry with matte/satin distinction"
+      },
+      "metalness": {
+        "base": 0,
+        "variation": 0
+      },
+      "normal": {
+        "pattern": "Actual voxel course and frame geometry",
+        "strength": 0,
+        "scale": 1,
+        "space": "object"
+      },
+      "bump": {
+        "pattern": "none",
+        "amplitude": 0,
+        "scale": 1
+      },
+      "displacement": {
+        "pattern": "none",
+        "amplitude": 0,
+        "scale": 1,
+        "silhouetteAffects": false
+      },
+      "ambientOcclusion": {
+        "cavityStrength": 0.25,
+        "contactShadowBias": 0.35,
+        "notes": "Darken creases, seams, intersections, and recessed local features."
+      },
+      "wear": {
+        "edgeWear": 0,
+        "scratches": [],
+        "chips": []
+      },
+      "dirt": {
+        "amount": 0,
+        "cavityBias": 0,
+        "color": "#2F2A22"
+      },
+      "localOverrides": [
+        {
+          "id": "brick-local",
+          "region": "Explicit authored cells from crop",
+          "roughness": 0.85,
+          "evidenceRefs": [
+            "full-object"
+          ]
+        }
+      ],
+      "shaderNotes": [
+        "Prefer MeshPhysicalMaterial when clearcoat, sheen, transmission, or thin-surface response is observed; otherwise use MeshStandardMaterial-compatible PBR channels.",
+        "Generate albedo, roughness, height/normal, and AO independently; never alias albedo into roughness.",
+        "Use normal/bump/displacement only when they map to observed surface relief.",
+        "Use displacement geometry when the observed relief changes the close-up silhouette; texture-only relief is insufficient there."
+      ],
+      "notes": "Physical PBR extraction unavailable from stylized coarse crop; user goal is editable voxel palette, no texture maps claimed."
+    },
+    {
+      "id": "stone",
+      "name": "stone",
+      "type": "standard",
+      "shaderModel": "MeshStandardMaterial / PBR approximation",
+      "baseColor": "#d2c6a5",
+      "color": "#d2c6a5",
+      "albedo": {
+        "dominant": "#d2c6a5",
+        "secondary": [],
+        "samplingNotes": "Observed crop hue family; selected reflectance without baked source shading."
+      },
+      "colorVariation": {
+        "palette": [
+          "#d2c6a5"
+        ],
+        "pattern": "Individually authored tile and connected repair assignments",
+        "amplitude": 0.08,
+        "heightCorrelation": 0
+      },
+      "textureResolution": 1024,
+      "textureProjection": {
+        "mode": "uv",
+        "repeat": [
+          2,
+          2
+        ],
+        "anisotropy": 8,
+        "texelDensityIntent": "Preserve stable world/object-scale detail; do not stretch micro detail with component scale."
+      },
+      "surfaceFrequencyBands": [
+        {
+          "id": "macro",
+          "frequency": 1,
+          "amplitude": 0.15,
+          "role": "Roof/wall color zones"
+        },
+        {
+          "id": "meso",
+          "frequency": 6.67,
+          "amplitude": 0.15,
+          "role": "Editable tile and brick courses"
+        },
+        {
+          "id": "micro",
+          "frequency": 28,
+          "amplitude": 0.02,
+          "role": "Reserved roughness response, no tiny geometry"
+        }
+      ],
+      "roughness": {
+        "base": 0.9,
+        "variation": 0.02,
+        "map": "None; independent constant scalar",
+        "localResponse": "Flat geometry with matte/satin distinction"
+      },
+      "metalness": {
+        "base": 0,
+        "variation": 0
+      },
+      "normal": {
+        "pattern": "Actual voxel course and frame geometry",
+        "strength": 0,
+        "scale": 1,
+        "space": "object"
+      },
+      "bump": {
+        "pattern": "none",
+        "amplitude": 0,
+        "scale": 1
+      },
+      "displacement": {
+        "pattern": "none",
+        "amplitude": 0,
+        "scale": 1,
+        "silhouetteAffects": false
+      },
+      "ambientOcclusion": {
+        "cavityStrength": 0.25,
+        "contactShadowBias": 0.35,
+        "notes": "Darken creases, seams, intersections, and recessed local features."
+      },
+      "wear": {
+        "edgeWear": 0,
+        "scratches": [],
+        "chips": []
+      },
+      "dirt": {
+        "amount": 0,
+        "cavityBias": 0,
+        "color": "#2F2A22"
+      },
+      "localOverrides": [
+        {
+          "id": "stone-local",
+          "region": "Explicit authored cells from crop",
+          "roughness": 0.85,
+          "evidenceRefs": [
+            "full-object"
+          ]
+        }
+      ],
+      "shaderNotes": [
+        "Prefer MeshPhysicalMaterial when clearcoat, sheen, transmission, or thin-surface response is observed; otherwise use MeshStandardMaterial-compatible PBR channels.",
+        "Generate albedo, roughness, height/normal, and AO independently; never alias albedo into roughness.",
+        "Use normal/bump/displacement only when they map to observed surface relief.",
+        "Use displacement geometry when the observed relief changes the close-up silhouette; texture-only relief is insufficient there."
+      ],
+      "notes": "Physical PBR extraction unavailable from stylized coarse crop; user goal is editable voxel palette, no texture maps claimed."
+    },
+    {
+      "id": "wood",
+      "name": "wood",
+      "type": "standard",
+      "shaderModel": "MeshStandardMaterial / PBR approximation",
+      "baseColor": "#a37338",
+      "color": "#a37338",
+      "albedo": {
+        "dominant": "#a37338",
+        "secondary": [],
+        "samplingNotes": "Observed crop hue family; selected reflectance without baked source shading."
+      },
+      "colorVariation": {
+        "palette": [
+          "#a37338"
+        ],
+        "pattern": "Individually authored tile and connected repair assignments",
+        "amplitude": 0.08,
+        "heightCorrelation": 0
+      },
+      "textureResolution": 1024,
+      "textureProjection": {
+        "mode": "uv",
+        "repeat": [
+          2,
+          2
+        ],
+        "anisotropy": 8,
+        "texelDensityIntent": "Preserve stable world/object-scale detail; do not stretch micro detail with component scale."
+      },
+      "surfaceFrequencyBands": [
+        {
+          "id": "macro",
+          "frequency": 1,
+          "amplitude": 0.15,
+          "role": "Roof/wall color zones"
+        },
+        {
+          "id": "meso",
+          "frequency": 6.67,
+          "amplitude": 0.15,
+          "role": "Editable tile and brick courses"
+        },
+        {
+          "id": "micro",
+          "frequency": 28,
+          "amplitude": 0.02,
+          "role": "Reserved roughness response, no tiny geometry"
+        }
+      ],
+      "roughness": {
+        "base": 0.9,
+        "variation": 0.02,
+        "map": "None; independent constant scalar",
+        "localResponse": "Flat geometry with matte/satin distinction"
+      },
+      "metalness": {
+        "base": 0,
+        "variation": 0
+      },
+      "normal": {
+        "pattern": "Actual voxel course and frame geometry",
+        "strength": 0,
+        "scale": 1,
+        "space": "object"
+      },
+      "bump": {
+        "pattern": "none",
+        "amplitude": 0,
+        "scale": 1
+      },
+      "displacement": {
+        "pattern": "none",
+        "amplitude": 0,
+        "scale": 1,
+        "silhouetteAffects": false
+      },
+      "ambientOcclusion": {
+        "cavityStrength": 0.25,
+        "contactShadowBias": 0.35,
+        "notes": "Darken creases, seams, intersections, and recessed local features."
+      },
+      "wear": {
+        "edgeWear": 0,
+        "scratches": [],
+        "chips": []
+      },
+      "dirt": {
+        "amount": 0,
+        "cavityBias": 0,
+        "color": "#2F2A22"
+      },
+      "localOverrides": [
+        {
+          "id": "wood-local",
+          "region": "Explicit authored cells from crop",
+          "roughness": 0.85,
+          "evidenceRefs": [
+            "full-object"
+          ]
+        }
+      ],
+      "shaderNotes": [
+        "Prefer MeshPhysicalMaterial when clearcoat, sheen, transmission, or thin-surface response is observed; otherwise use MeshStandardMaterial-compatible PBR channels.",
+        "Generate albedo, roughness, height/normal, and AO independently; never alias albedo into roughness.",
+        "Use normal/bump/displacement only when they map to observed surface relief.",
+        "Use displacement geometry when the observed relief changes the close-up silhouette; texture-only relief is insufficient there."
+      ],
+      "notes": "Physical PBR extraction unavailable from stylized coarse crop; user goal is editable voxel palette, no texture maps claimed."
+    },
+    {
+      "id": "slate",
+      "name": "slate",
+      "type": "standard",
+      "shaderModel": "MeshStandardMaterial / PBR approximation",
+      "baseColor": "#356567",
+      "color": "#356567",
+      "albedo": {
+        "dominant": "#356567",
+        "secondary": [],
+        "samplingNotes": "Observed crop hue family; selected reflectance without baked source shading."
+      },
+      "colorVariation": {
+        "palette": [
+          "#356567"
+        ],
+        "pattern": "Individually authored tile and connected repair assignments",
+        "amplitude": 0.08,
+        "heightCorrelation": 0
+      },
+      "textureResolution": 1024,
+      "textureProjection": {
+        "mode": "uv",
+        "repeat": [
+          2,
+          2
+        ],
+        "anisotropy": 8,
+        "texelDensityIntent": "Preserve stable world/object-scale detail; do not stretch micro detail with component scale."
+      },
+      "surfaceFrequencyBands": [
+        {
+          "id": "macro",
+          "frequency": 1,
+          "amplitude": 0.15,
+          "role": "Roof/wall color zones"
+        },
+        {
+          "id": "meso",
+          "frequency": 6.67,
+          "amplitude": 0.15,
+          "role": "Editable tile and brick courses"
+        },
+        {
+          "id": "micro",
+          "frequency": 28,
+          "amplitude": 0.02,
+          "role": "Reserved roughness response, no tiny geometry"
+        }
+      ],
+      "roughness": {
+        "base": 0.76,
+        "variation": 0.02,
+        "map": "None; independent constant scalar",
+        "localResponse": "Flat geometry with matte/satin distinction"
+      },
+      "metalness": {
+        "base": 0,
+        "variation": 0
+      },
+      "normal": {
+        "pattern": "Actual voxel course and frame geometry",
+        "strength": 0,
+        "scale": 1,
+        "space": "object"
+      },
+      "bump": {
+        "pattern": "none",
+        "amplitude": 0,
+        "scale": 1
+      },
+      "displacement": {
+        "pattern": "none",
+        "amplitude": 0,
+        "scale": 1,
+        "silhouetteAffects": false
+      },
+      "ambientOcclusion": {
+        "cavityStrength": 0.25,
+        "contactShadowBias": 0.35,
+        "notes": "Darken creases, seams, intersections, and recessed local features."
+      },
+      "wear": {
+        "edgeWear": 0,
+        "scratches": [],
+        "chips": []
+      },
+      "dirt": {
+        "amount": 0,
+        "cavityBias": 0,
+        "color": "#2F2A22"
+      },
+      "localOverrides": [
+        {
+          "id": "slate-local",
+          "region": "Explicit authored cells from crop",
+          "roughness": 0.85,
+          "evidenceRefs": [
+            "full-object"
+          ]
+        }
+      ],
+      "shaderNotes": [
+        "Prefer MeshPhysicalMaterial when clearcoat, sheen, transmission, or thin-surface response is observed; otherwise use MeshStandardMaterial-compatible PBR channels.",
+        "Generate albedo, roughness, height/normal, and AO independently; never alias albedo into roughness.",
+        "Use normal/bump/displacement only when they map to observed surface relief.",
+        "Use displacement geometry when the observed relief changes the close-up silhouette; texture-only relief is insufficient there."
+      ],
+      "notes": "Physical PBR extraction unavailable from stylized coarse crop; user goal is editable voxel palette, no texture maps claimed."
+    },
+    {
+      "id": "sage",
+      "name": "sage",
+      "type": "standard",
+      "shaderModel": "MeshStandardMaterial / PBR approximation",
+      "baseColor": "#779281",
+      "color": "#779281",
+      "albedo": {
+        "dominant": "#779281",
+        "secondary": [],
+        "samplingNotes": "Observed crop hue family; selected reflectance without baked source shading."
+      },
+      "colorVariation": {
+        "palette": [
+          "#779281"
+        ],
+        "pattern": "Individually authored tile and connected repair assignments",
+        "amplitude": 0.08,
+        "heightCorrelation": 0
+      },
+      "textureResolution": 1024,
+      "textureProjection": {
+        "mode": "uv",
+        "repeat": [
+          2,
+          2
+        ],
+        "anisotropy": 8,
+        "texelDensityIntent": "Preserve stable world/object-scale detail; do not stretch micro detail with component scale."
+      },
+      "surfaceFrequencyBands": [
+        {
+          "id": "macro",
+          "frequency": 1,
+          "amplitude": 0.15,
+          "role": "Roof/wall color zones"
+        },
+        {
+          "id": "meso",
+          "frequency": 6.67,
+          "amplitude": 0.15,
+          "role": "Editable tile and brick courses"
+        },
+        {
+          "id": "micro",
+          "frequency": 28,
+          "amplitude": 0.02,
+          "role": "Reserved roughness response, no tiny geometry"
+        }
+      ],
+      "roughness": {
+        "base": 0.9,
+        "variation": 0.02,
+        "map": "None; independent constant scalar",
+        "localResponse": "Flat geometry with matte/satin distinction"
+      },
+      "metalness": {
+        "base": 0,
+        "variation": 0
+      },
+      "normal": {
+        "pattern": "Actual voxel course and frame geometry",
+        "strength": 0,
+        "scale": 1,
+        "space": "object"
+      },
+      "bump": {
+        "pattern": "none",
+        "amplitude": 0,
+        "scale": 1
+      },
+      "displacement": {
+        "pattern": "none",
+        "amplitude": 0,
+        "scale": 1,
+        "silhouetteAffects": false
+      },
+      "ambientOcclusion": {
+        "cavityStrength": 0.25,
+        "contactShadowBias": 0.35,
+        "notes": "Darken creases, seams, intersections, and recessed local features."
+      },
+      "wear": {
+        "edgeWear": 0,
+        "scratches": [],
+        "chips": []
+      },
+      "dirt": {
+        "amount": 0,
+        "cavityBias": 0,
+        "color": "#2F2A22"
+      },
+      "localOverrides": [
+        {
+          "id": "sage-local",
+          "region": "Explicit authored cells from crop",
+          "roughness": 0.85,
+          "evidenceRefs": [
+            "full-object"
+          ]
+        }
+      ],
+      "shaderNotes": [
+        "Prefer MeshPhysicalMaterial when clearcoat, sheen, transmission, or thin-surface response is observed; otherwise use MeshStandardMaterial-compatible PBR channels.",
+        "Generate albedo, roughness, height/normal, and AO independently; never alias albedo into roughness.",
+        "Use normal/bump/displacement only when they map to observed surface relief.",
+        "Use displacement geometry when the observed relief changes the close-up silhouette; texture-only relief is insufficient there."
+      ],
+      "notes": "Physical PBR extraction unavailable from stylized coarse crop; user goal is editable voxel palette, no texture maps claimed."
+    },
+    {
+      "id": "glass",
+      "name": "glass",
+      "type": "standard",
+      "shaderModel": "MeshStandardMaterial / PBR approximation",
+      "baseColor": "#527e75",
+      "color": "#527e75",
+      "albedo": {
+        "dominant": "#527e75",
+        "secondary": [],
+        "samplingNotes": "Observed crop hue family; selected reflectance without baked source shading."
+      },
+      "colorVariation": {
+        "palette": [
+          "#527e75"
+        ],
+        "pattern": "Individually authored tile and connected repair assignments",
+        "amplitude": 0.08,
+        "heightCorrelation": 0
+      },
+      "textureResolution": 1024,
+      "textureProjection": {
+        "mode": "uv",
+        "repeat": [
+          2,
+          2
+        ],
+        "anisotropy": 8,
+        "texelDensityIntent": "Preserve stable world/object-scale detail; do not stretch micro detail with component scale."
+      },
+      "surfaceFrequencyBands": [
+        {
+          "id": "macro",
+          "frequency": 1,
+          "amplitude": 0.15,
+          "role": "Roof/wall color zones"
+        },
+        {
+          "id": "meso",
+          "frequency": 6.67,
+          "amplitude": 0.15,
+          "role": "Editable tile and brick courses"
+        },
+        {
+          "id": "micro",
+          "frequency": 28,
+          "amplitude": 0.02,
+          "role": "Reserved roughness response, no tiny geometry"
+        }
+      ],
+      "roughness": {
+        "base": 0.34,
+        "variation": 0.02,
+        "map": "None; independent constant scalar",
+        "localResponse": "Flat geometry with matte/satin distinction"
+      },
+      "metalness": {
+        "base": 0,
+        "variation": 0
+      },
+      "normal": {
+        "pattern": "Actual voxel course and frame geometry",
+        "strength": 0,
+        "scale": 1,
+        "space": "object"
+      },
+      "bump": {
+        "pattern": "none",
+        "amplitude": 0,
+        "scale": 1
+      },
+      "displacement": {
+        "pattern": "none",
+        "amplitude": 0,
+        "scale": 1,
+        "silhouetteAffects": false
+      },
+      "ambientOcclusion": {
+        "cavityStrength": 0.25,
+        "contactShadowBias": 0.35,
+        "notes": "Darken creases, seams, intersections, and recessed local features."
+      },
+      "wear": {
+        "edgeWear": 0,
+        "scratches": [],
+        "chips": []
+      },
+      "dirt": {
+        "amount": 0,
+        "cavityBias": 0,
+        "color": "#2F2A22"
+      },
+      "localOverrides": [
+        {
+          "id": "glass-local",
+          "region": "Explicit authored cells from crop",
+          "roughness": 0.34,
+          "evidenceRefs": [
+            "full-object"
+          ]
+        }
+      ],
+      "shaderNotes": [
+        "Prefer MeshPhysicalMaterial when clearcoat, sheen, transmission, or thin-surface response is observed; otherwise use MeshStandardMaterial-compatible PBR channels.",
+        "Generate albedo, roughness, height/normal, and AO independently; never alias albedo into roughness.",
+        "Use normal/bump/displacement only when they map to observed surface relief.",
+        "Use displacement geometry when the observed relief changes the close-up silhouette; texture-only relief is insufficient there."
+      ],
+      "notes": "Physical PBR extraction unavailable from stylized coarse crop; user goal is editable voxel palette, no texture maps claimed."
+    },
+    {
+      "id": "cloth",
+      "name": "cloth",
+      "type": "standard",
+      "shaderModel": "MeshStandardMaterial / PBR approximation",
+      "baseColor": "#df985b",
+      "color": "#df985b",
+      "albedo": {
+        "dominant": "#df985b",
+        "secondary": [],
+        "samplingNotes": "Observed crop hue family; selected reflectance without baked source shading."
+      },
+      "colorVariation": {
+        "palette": [
+          "#df985b"
+        ],
+        "pattern": "Individually authored tile and connected repair assignments",
+        "amplitude": 0.08,
+        "heightCorrelation": 0
+      },
+      "textureResolution": 1024,
+      "textureProjection": {
+        "mode": "uv",
+        "repeat": [
+          2,
+          2
+        ],
+        "anisotropy": 8,
+        "texelDensityIntent": "Preserve stable world/object-scale detail; do not stretch micro detail with component scale."
+      },
+      "surfaceFrequencyBands": [
+        {
+          "id": "macro",
+          "frequency": 1,
+          "amplitude": 0.15,
+          "role": "Roof/wall color zones"
+        },
+        {
+          "id": "meso",
+          "frequency": 6.67,
+          "amplitude": 0.15,
+          "role": "Editable tile and brick courses"
+        },
+        {
+          "id": "micro",
+          "frequency": 28,
+          "amplitude": 0.02,
+          "role": "Reserved roughness response, no tiny geometry"
+        }
+      ],
+      "roughness": {
+        "base": 0.9,
+        "variation": 0.02,
+        "map": "None; independent constant scalar",
+        "localResponse": "Flat geometry with matte/satin distinction"
+      },
+      "metalness": {
+        "base": 0,
+        "variation": 0
+      },
+      "normal": {
+        "pattern": "Actual voxel course and frame geometry",
+        "strength": 0,
+        "scale": 1,
+        "space": "object"
+      },
+      "bump": {
+        "pattern": "none",
+        "amplitude": 0,
+        "scale": 1
+      },
+      "displacement": {
+        "pattern": "none",
+        "amplitude": 0,
+        "scale": 1,
+        "silhouetteAffects": false
+      },
+      "ambientOcclusion": {
+        "cavityStrength": 0.25,
+        "contactShadowBias": 0.35,
+        "notes": "Darken creases, seams, intersections, and recessed local features."
+      },
+      "wear": {
+        "edgeWear": 0,
+        "scratches": [],
+        "chips": []
+      },
+      "dirt": {
+        "amount": 0,
+        "cavityBias": 0,
+        "color": "#2F2A22"
+      },
+      "localOverrides": [
+        {
+          "id": "cloth-local",
+          "region": "Explicit authored cells from crop",
+          "roughness": 0.85,
+          "evidenceRefs": [
+            "full-object"
+          ]
+        }
+      ],
+      "shaderNotes": [
+        "Prefer MeshPhysicalMaterial when clearcoat, sheen, transmission, or thin-surface response is observed; otherwise use MeshStandardMaterial-compatible PBR channels.",
+        "Generate albedo, roughness, height/normal, and AO independently; never alias albedo into roughness.",
+        "Use normal/bump/displacement only when they map to observed surface relief.",
+        "Use displacement geometry when the observed relief changes the close-up silhouette; texture-only relief is insufficient there."
+      ],
+      "notes": "Physical PBR extraction unavailable from stylized coarse crop; user goal is editable voxel palette, no texture maps claimed."
+    },
+    {
+      "id": "ivory",
+      "name": "ivory",
+      "type": "standard",
+      "shaderModel": "MeshStandardMaterial / PBR approximation",
+      "baseColor": "#efe2b9",
+      "color": "#efe2b9",
+      "albedo": {
+        "dominant": "#efe2b9",
+        "secondary": [],
+        "samplingNotes": "Observed crop hue family; selected reflectance without baked source shading."
+      },
+      "colorVariation": {
+        "palette": [
+          "#efe2b9"
+        ],
+        "pattern": "Individually authored tile and connected repair assignments",
+        "amplitude": 0.08,
+        "heightCorrelation": 0
+      },
+      "textureResolution": 1024,
+      "textureProjection": {
+        "mode": "uv",
+        "repeat": [
+          2,
+          2
+        ],
+        "anisotropy": 8,
+        "texelDensityIntent": "Preserve stable world/object-scale detail; do not stretch micro detail with component scale."
+      },
+      "surfaceFrequencyBands": [
+        {
+          "id": "macro",
+          "frequency": 1,
+          "amplitude": 0.15,
+          "role": "Roof/wall color zones"
+        },
+        {
+          "id": "meso",
+          "frequency": 6.67,
+          "amplitude": 0.15,
+          "role": "Editable tile and brick courses"
+        },
+        {
+          "id": "micro",
+          "frequency": 28,
+          "amplitude": 0.02,
+          "role": "Reserved roughness response, no tiny geometry"
+        }
+      ],
+      "roughness": {
+        "base": 0.9,
+        "variation": 0.02,
+        "map": "None; independent constant scalar",
+        "localResponse": "Flat geometry with matte/satin distinction"
+      },
+      "metalness": {
+        "base": 0,
+        "variation": 0
+      },
+      "normal": {
+        "pattern": "Actual voxel course and frame geometry",
+        "strength": 0,
+        "scale": 1,
+        "space": "object"
+      },
+      "bump": {
+        "pattern": "none",
+        "amplitude": 0,
+        "scale": 1
+      },
+      "displacement": {
+        "pattern": "none",
+        "amplitude": 0,
+        "scale": 1,
+        "silhouetteAffects": false
+      },
+      "ambientOcclusion": {
+        "cavityStrength": 0.25,
+        "contactShadowBias": 0.35,
+        "notes": "Darken creases, seams, intersections, and recessed local features."
+      },
+      "wear": {
+        "edgeWear": 0,
+        "scratches": [],
+        "chips": []
+      },
+      "dirt": {
+        "amount": 0,
+        "cavityBias": 0,
+        "color": "#2F2A22"
+      },
+      "localOverrides": [
+        {
+          "id": "ivory-local",
+          "region": "Explicit authored cells from crop",
+          "roughness": 0.85,
+          "evidenceRefs": [
+            "full-object"
+          ]
+        }
+      ],
+      "shaderNotes": [
+        "Prefer MeshPhysicalMaterial when clearcoat, sheen, transmission, or thin-surface response is observed; otherwise use MeshStandardMaterial-compatible PBR channels.",
+        "Generate albedo, roughness, height/normal, and AO independently; never alias albedo into roughness.",
+        "Use normal/bump/displacement only when they map to observed surface relief.",
+        "Use displacement geometry when the observed relief changes the close-up silhouette; texture-only relief is insufficient there."
+      ],
+      "notes": "Physical PBR extraction unavailable from stylized coarse crop; user goal is editable voxel palette, no texture maps claimed."
+    },
+    {
+      "id": "leaf",
+      "name": "leaf",
+      "type": "standard",
+      "shaderModel": "MeshStandardMaterial / PBR approximation",
+      "baseColor": "#608338",
+      "color": "#608338",
+      "albedo": {
+        "dominant": "#608338",
+        "secondary": [],
+        "samplingNotes": "Observed crop hue family; selected reflectance without baked source shading."
+      },
+      "colorVariation": {
+        "palette": [
+          "#608338"
+        ],
+        "pattern": "Individually authored tile and connected repair assignments",
+        "amplitude": 0.08,
+        "heightCorrelation": 0
+      },
+      "textureResolution": 1024,
+      "textureProjection": {
+        "mode": "uv",
+        "repeat": [
+          2,
+          2
+        ],
+        "anisotropy": 8,
+        "texelDensityIntent": "Preserve stable world/object-scale detail; do not stretch micro detail with component scale."
+      },
+      "surfaceFrequencyBands": [
+        {
+          "id": "macro",
+          "frequency": 1,
+          "amplitude": 0.15,
+          "role": "Roof/wall color zones"
+        },
+        {
+          "id": "meso",
+          "frequency": 6.67,
+          "amplitude": 0.15,
+          "role": "Editable tile and brick courses"
+        },
+        {
+          "id": "micro",
+          "frequency": 28,
+          "amplitude": 0.02,
+          "role": "Reserved roughness response, no tiny geometry"
+        }
+      ],
+      "roughness": {
+        "base": 0.9,
+        "variation": 0.02,
+        "map": "None; independent constant scalar",
+        "localResponse": "Flat geometry with matte/satin distinction"
+      },
+      "metalness": {
+        "base": 0,
+        "variation": 0
+      },
+      "normal": {
+        "pattern": "Actual voxel course and frame geometry",
+        "strength": 0,
+        "scale": 1,
+        "space": "object"
+      },
+      "bump": {
+        "pattern": "none",
+        "amplitude": 0,
+        "scale": 1
+      },
+      "displacement": {
+        "pattern": "none",
+        "amplitude": 0,
+        "scale": 1,
+        "silhouetteAffects": false
+      },
+      "ambientOcclusion": {
+        "cavityStrength": 0.25,
+        "contactShadowBias": 0.35,
+        "notes": "Darken creases, seams, intersections, and recessed local features."
+      },
+      "wear": {
+        "edgeWear": 0,
+        "scratches": [],
+        "chips": []
+      },
+      "dirt": {
+        "amount": 0,
+        "cavityBias": 0,
+        "color": "#2F2A22"
+      },
+      "localOverrides": [
+        {
+          "id": "leaf-local",
+          "region": "Explicit authored cells from crop",
+          "roughness": 0.85,
+          "evidenceRefs": [
+            "full-object"
+          ]
+        }
+      ],
+      "shaderNotes": [
+        "Prefer MeshPhysicalMaterial when clearcoat, sheen, transmission, or thin-surface response is observed; otherwise use MeshStandardMaterial-compatible PBR channels.",
+        "Generate albedo, roughness, height/normal, and AO independently; never alias albedo into roughness.",
+        "Use normal/bump/displacement only when they map to observed surface relief.",
+        "Use displacement geometry when the observed relief changes the close-up silhouette; texture-only relief is insufficient there."
+      ],
+      "notes": "Physical PBR extraction unavailable from stylized coarse crop; user goal is editable voxel palette, no texture maps claimed."
+    },
+    {
+      "id": "petal",
+      "name": "petal",
+      "type": "standard",
+      "shaderModel": "MeshStandardMaterial / PBR approximation",
+      "baseColor": "#dcb2a5",
+      "color": "#dcb2a5",
+      "albedo": {
+        "dominant": "#dcb2a5",
+        "secondary": [],
+        "samplingNotes": "Observed crop hue family; selected reflectance without baked source shading."
+      },
+      "colorVariation": {
+        "palette": [
+          "#dcb2a5"
+        ],
+        "pattern": "Individually authored tile and connected repair assignments",
+        "amplitude": 0.08,
+        "heightCorrelation": 0
+      },
+      "textureResolution": 1024,
+      "textureProjection": {
+        "mode": "uv",
+        "repeat": [
+          2,
+          2
+        ],
+        "anisotropy": 8,
+        "texelDensityIntent": "Preserve stable world/object-scale detail; do not stretch micro detail with component scale."
+      },
+      "surfaceFrequencyBands": [
+        {
+          "id": "macro",
+          "frequency": 1,
+          "amplitude": 0.15,
+          "role": "Roof/wall color zones"
+        },
+        {
+          "id": "meso",
+          "frequency": 6.67,
+          "amplitude": 0.15,
+          "role": "Editable tile and brick courses"
+        },
+        {
+          "id": "micro",
+          "frequency": 28,
+          "amplitude": 0.02,
+          "role": "Reserved roughness response, no tiny geometry"
+        }
+      ],
+      "roughness": {
+        "base": 0.9,
+        "variation": 0.02,
+        "map": "None; independent constant scalar",
+        "localResponse": "Flat geometry with matte/satin distinction"
+      },
+      "metalness": {
+        "base": 0,
+        "variation": 0
+      },
+      "normal": {
+        "pattern": "Actual voxel course and frame geometry",
+        "strength": 0,
+        "scale": 1,
+        "space": "object"
+      },
+      "bump": {
+        "pattern": "none",
+        "amplitude": 0,
+        "scale": 1
+      },
+      "displacement": {
+        "pattern": "none",
+        "amplitude": 0,
+        "scale": 1,
+        "silhouetteAffects": false
+      },
+      "ambientOcclusion": {
+        "cavityStrength": 0.25,
+        "contactShadowBias": 0.35,
+        "notes": "Darken creases, seams, intersections, and recessed local features."
+      },
+      "wear": {
+        "edgeWear": 0,
+        "scratches": [],
+        "chips": []
+      },
+      "dirt": {
+        "amount": 0,
+        "cavityBias": 0,
+        "color": "#2F2A22"
+      },
+      "localOverrides": [
+        {
+          "id": "petal-local",
+          "region": "Explicit authored cells from crop",
+          "roughness": 0.85,
+          "evidenceRefs": [
+            "full-object"
+          ]
+        }
+      ],
+      "shaderNotes": [
+        "Prefer MeshPhysicalMaterial when clearcoat, sheen, transmission, or thin-surface response is observed; otherwise use MeshStandardMaterial-compatible PBR channels.",
+        "Generate albedo, roughness, height/normal, and AO independently; never alias albedo into roughness.",
+        "Use normal/bump/displacement only when they map to observed surface relief.",
+        "Use displacement geometry when the observed relief changes the close-up silhouette; texture-only relief is insufficient there."
+      ],
+      "notes": "Physical PBR extraction unavailable from stylized coarse crop; user goal is editable voxel palette, no texture maps claimed."
+    }
+  ],
+  "repetitionSystems": [
+    {
+      "id": "tiles",
+      "componentRefs": [
+        "roof"
+      ],
+      "type": "linear",
+      "distribution": "5 visible lanes by 6 courses, explicit repair tile positions",
+      "evidenceRefs": [
+        "full-object"
+      ]
+    },
+    {
+      "id": "furniture-legs",
+      "componentRefs": [
+        "table",
+        "chair-front",
+        "chair-back"
+      ],
+      "type": "linear",
+      "distribution": "4 vertical grounded legs per item, seat supported",
+      "evidenceRefs": [
+        "full-object"
+      ]
+    },
+    {
+      "id": "awning-stripes",
+      "componentRefs": [
+        "awning"
+      ],
+      "type": "linear",
+      "distribution": "3-cell alternating stripes across facade",
+      "evidenceRefs": [
+        "full-object"
+      ]
+    }
+  ],
+  "buildPasses": [
+    {
+      "id": "blockout",
+      "goal": "Match macro silhouette and proportions.",
+      "componentRefs": [
+        "building",
+        "roof",
+        "chimney"
+      ],
+      "acceptance": [
+        "Silhouette reads correctly without materials.",
+        "Quality contract has named all required macro feature groups before code generation.",
+        "AI vision comparison score meets selfCorrectLoop.visualAcceptance.threshold."
+      ]
+    },
+    {
+      "id": "structural-pass",
+      "goal": "Build the component hierarchy implied by the pre-spec complexity assessment.",
+      "componentRefs": [
+        "building",
+        "roof",
+        "terrace",
+        "plinth",
+        "walls",
+        "gable",
+        "fascia",
+        "front-window",
+        "side-window",
+        "door",
+        "awning",
+        "steps",
+        "chimney",
+        "table",
+        "chair-front",
+        "chair-back",
+        "roof-repairs",
+        "ridge",
+        "wall-repairs",
+        "handle",
+        "cup",
+        "plants"
+      ],
+      "acceptance": [
+        "Macro, meso, and repeated structures meet qualityContract.minimumSpecDepth.",
+        "Parent-child relations, joints, seams, sockets, and contact points are explicit.",
+        "Every attached child appendage/connector has parentSocket, localStart/localEnd, contactType, embedDepth or overlap, and gapTolerance.",
+        "AI vision comparison score meets selfCorrectLoop.visualAcceptance.threshold."
+      ]
+    },
+    {
+      "id": "form-refinement",
+      "goal": "Refine shape, deformation, bevels, tapers, curves, asymmetry, and visible local geometry.",
+      "componentRefs": [
+        "building",
+        "roof",
+        "terrace",
+        "plinth",
+        "walls",
+        "gable",
+        "fascia",
+        "front-window",
+        "side-window",
+        "door",
+        "awning",
+        "steps",
+        "chimney",
+        "table",
+        "chair-front",
+        "chair-back",
+        "roof-repairs",
+        "ridge",
+        "wall-repairs",
+        "handle",
+        "cup",
+        "plants"
+      ],
+      "acceptance": [
+        "Important visible forms are represented in component geometryDescriptor, deformations, localFeatures, or repetitionSystems.",
+        "Endpoint-based child parts are rooted at their attachment sockets and do not visibly float away from parents.",
+        "AI vision comparison score meets selfCorrectLoop.visualAcceptance.threshold."
+      ]
+    },
+    {
+      "id": "material-pass",
+      "goal": "Match material color, roughness, bump, and local variation.",
+      "componentRefs": [
+        "building",
+        "roof",
+        "terrace",
+        "plinth",
+        "walls",
+        "gable",
+        "fascia",
+        "front-window",
+        "side-window",
+        "door",
+        "awning",
+        "steps",
+        "chimney",
+        "table",
+        "chair-front",
+        "chair-back",
+        "roof-repairs",
+        "ridge",
+        "wall-repairs",
+        "handle",
+        "cup",
+        "plants"
+      ],
+      "acceptance": [
+        "Reference-derived albedo palette records dominant, secondary, and accent colors per visible material.",
+        "Each important material defines roughness variation and at least one normal/bump/displacement response.",
+        "Local material overrides, dirt/wear/stains/moss/chips/scratches or equivalent masks are tied to evidenceRefs.",
+        "Thin, transparent, reflective, wet, or fibrous materials document alpha/transmission/clearcoat/metalness/fiber response when relevant.",
+        "Generated preview uses procedural albedo/roughness/bump texture or vertex color variation instead of one flat color.",
+        "Generated preview uses independent PBR maps at 1024px or higher for the quality-first tier.",
+        "If source pixels are available, referencePbr extraction passed at confidence >= 0.7 or the pass is stopped/requesting better references.",
+        "Macro, meso, and micro surface frequency bands are visible at the intended review distance without obvious tiling.",
+        "AI vision comparison score meets selfCorrectLoop.visualAcceptance.threshold."
+      ]
+    },
+    {
+      "id": "surface-pass",
+      "goal": "Add procedural surface locality such as normal/bump/displacement, AO, dirt, stains, chips, grain, moss, scratches, and wear.",
+      "componentRefs": [
+        "building",
+        "roof",
+        "terrace",
+        "plinth",
+        "walls",
+        "gable",
+        "fascia",
+        "front-window",
+        "side-window",
+        "door",
+        "awning",
+        "steps",
+        "chimney",
+        "table",
+        "chair-front",
+        "chair-back",
+        "roof-repairs",
+        "ridge",
+        "wall-repairs",
+        "handle",
+        "cup",
+        "plants"
+      ],
+      "acceptance": [
+        "Every required material feature group has local overrides or surfaceDetail tied to evidenceRefs.",
+        "A grazing-angle close-up proves that normal/height detail breaks highlights naturally and does not read as smooth plastic.",
+        "AI vision comparison score meets selfCorrectLoop.visualAcceptance.threshold."
+      ]
+    },
+    {
+      "id": "lighting-pass",
+      "goal": "Make material and form readable under neutral turntable lighting plus optional reference lighting.",
+      "componentRefs": [
+        "building",
+        "roof",
+        "terrace",
+        "plinth",
+        "walls",
+        "gable",
+        "fascia",
+        "front-window",
+        "side-window",
+        "door",
+        "awning",
+        "steps",
+        "chimney",
+        "table",
+        "chair-front",
+        "chair-back",
+        "roof-repairs",
+        "ridge",
+        "wall-repairs",
+        "handle",
+        "cup",
+        "plants"
+      ],
+      "acceptance": [
+        "lightingFromPhoto identifies key light direction/color/intensity, fill light, rim or environment light, and ambient color.",
+        "Exposure, tone mapping, background color/gradient, shadow softness, and contact shadow behavior are specified.",
+        "Lighting does not hide geometry/material gaps and screenshots can be compared fairly to the reference.",
+        "Neutral, grazing, and reference-matched lighting checks distinguish material errors from lighting errors.",
+        "AI vision comparison score meets selfCorrectLoop.visualAcceptance.threshold."
+      ]
+    },
+    {
+      "id": "interaction-pass",
+      "goal": "Make the model ready for future animation, transformation, physics, or destruction.",
+      "componentRefs": [
+        "building",
+        "roof",
+        "terrace",
+        "plinth",
+        "walls",
+        "gable",
+        "fascia",
+        "front-window",
+        "side-window",
+        "door",
+        "awning",
+        "steps",
+        "chimney",
+        "table",
+        "chair-front",
+        "chair-back",
+        "roof-repairs",
+        "ridge",
+        "wall-repairs",
+        "handle",
+        "cup",
+        "plants"
+      ],
+      "acceptance": [
+        "Macro and movable meso components have stable pivot nodes.",
+        "Sockets, collider proxies, and destruction metadata are present for future runtime actions.",
+        "AI vision comparison score meets selfCorrectLoop.visualAcceptance.threshold."
+      ]
+    },
+    {
+      "id": "optimization-pass",
+      "goal": "Protect runtime performance after visual fidelity is accepted.",
+      "componentRefs": [
+        "building",
+        "roof",
+        "terrace",
+        "plinth",
+        "walls",
+        "gable",
+        "fascia",
+        "front-window",
+        "side-window",
+        "door",
+        "awning",
+        "steps",
+        "chimney",
+        "table",
+        "chair-front",
+        "chair-back",
+        "roof-repairs",
+        "ridge",
+        "wall-repairs",
+        "handle",
+        "cup",
+        "plants"
+      ],
+      "acceptance": [
+        "Triangle count, draw calls, instancing, LOD strategy, and FPS target are documented or verified.",
+        "Repeated detail is instanced or simplified where possible without breaking silhouette/material believability."
+      ]
+    }
+  ],
+  "visualEvidence": [],
+  "reviewHistory": [],
+  "lodPlan": [
+    {
+      "tier": "near",
+      "distance": 0,
+      "strategy": "full component tree and material layers"
+    },
+    {
+      "tier": "far",
+      "distance": 30,
+      "strategy": "merge static components and reduce local feature geometry"
+    }
+  ],
+  "performanceBudget": {
+    "targetTriangles": 60000,
+    "maxDrawCalls": 40,
+    "textureSize": 0,
+    "fpsTarget": 30,
+    "notes": "Exposed voxel face merge. iPhone frame time not yet measured."
+  },
+  "lightingFromPhoto": [
+    "Key upper left/front warm white, intensity 3; cool hemisphere fill 1.2.",
+    "Orthographic camera yaw24 elevation19 estimated from source eave slopes.",
+    "ACES exposure1, cream background, real PCF contact shadows.",
+    "Neutral white and low grazing key controls without changing geometry."
+  ],
+  "proceduralStrategy": [
+    "No imports from the previous five-building generator.",
+    "One manually designed facade and tile map, no random building substitutions.",
+    "15cm occupancy, connected surfaces and four-legged supported furnishings.",
+    "Only current build pass is implemented."
+  ],
+  "animationAnchors": [
+    "root pivot node supports whole-object translation, rotation, scale, and visibility changes",
+    "component pivot groups support later local transforms without rebuilding geometry"
+  ],
+  "destructionAnchors": [
+    "actionProfile.destruction.fractureGroup marks detachable or breakable component sets",
+    "component seams and sockets define plausible break points instead of random explosions"
+  ],
+  "risks": [],
+  "localSpecSearch": {
+    "collection": "core_3d",
+    "query": "Dayorama cafe from exact crop architectural voxel stepped roof window frame supported furniture matte plaster glazed ceramic",
+    "index": {
+      "status": "hit",
+      "reason": "current",
+      "fingerprint": "6857e5ab528b42ac12f4f411f862610a0bffce8e47aee3610a7603c318072fe8"
+    },
+    "matches": [
+      {
+        "record_id": "core.pbr-roughness",
+        "file_path": "grimoire/glossary/3d_vocabulary.md",
+        "heading": "Material And PBR",
+        "key_path": null,
+        "score": 5.84800548653,
+        "snippets": [
+          "Roughness is microfacet scatter: high roughness reads matte and low roughness reads glossy. Recognition cues: low roughness reads as a sharp, mirror-like, tight specular highlight; high roughness reads as a blurry, wide, dim highlight and matte ..."
+        ],
+        "source_refs": [
+          {
+            "path": "grimoire/glossary/3d_vocabulary.md",
+            "heading": "Material And PBR",
+            "key_path": null
+          },
+          {
+            "path": "grimoire/intake/image_analysis.md",
+            "heading": "Layer 5 — Materials & surface (PBR)",
+            "key_path": null
+          },
+          {
+            "path": "docs/raw/img2threejs-skill-dataset.json",
+            "heading": null,
+            "key_path": "categories.material_pbr[1]"
+          }
+        ],
+        "evidence_refs": [
+          {
+            "kind": "source",
+            "ref": "grimoire/glossary/3d_vocabulary.md"
+          },
+          {
+            "kind": "notebooklm-research",
+            "ref": "notebooklm:4b03c2f9-8393-411f-b5b4-039ab9532843",
+            "note": "Validated generic schema vocabulary; numeric claims remain backed by local source_refs."
+          },
+          {
+            "kind": "source",
+            "ref": "docs/raw/img2threejs-skill-dataset.json",
+            "note": "img2threejs NotebookLM research distillation — merged recognition cues + Three.js target instead of duplicating this entity."
+          }
+        ]
+      },
+      {
+        "record_id": "core.shader-mapping-boxgeometry-slides-receivers-grips",
+        "file_path": "docs/raw/img2threejs-skill-dataset.json",
+        "heading": null,
+        "key_path": "categories.rendering_shader_mapping[5]",
+        "score": 3.982060806801,
+        "snippets": [
+          "... các cụm lắp ráp hình chữ nhật/khối. Recognition cues: Flat-faced, roughly rectangular volume (pistol slide, receiver/frame, grip, panel) Dấu hiệu nhận diện: Khối gần chữ nhật với các mặt phẳng (khóa nòng súng lục, thân/khung súng, tay ..."
+        ],
+        "source_refs": [
+          {
+            "path": "docs/raw/img2threejs-skill-dataset.json",
+            "heading": null,
+            "key_path": "categories.rendering_shader_mapping[5]"
+          }
+        ],
+        "evidence_refs": [
+          {
+            "kind": "source",
+            "ref": "docs/raw/img2threejs-skill-dataset.json",
+            "note": "img2threejs NotebookLM research distillation"
+          }
+        ]
+      },
+      {
+        "record_id": "core.evidence-observation",
+        "file_path": "grimoire/intake/image_analysis.md",
+        "heading": "The Rule",
+        "key_path": null,
+        "score": 2.495195146971,
+        "snippets": [
+          "State observable facts separately from inferred interpretations and mark every inference as inference."
+        ],
+        "source_refs": [
+          {
+            "path": "grimoire/intake/image_analysis.md",
+            "heading": "The Rule",
+            "key_path": null
+          }
+        ],
+        "evidence_refs": [
+          {
+            "kind": "source",
+            "ref": "grimoire/intake/image_analysis.md"
+          },
+          {
+            "kind": "notebooklm-research",
+            "ref": "notebooklm:4b03c2f9-8393-411f-b5b4-039ab9532843",
+            "note": "Validated generic schema vocabulary; numeric claims remain backed by local source_refs."
+          }
+        ]
+      }
+    ]
+  },
+  "tier1Results": [
+    {
+      "passed": false,
+      "checks": {
+        "silhouetteIoU": 0.8949,
+        "aspectRatioDelta": 0.0455,
+        "scaleDelta": 0.0435,
+        "bilateralSymmetryError": 0.3344,
+        "colorDelta": {
+          "checked": 22,
+          "maxDeltaE": 44.22,
+          "perComponent": [
+            {
+              "componentId": null,
+              "deltaE": 44.22
+            },
+            {
+              "componentId": null,
+              "deltaE": 44.22
+            },
+            {
+              "componentId": null,
+              "deltaE": 44.22
+            },
+            {
+              "componentId": null,
+              "deltaE": 44.22
+            },
+            {
+              "componentId": null,
+              "deltaE": 44.22
+            },
+            {
+              "componentId": null,
+              "deltaE": 44.22
+            },
+            {
+              "componentId": null,
+              "deltaE": 44.22
+            },
+            {
+              "componentId": null,
+              "deltaE": 44.22
+            },
+            {
+              "componentId": null,
+              "deltaE": 44.22
+            },
+            {
+              "componentId": null,
+              "deltaE": 44.22
+            },
+            {
+              "componentId": null,
+              "deltaE": 44.22
+            },
+            {
+              "componentId": null,
+              "deltaE": 44.22
+            },
+            {
+              "componentId": null,
+              "deltaE": 44.22
+            },
+            {
+              "componentId": null,
+              "deltaE": 44.22
+            },
+            {
+              "componentId": null,
+              "deltaE": 44.22
+            },
+            {
+              "componentId": null,
+              "deltaE": 44.22
+            },
+            {
+              "componentId": null,
+              "deltaE": 44.22
+            },
+            {
+              "componentId": null,
+              "deltaE": 44.22
+            },
+            {
+              "componentId": null,
+              "deltaE": 44.22
+            },
+            {
+              "componentId": null,
+              "deltaE": 44.22
+            },
+            {
+              "componentId": null,
+              "deltaE": 44.22
+            },
+            {
+              "componentId": null,
+              "deltaE": 44.22
+            }
+          ],
+          "gated": false
+        }
+      },
+      "failures": [
+        "blockout requires --map-stripped-render evidence"
+      ],
+      "maskWarnings": [],
+      "renderHash": "5eaac35ecb0f7efa",
+      "passId": "blockout"
+    },
+    {
+      "passed": true,
+      "checks": {
+        "silhouetteIoU": 0.8949,
+        "aspectRatioDelta": 0.0455,
+        "scaleDelta": 0.0435,
+        "bilateralSymmetryError": 0.3344,
+        "colorDelta": {
+          "checked": 22,
+          "maxDeltaE": 44.22,
+          "perComponent": [
+            {
+              "componentId": null,
+              "deltaE": 44.22
+            },
+            {
+              "componentId": null,
+              "deltaE": 44.22
+            },
+            {
+              "componentId": null,
+              "deltaE": 44.22
+            },
+            {
+              "componentId": null,
+              "deltaE": 44.22
+            },
+            {
+              "componentId": null,
+              "deltaE": 44.22
+            },
+            {
+              "componentId": null,
+              "deltaE": 44.22
+            },
+            {
+              "componentId": null,
+              "deltaE": 44.22
+            },
+            {
+              "componentId": null,
+              "deltaE": 44.22
+            },
+            {
+              "componentId": null,
+              "deltaE": 44.22
+            },
+            {
+              "componentId": null,
+              "deltaE": 44.22
+            },
+            {
+              "componentId": null,
+              "deltaE": 44.22
+            },
+            {
+              "componentId": null,
+              "deltaE": 44.22
+            },
+            {
+              "componentId": null,
+              "deltaE": 44.22
+            },
+            {
+              "componentId": null,
+              "deltaE": 44.22
+            },
+            {
+              "componentId": null,
+              "deltaE": 44.22
+            },
+            {
+              "componentId": null,
+              "deltaE": 44.22
+            },
+            {
+              "componentId": null,
+              "deltaE": 44.22
+            },
+            {
+              "componentId": null,
+              "deltaE": 44.22
+            },
+            {
+              "componentId": null,
+              "deltaE": 44.22
+            },
+            {
+              "componentId": null,
+              "deltaE": 44.22
+            },
+            {
+              "componentId": null,
+              "deltaE": 44.22
+            },
+            {
+              "componentId": null,
+              "deltaE": 44.22
+            }
+          ],
+          "gated": false
+        }
+      },
+      "failures": [],
+      "maskWarnings": [],
+      "renderHash": "5eaac35ecb0f7efa",
+      "passId": "blockout",
+      "mapStrippedRender": "evidence\\blockout-match.png"
+    }
+  ]
+}
