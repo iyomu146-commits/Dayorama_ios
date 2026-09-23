@@ -4,7 +4,7 @@ export const hash=(x,y,z=0)=>{let h=Math.imul(x+371,374761393)^Math.imul(y+117,6
 export function makeModel(){
  const map=new Map();let part='terrain',asset='town',phase=-1,ox=0,oz=0;
  const set=(p,a='town',ph=-1,x=0,z=0)=>{part=p;asset=a;phase=ph;ox=x;oz=z;};
- function put(x,y,z,color){const c={x:x+ox,y,z:z+oz,color,part,asset,phase,emission:color.startsWith('glass')};const k=key(c),old=map.get(k);if(old&&old.asset===asset&&old.phase>=0&&old.phase<phase)c.under=[...(old.under||[]),old];map.set(k,c);}
+ function put(x,y,z,color){const c={x:x+ox,y,z:z+oz,color,part,asset,phase,emission:color.startsWith('glass')};const k=key(c),old=map.get(k);if(asset==='tree'&&old&&BUILDINGS.some(b=>b.id===old.asset))throw Error(`${part} overlaps ${old.part} at ${k}`);if(old&&old.asset===asset&&old.phase>=0&&old.phase<phase)c.under=[...(old.under||[]),old];map.set(k,c);}
  function box(x0,x1,y0,y1,z0,z1,color){for(let y=y0;y<=y1;y++)for(let z=z0;z<=z1;z++)for(let x=x0;x<=x1;x++)put(x,y,z,typeof color==='function'?color(x,y,z):color);}
  function flower(x,z,y=0,tone=0){box(x,x,y,y+3,z,z,'leaf3');put(x-1,y+1,z,'leaf1');put(x+1,y+2,z,'leaf1');for(const [dx,dz] of [[-1,0],[1,0],[0,-1],[0,1]])put(x+dx,y+4,z+dz,'flower'+tone);put(x,y+4,z,tone===1?'wood2':'flower1');}
  function planter(x,z,tone=0){box(x-2,x+2,0,2,z-2,z+2,'brick1');box(x-1,x+1,3,3,z-1,z+1,'soil0');flower(x,z,4,tone);}
@@ -26,7 +26,10 @@ export function makeModel(){
   for(const x of [a,c-1])for(const z of [back,f-1])box(x,x+1,4,b.h,z,z+1,'wood3');
   for(const y of b.upper?[23,b.h]:[b.h]){box(a,c,y,y,back,back+1,'wood3');box(a,c,y,y,f-1,f,'wood3');box(a,a+1,y,y,back,f,'wood3');box(c-1,c,y,y,back,f,'wood3');}
   for(let x=a;x<=c;x+=7)for(let z=back;z<=f;z++)box(x,x,roofY(x,z)-2,roofY(x,z),z,z,'wood3');
-  if(b.roof==='gable')for(const x of [a,c])box(x,x,b.h,b.h+10,-1,1,'wood3');
+  if(b.roof==='gable'){
+   for(const x of [a,c])box(x,x,b.h,b.h+10,-1,1,'wood3');
+   for(const z of [-6,0,6])box(a,c,roofY(a,z)-2,roofY(a,z)-1,z,z,'wood3');
+  }
   change('walls',2);
   for(let y=4;y<=b.h;y++)for(let z=back;z<=f;z++)for(let x=a;x<=c;x++){
    if(x>a+1&&x<c-1&&z>back+1&&z<f-1)continue;
@@ -34,22 +37,32 @@ export function makeModel(){
    const win=front&&b.windows.some(([l,r,lo,hi])=>x>=l&&x<=r&&y>=lo&&y<=hi);
    const side=x>=c-1&&z>=-7&&z<=3&&((y>=10&&y<=20)||(b.upper&&y>=30&&y<=39));
    const rear=z<=back+1&&x>=-5&&x<=4&&y>=11&&y<=20;
-   if(door||win||side||rear)continue;put(x,y,z,(b.id==='cafe'&&y<7?'brick':b.upper&&y>24?b.upper:b.wall)+'0');
+   if(door||win||side||rear)continue;
+   const exposedBrick=b.id==='cafe'&&((front&&x<=a+2&&y>=b.h-5&&y<=b.h-3)||(x>=c-1&&z>=f-3&&y>=9&&y<=11)||(front&&x>=c-3&&y>=14&&y<=16));
+   put(x,y,z,exposedBrick?'brick4':(b.id==='cafe'&&y<7?'brick':b.upper&&y>24?b.upper:b.wall)+'0');
   }
   if(b.roof==='gable')for(const x of [a,a+1,c-1,c])for(let z=back;z<=f;z++)box(x,x,b.h+1,roofY(x,z)-1,z,z,(b.upper||b.id==='bakery'?'plaster':b.wall)+'0');
   change('openings',2);
   function window(axis,plane,l,r,lo,hi,rail=false){
    const b2=(u0,u1,y0,y1,p0,p1,col)=>axis==='z'?box(u0,u1,y0,y1,p0,p1,col):box(p0,p1,y0,y1,u0,u1,col);
-   b2(l,r,lo,hi,plane-1,plane-1,'glass0');for(const u of [l-1,r+1])b2(u,u,lo-1,hi+1,plane-1,plane+1,'wood1');
+   for(let u=l;u<=r;u++)for(let y=lo;y<=hi;y++)b2(u,u,y,y,plane-1,plane-1,y<lo+2?'glass0':u<l+2&&y>lo+3?'glass2':'glass1');
+   for(const u of [l-1,r+1])b2(u,u,lo-1,hi+1,plane-1,plane+1,'wood1');
    for(const y of [lo-1,hi+1])b2(l-1,r+1,y,y,plane-1,plane+1,'wood1');b2(l-2,r+2,lo-2,lo-2,plane,plane+2,'stone1');b2(l-2,r+2,hi+2,hi+2,plane,plane+1,'stone1');
+   if(b.id==='cafe')for(const u of [l-2,r+2])b2(u,u,lo-1,hi+1,plane,plane+1,'plaster4');
    if(rail){b2(l-2,r+2,lo-2,lo-2,plane+2,plane+3,'wood3');b2(l-2,r+2,lo+2,lo+2,plane+3,plane+3,'wood3');for(const u of [l-2,l+1,r-1,r+2])b2(u,u,lo-1,lo+1,plane+3,plane+3,'wood3');}
   }
   b.windows.forEach(v=>window('z',f,...v,b.upper&&v[2]>25));window('x',c,-7,3,10,20);if(b.upper)window('x',c,-7,3,30,39,true);
   box(-5,4,11,20,back,back,'glass0');for(const x of [-6,5])box(x,x,10,21,back-1,back,'wood1');for(const y of [10,21])box(-6,5,y,y,back-1,back,'wood1');
   const [dl,dr]=b.door;box(dl,dr,4,19,f-1,f-1,'wood1');box(dl+1,dr-1,11,17,f,f,'glass0');for(const x of [dl-1,dr+1])box(x,x,4,20,f-1,f+1,'wood3');box(dl-1,dr+1,20,20,f-1,f+1,'wood3');put(dr-1,10,f,'metal0');
-  change('roof',3);for(let z=back-3;z<=f+3;z++)for(let x=a-3;x<=c+3;x++)box(x,x,roofY(x,z),roofY(x,z)+1,z,z,b.tiles+'0');
-  for(let z=back-2;z<=f+2;z++)for(let x=a-2;x<=c+2;x++){const course=Math.floor((z-back+3)/3);if((x-a+2+course%2*2)%6!==0&&(z-back+3)%3!==0)put(x,roofY(x,z)+2,z,b.tiles+'0');}
-  if(b.roof==='gable')box(a-3,c+3,b.h+12,b.h+12,-1,1,b.tiles+'0');
+  // Broad overlapping tile courses, with shallow recessed joints instead of studs.
+  // The lower shell stays closed even in a joint or along a hip.
+  change('roof',3);
+  for(let z=back-3;z<=f+3;z++)for(let x=a-3;x<=c+3;x++){
+   const joint=((x-a+3)%8===7),y=roofY(x,z);
+   box(x,x,y-1,y+(joint?0:1),z,z,b.tiles+'0');
+   if(x===a-3||x===c+3||z===back-3||z===f+3)put(x,y-1,z,'wood1');
+  }
+  if(b.roof==='gable')box(a-3,c+3,b.h+13,b.h+14,-1,1,b.tiles+'0');
   change('details',4);
   if(b.id==='home'){
    for(let z=f;z<=f+5;z++)box(dl-3,dr+3,23-Math.floor((z-f)/3),24-Math.floor((z-f)/3),z,z,'blueRoof0');
@@ -74,14 +87,21 @@ export function makeModel(){
    for(const [z,side] of [[-7,-1],[9,1]]){for(const x of [c+9,c+13])for(const zz of [z,z+3])box(x,x,1,3,zz,zz,'wood3');box(c+9,c+13,4,4,z,z+3,'wood1');const zz=side<0?z:z+3;for(const x of [c+9,c+13])box(x,x,5,9,zz,zz,'wood3');box(c+9,c+13,8,9,zz,zz,'wood1');}put(c+11,7,2,'cream0');
    planter(a-3,f+4,4);planter(c+4,f+7,0);box(a+5,a+8,4,b.h+13,back+6,back+9,'brick0');box(a+4,a+9,b.h+14,b.h+14,back+5,back+10,'stone1');
   }
-  if(b.id!=='home'&&b.id!=='books')for(let z=f+1;z<=f+5;z++)for(let x=a+1;x<=c-2;x++)box(x,x,b.h-2-Math.floor((z-f)/3),b.h-1-Math.floor((z-f)/3),z,z,'cream0');
+  if(b.id!=='home'&&b.id!=='books'){
+   for(let z=f+1;z<=f+5;z++)for(let x=a+1;x<=c-2;x++)box(x,x,b.h-2-Math.floor((z-f)/3),b.h-1-Math.floor((z-f)/3),z,z,'cream0');
+   // A supported canvas valance gives the awning a readable edge at phone scale.
+   for(let x=a+1;x<=c-2;x++)put(x,b.h-4,f+5,'cream0');
+  }
  }
  TREES.forEach(([cx,cz],i)=>{
   set(`tree-${i}`,'tree',-1,cx,cz);const e=i===2?3:0;
   box(-1,1,0,30+e,-1,1,i===2?'cream0':'wood3');box(-2,2,0,3,-2,2,i===2?'cream0':'wood3');
   if(i===2)for(let y=5;y<27;y+=6){box(-1,0,y,y,1,1,'wood3');put(1,y+2,0,'wood3');}
   for(const sign of [-1,1])for(let n=0;n<=7;n++)box(sign*n-1,sign*n+1,22+n+e,24+n+e,-1,1,'wood3');
-  for(const [x,y,z,r] of [[0,31+e,0,10],[-8,29+e,1,7],[7,32+e,0,8],[-2,39+e,-1,6],[1,29+e,7,7]])for(let yy=-r;yy<=r;yy+=2)for(let zz=-r;zz<=r;zz+=2)for(let xx=-r;xx<=r;xx+=2){if(Math.abs(xx)+Math.abs(zz)>r*1.7||Math.abs(xx)+Math.abs(yy)+Math.abs(zz)>r*2.05)continue;const px=Math.round((x+xx)*.7),pz=Math.round((z+zz)*.7);box(px,px+1,y+yy,y+yy+1,pz,pz+1,'leaf0');}
+  // Interlocking, unequally sized leaf clusters preserve gaps between the branches.
+  // The old clipped ellipsoids made every tree a narrow, finely serrated cone.
+  const lobes=[[-4,4,27,39,-4,4],[-12,-3,25,34,-3,5],[4,12,29,39,-6,3],[-5,3,31,40,-10,-3],[-4,5,25,34,3,11],[-4,2,38,45,-4,2],[2,7,37,42,-1,5],[-14,-9,29,34,0,5],[-10,-4,33,38,-2,3],[8,13,33,38,-2,4],[-2,3,42,47,-2,3],[1,7,29,34,8,13],[-7,-2,27,33,7,11]];
+  for(const [x0,x1,y0,y1,z0,z1] of lobes){const flip=i%2?-1:1,dx=i===1?2:0;box(Math.min(x0*flip,x1*flip)+dx,Math.max(x0*flip,x1*flip)+dx,y0+e+(i===4?-3:0),y1+e+(i===4?-3:0),z0,z1,'leaf0');}
  });
  set('bridge','bridge');box(-8,8,-2,-1,62,77,'wood3');box(-8,8,0,0,62,77,'wood1');for(const x of [-8,8]){for(const z of [62,69,77])box(x,x+1,0,7,z,z+1,'wood1');box(x,x,5,5,62,78,'wood1');}
  set('street','bench');bench(-72,53);
@@ -95,12 +115,31 @@ export function makeModel(){
  // Macro color zones are stored in the voxels. No baked image lighting.
  for(const c of map.values()){
   const base=c.color.replace(/\d+$/,''),q=hash(Math.floor((c.x+(Math.floor(c.y/2)%2)*2)/4),Math.floor(c.y/2),Math.floor(c.z/4));
-  if(c.color.endsWith('0')&&['plaster','sage','ochre','indigo'].includes(base)){const v=q%17;c.color=base+(v<11?0:v<13?1:v<15?2:3);}
-  else if(c.color.endsWith('0')&&['brick','soil','stone','grass'].includes(base))c.color=base+((q%10)<6?0:(q%4)+1);
-  else if(base.includes('Roof')){const v=hash(Math.floor(c.x/4),Math.floor(c.y/2),Math.floor(c.z/3))%13;c.color=base+(v<6?0:v<9?1:v<11?2:3);}
+  if(c.color.endsWith('0')&&['plaster','sage','ochre','indigo'].includes(base)){
+   const b=BUILDINGS.find(b=>b.id===c.asset),x=c.x-(b?.x||0),z=c.z-(b?.z||0);
+   const u=b&&Math.abs(x)>b.w/2-3?z:x,row=Math.floor(c.y/5),band=Math.floor((u+(row%2)*5)/10),patch=hash(band,row,c.asset.length)%11;
+   // Most plaster is quiet. Connected blocks read as repaired render, not confetti.
+   const inPatch=((u+1000)%10)<7&&c.y%5<3;
+   c.color=base+(inPatch&&patch<3?patch+1:0);
+  }
+  else if(c.color.endsWith('0')&&['brick','soil','stone'].includes(base))c.color=base+((q%10)<6?0:(q%4)+1);
+  else if(base==='grass'){
+   const patch=hash(Math.floor(c.x/7),0,Math.floor(c.z/6))%13;
+   c.color='grass'+(patch<8?0:patch<11?1:2);
+  }
+  else if(base.includes('Roof')){
+   const b=BUILDINGS.find(b=>b.id===c.asset),x=c.x-(b?.x||0),z=c.z-(b?.z||0),a=-(b?.w||32)/2,back=-(Math.ceil((b?.d||27)/2)-1),f=Math.floor((b?.d||27)/2);
+   const lane=Math.floor((x-a+3)/8),course=Math.floor(Math.min(z-back+3,f+3-z)/3),v=hash(lane,course,c.asset.length)%15;
+   const weathered=hash(Math.floor(lane/2),Math.floor(course/3),c.asset.length)%5===0;
+   c.color=base+(weathered?(v<9?2:3):(v<8?0:v<12?1:v<14?3:2));
+   if((x-a+3)%8===7)c.color=base+'4';
+  }
   else if(base==='wood'&&c.color!=='wood3')c.color='wood'+hash(Math.floor(c.x/2),0,Math.floor(c.z/3))%3;
-  else if(base==='leaf')c.color='leaf'+(hash(Math.floor(c.x/4),Math.floor(c.y/4),Math.floor(c.z/4))%7<3?0:hash(Math.floor(c.x/4),Math.floor(c.y/4),Math.floor(c.z/4))%5);
-  else if(base==='glass')c.color='glass'+(c.y%11===8?2:c.y%11<3?3:1);
+  else if(base==='leaf'){
+   const v=hash(Math.floor(c.x/6),Math.floor(c.y/6),Math.floor(c.z/6))%13;
+   c.color='leaf'+(v<6?0:v<10?1:v<12?2:3);
+  }
+  // Keep authored uninterrupted glazing; a horizontal dark stripe read as a bar.
   else if(base==='water')c.color='water'+hash(Math.floor(c.x/7),0,Math.floor(c.z/3))%4;
   if(c.part==='cafe-details'&&c.color.startsWith('cream')&&c.y>20)c.color=Math.floor(c.x/3)%2===0?'cream0':'brick4';
  }

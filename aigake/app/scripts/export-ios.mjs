@@ -28,6 +28,7 @@ for(const name of ['coarse.html','coarse.css','coarse-app.mjs','coarse-cafe.test
 for(const name of ['IMAGE-GENERATION-RULES.md','content/ART_DIRECTION.md'])await copySource('experiments/voxel-walk-lab-20260909/'+name);
 for(const name of ['prompts.md','town-voxel-v1.png','town-voxel-v2.png'])await copySource(artStudy+'woodland/references/'+name);
 for(const name of ['index.html','style.css','app.mjs','worker.mjs','scene-model.test.mjs','README.md','analysis.md','assessment.json','sculpt-spec.json','references/regions.json','evidence/intake.md','evidence/blockout-review.md','evidence/current-corner.png'])await copySource(artStudy+'woodland/'+name);
+for(const name of ['refinement-v2.md','before-refinement-corner.png','refinement-cafe-day.png','refinement-cafe-night.png','refinement-cafe-back.png'])await copySource(artStudy+'woodland/evidence/'+name);
 // Test commands evolve independently of the app's runtime imports. Include their
 // entry points and dependency graph so a fresh GitHub checkout can run them all.
 const pkg=JSON.parse(await readFile(path.join(app,'package.json'),'utf8'));

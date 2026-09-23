@@ -19416,6 +19416,21 @@
       "cameraView": "",
       "notes": "",
       "aiVisionNotes": ""
+    },
+    {
+      "timestamp": "2026-09-23T06:43:43.976943+00:00",
+      "passId": "blockout",
+      "estimatedFidelity": 0.65,
+      "aiVisionScore": null,
+      "visualAcceptanceThreshold": 0.7,
+      "layerScores": {},
+      "featureReviews": [],
+      "referenceScreenshot": "references/town-voxel-v2.png",
+      "renderScreenshot": "evidence/current-corner.png",
+      "comparisonImage": "",
+      "cameraView": "reference-approximate three-quarter",
+      "notes": "0.65 is a subjective progress estimate, not a passing AI gate or pixel match. Source background/admission limitations remain documented in intake.md. No pass advancement requested.",
+      "aiVisionNotes": ""
     }
   ],
   "reviewHistory": [
@@ -19452,6 +19467,46 @@
         "comparisonImage": "evidence/blockout-comparison.png",
         "cameraView": "",
         "notes": "",
+        "aiVisionNotes": ""
+      }
+    },
+    {
+      "timestamp": "2026-09-23T06:43:43.976943+00:00",
+      "passId": "blockout",
+      "estimatedFidelity": 0.65,
+      "aiVisionScore": null,
+      "visualAcceptanceThreshold": 0.7,
+      "layerScores": {},
+      "featureReviews": [],
+      "action": "refine-code",
+      "summary": "Broader tile courses, connected branching crowns, coherent plaster patches and restrained sky response improve the draft; final fidelity is not accepted.",
+      "matched": [
+        "Five building identities retained",
+        "continuous roof coverage",
+        "uninterrupted window panes",
+        "grounded construction prefixes",
+        "connected leaf clusters"
+      ],
+      "mismatches": [
+        "Reference building proportions and street density still differ",
+        "flower and furniture detail is simplified",
+        "tree species still insufficiently differentiated"
+      ],
+      "specFixes": [],
+      "codeFixes": [],
+      "evidence": [
+        "evidence/refinement-v2.md",
+        "evidence/current-corner.png",
+        "evidence/refinement-cafe-day.png",
+        "evidence/refinement-cafe-back.png",
+        "evidence/refinement-cafe-night.png"
+      ],
+      "visualEvidence": {
+        "referenceScreenshot": "references/town-voxel-v2.png",
+        "renderScreenshot": "evidence/current-corner.png",
+        "comparisonImage": "",
+        "cameraView": "reference-approximate three-quarter",
+        "notes": "0.65 is a subjective progress estimate, not a passing AI gate or pixel match. Source background/admission limitations remain documented in intake.md. No pass advancement requested.",
         "aiVisionNotes": ""
       }
     }

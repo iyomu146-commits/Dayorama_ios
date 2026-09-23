@@ -24,3 +24,6 @@ test('Per-asset exterior mesh stays finite and emits original palette values',()
  const linear=v=>v<=.04045?v/12.92:((v+.055)/1.055)**2.4,palette=Object.fromEntries(Object.entries(PALETTE).map(([k,v])=>[k,[1,3,5].map(i=>linear(parseInt(v.slice(i,i+2),16)/255))]));
  for(const b of BUILDINGS){const source=cells.filter(c=>c.asset===b.id),map=new Map(source.map(c=>[key(c),c])),m=meshChunk(source,map,CELL,{palette,roughnessFor:c=>ROUGHNESS[c.color]});assert.ok(m.triangles>0&&m.triangles<65000);for(const a of [m.positions,m.normals,m.colors,m.surfaces])assert.ok(a.every(Number.isFinite));}
 });
+test('Every crown and branch has a face-connected route to its own grounded trunk',()=>{
+ for(let i=0;i<5;i++){const tree=new Map(cells.filter(c=>c.part===`tree-${i}`).map(c=>[key(c),c]));assert.ok(tree.size>0);assert.equal(groundedCells(tree).size,tree.size,`tree-${i} has a floating leaf cluster`);}
+});

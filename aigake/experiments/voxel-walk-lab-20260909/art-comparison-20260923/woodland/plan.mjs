@@ -8,7 +8,7 @@ export const BUILDINGS=[
  {id:'cafe',name:'喫茶店',x:35,z:32,w:32,d:27,h:25,roof:'gable',wall:'plaster',tiles:'tealRoof',door:[5,11],windows:[[-13,1,9,20]]},
 ];
 export const FAMILIES={
- plaster:['#d8c99d','#cec199','#e3c4a0','#c2b9a0','#ded3b4'],
+ plaster:['#ded0ac','#cdbd98','#d3bd99','#bdb69b','#e7dbbd'],
  sage:['#879575','#9fa782','#acaf91','#738570','#b3b596'],
  ochre:['#ce9b56','#bd8d51','#d9ad67','#cba374','#dcbf80'],
  brick:['#a9603f','#c87c4d','#98543c','#b86c45','#ce9265'],
@@ -17,11 +17,11 @@ export const FAMILIES={
  redRoof:['#974c2d','#b15e35','#a9603f','#bc7951','#7f442e'],
  plumRoof:['#584d61','#6c5c71','#7c6b7b','#615869','#514654'],
  oliveRoof:['#646c35','#7a8245','#818950','#525b31','#90935b'],
- tealRoof:['#256062','#37777a','#498787','#32686c','#235254'],
+ tealRoof:['#295b61','#3c6d70','#718169','#557774','#244c50'],
  wood:['#9d6637','#b47c43','#bd9055','#815532','#98643c'],
  stone:['#c4baa0','#d3c6aa','#b6b29f','#d9ceb5','#c0b393'],
- leaf:['#537c29','#6b9135','#7b9b39','#3e6428','#829e41'],
- grass:['#7d963f','#8da247','#a0b257','#849a4a','#98aa59'],
+ leaf:['#63852e','#72903a','#819944','#4e702b','#8a9f46'],
+ grass:['#8a9d51','#93a65a','#a4b268','#84994e','#98aa59'],
  soil:['#805334','#9b673d','#b37b46','#947047','#ac8150'],
  glass:['#54847f','#6a9991','#86aea2','#3e6d6b','#a8c4b0'],
  flower:['#d47885','#e4bb48','#c8cae0','#b197d0','#e6d8be'],
