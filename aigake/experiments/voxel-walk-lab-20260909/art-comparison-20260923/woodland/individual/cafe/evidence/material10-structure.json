@@ -1,0 +1,13 @@
+{
+  "cells": 13945,
+  "triangles": 11258,
+  "meshes": 22,
+  "checks": [
+    "Geometry and normals exactly match the previous 15cm sharp version",
+    "Source cells and palette unchanged",
+    "All triangles have a valid material identity",
+    "Material identity works on all six faces at negative coordinates",
+    "Paint, deletion and separated parts regenerate material channels"
+  ],
+  "scope": "CPU structure checks only. Browser shader compilation and appearance reviewed separately. iPhone performance not measured."
+}

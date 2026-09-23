@@ -45,13 +45,13 @@ export function chamferBox(box,radius=FINISH_BEVEL,occupancy=null,cellSize=CELL)
 }
 
 export const intactFinishUnit=(u,cells)=>u.keys.length>0&&u.keys.every((k,i)=>cells.get(k)?.part===u.part&&cells.get(k)?.finishUnit===u.id&&cells.get(k)?.color===u.colors?.[i]);
-export function buildCafeSurfaces(cells,palette,{finish=true,isolated=false,unit='component',cellSize=CELL}={}){
+export function buildCafeSurfaces(cells,palette,{finish=true,isolated=false,unit='component',cellSize=CELL,aoStrength=.065}={}){
  if(finish&&unit==='voxel')return buildUniformVoxelSurfaces(cells,palette,{isolated,cellSize});
  const units=finish?(cells.finishUnits||[]).filter(u=>intactFinishUnit(u,cells)):[],replaced=new Set(units.flatMap(u=>u.keys));
  const raw=new Map([...cells].filter(([k])=>!replaced.has(k))),result=[];
  for(const part of new Set([...cells.values()].map(c=>c.part))){
   const selected=[...raw.values()].filter(c=>c.part===part),occupancy=isolated?new Map(selected.map(c=>[`${c.x},${c.y},${c.z}`,c])):raw;
-  const m=meshChunk(selected,occupancy,cellSize,{palette,roughnessFor:c=>roughness(c.color),aoStrength:.065});
+  const m=meshChunk(selected,occupancy,cellSize,{palette,roughnessFor:c=>roughness(c.color),aoStrength});
   const positions=[...m.positions],normals=[...m.normals],colors=[...m.colors],surfaces=[...m.surfaces];
   const finishOccupancy=isolated?new Map([...cells].filter(([,c])=>c.part===part)):cells;
   for(const u of units.filter(u=>u.part===part))for(const b of u.shape.boxes||[u.shape.box]){
