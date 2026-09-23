@@ -1,0 +1,376 @@
+{
+  "passed": true,
+  "checks": {
+    "silhouetteIoU": 0.86,
+    "aspectRatioDelta": 0.0056,
+    "scaleDelta": 0.0245,
+    "bilateralSymmetryError": 0.1578,
+    "colorDelta": {
+      "gated": true,
+      "method": "palette measured only within each component visible footprint, not overall image clusters",
+      "threshold": 20.0,
+      "perComponent": [
+        {
+          "id": "building",
+          "pixels": 15070,
+          "bbox": [
+            97,
+            290,
+            514,
+            544
+          ],
+          "deltaE": 5.8,
+          "maskSha256": "10629ef255eae9caa9eb0fd83d739cb295197bcf1d8e19b2182534ba22adebc3",
+          "crop": "evidence\\material-visible-materials\\building.png"
+        },
+        {
+          "id": "roof",
+          "pixels": 114877,
+          "bbox": [
+            54,
+            46,
+            665,
+            337
+          ],
+          "deltaE": 2.49,
+          "maskSha256": "5b18cb41de366037ebb0d5c663533281bd87aa13ac563550aa8389f787638284",
+          "crop": "evidence\\material-visible-materials\\roof.png"
+        },
+        {
+          "id": "wing",
+          "pixels": 18037,
+          "bbox": [
+            515,
+            344,
+            708,
+            552
+          ],
+          "deltaE": 7.69,
+          "maskSha256": "236c374927ceb28a35cc2b6cc6f91d9010d73a49e9c9f7daed7950412414f005",
+          "crop": "evidence\\material-visible-materials\\wing.png"
+        },
+        {
+          "id": "plinth",
+          "pixels": 1083,
+          "bbox": [
+            240,
+            487,
+            708,
+            563
+          ],
+          "deltaE": 1.55,
+          "maskSha256": "a4ef7e1217be8cc565df7833a38ce6f43fca3a2bb4bf20ec12033639857f4885",
+          "crop": "evidence\\material-visible-materials\\plinth.png"
+        },
+        {
+          "id": "gable",
+          "pixels": 2608,
+          "bbox": [
+            549,
+            188,
+            621,
+            282
+          ],
+          "deltaE": 12.28,
+          "maskSha256": "2c2cdd5f1f1ac740f0169af797a0421128f96a674e7d886b0e3f175b0cf6a9e9",
+          "crop": "evidence\\material-visible-materials\\gable.png"
+        },
+        {
+          "id": "fascia",
+          "pixels": 394,
+          "bbox": [
+            83,
+            230,
+            632,
+            339
+          ],
+          "deltaE": 14.66,
+          "maskSha256": "ce9f87d586a590a8c29e16ecc6e583af9ab1f8e57539d422cf3b0ae46dd6293c",
+          "crop": "evidence\\material-visible-materials\\fascia.png"
+        },
+        {
+          "id": "wing-roof",
+          "pixels": 21507,
+          "bbox": [
+            496,
+            236,
+            747,
+            393
+          ],
+          "deltaE": 5.19,
+          "maskSha256": "ad8639344ef05813b2c1ed09c8182c75aed1dcfbb87852e0db9fedf1ad0b6297",
+          "crop": "evidence\\material-visible-materials\\wing-roof.png"
+        },
+        {
+          "id": "awning",
+          "pixels": 21965,
+          "bbox": [
+            94,
+            289,
+            434,
+            393
+          ],
+          "deltaE": 7.9,
+          "maskSha256": "f4e12517faf3c26e0ef27a2acdc1d49640df73a2844862af5f65e8672545b3f9",
+          "crop": "evidence\\material-visible-materials\\awning.png"
+        },
+        {
+          "id": "shop-left",
+          "pixels": 11979,
+          "bbox": [
+            128,
+            361,
+            260,
+            485
+          ],
+          "deltaE": 6.88,
+          "maskSha256": "e885eb5813cb728f965e41b31122b0b924616e247efebca7c1154ccdd68d6e65",
+          "crop": "evidence\\material-visible-materials\\shop-left.png"
+        },
+        {
+          "id": "shop-right",
+          "pixels": 9378,
+          "bbox": [
+            383,
+            357,
+            475,
+            496
+          ],
+          "deltaE": 7.04,
+          "maskSha256": "b5c64023a62b3f1edc1c860ad03245662484041ef926fb23f8a22a23a19bab98",
+          "crop": "evidence\\material-visible-materials\\shop-right.png"
+        },
+        {
+          "id": "door",
+          "pixels": 12705,
+          "bbox": [
+            277,
+            379,
+            373,
+            531
+          ],
+          "deltaE": 6.18,
+          "maskSha256": "fe9ba1ca595e9e8bd8218f08744b9fb1603f2801ac0104daad82d16f3ae1ec5e",
+          "crop": "evidence\\material-visible-materials\\door.png"
+        },
+        {
+          "id": "wing-window",
+          "pixels": 4124,
+          "bbox": [
+            545,
+            407,
+            596,
+            497
+          ],
+          "deltaE": 6.11,
+          "maskSha256": "07388c79b1501aed316c7f215e3910ecc220d2747baa7281dd5426187f8aac69",
+          "crop": "evidence\\material-visible-materials\\wing-window.png"
+        },
+        {
+          "id": "wing-door",
+          "pixels": 6365,
+          "bbox": [
+            654,
+            355,
+            697,
+            526
+          ],
+          "deltaE": 10.34,
+          "maskSha256": "78b99e6ccfba322684ebbdbcb9c083ee159d9b7bd6f44d550fe28b1b1680ad5f",
+          "crop": "evidence\\material-visible-materials\\wing-door.png"
+        },
+        {
+          "id": "chimney",
+          "pixels": 1095,
+          "bbox": [
+            387,
+            58,
+            458,
+            83
+          ],
+          "deltaE": 5.65,
+          "maskSha256": "e3e38a8c29d0a03872af327189e7bb09da3db866666bb1cf9e883de1d93ca2f1",
+          "crop": "evidence\\material-visible-materials\\chimney.png"
+        },
+        {
+          "id": "stall-left",
+          "pixels": 10651,
+          "bbox": [
+            63,
+            477,
+            239,
+            566
+          ],
+          "deltaE": 3.09,
+          "maskSha256": "e1452c6980af1ea85a778ef5619c1271e69f5dd167f432ee3d821ecd4ce88c48",
+          "crop": "evidence\\material-visible-materials\\stall-left.png"
+        },
+        {
+          "id": "stall-right",
+          "pixels": 9087,
+          "bbox": [
+            350,
+            496,
+            474,
+            594
+          ],
+          "deltaE": 5.08,
+          "maskSha256": "b8d71e786f02e33433de8a2e56cbcde5163e0e57fbce385dbb9af26c7bf23294",
+          "crop": "evidence\\material-visible-materials\\stall-right.png"
+        },
+        {
+          "id": "pot-left",
+          "pixels": 1568,
+          "bbox": [
+            35,
+            461,
+            81,
+            521
+          ],
+          "deltaE": 5.27,
+          "maskSha256": "31bcb843f8e56be6d6637fb97d75af579a819178b94023094aa73b536f5bf1e4",
+          "crop": "evidence\\material-visible-materials\\pot-left.png"
+        },
+        {
+          "id": "pot-right",
+          "pixels": 5895,
+          "bbox": [
+            485,
+            527,
+            595,
+            599
+          ],
+          "deltaE": 4.75,
+          "maskSha256": "62b53990d708a92f81c12ba0d89721a754ae7633c4179f07d2c4c81f71202d21",
+          "crop": "evidence\\material-visible-materials\\pot-right.png"
+        },
+        {
+          "id": "steps",
+          "pixels": 2667,
+          "bbox": [
+            246,
+            519,
+            349,
+            559
+          ],
+          "deltaE": 1.98,
+          "maskSha256": "a23535338e500d285f730112ee67f575370ee40fe31e2dd05d7934dae2171891",
+          "crop": "evidence\\material-visible-materials\\steps.png"
+        },
+        {
+          "id": "ridge",
+          "pixels": 7995,
+          "bbox": [
+            120,
+            48,
+            599,
+            120
+          ],
+          "deltaE": 7.87,
+          "maskSha256": "557de764e0b828d1703deaa0f3e936e4168b96ae8733273f9ffdd6a549c012a0",
+          "crop": "evidence\\material-visible-materials\\ridge.png"
+        },
+        {
+          "id": "chimney-rim",
+          "pixels": 3795,
+          "bbox": [
+            372,
+            17,
+            472,
+            67
+          ],
+          "deltaE": 3.4,
+          "maskSha256": "49eb357eeb6dc1c87cc78c78d52205504e318fc3b4af652755eba5efa1b69c7d",
+          "crop": "evidence\\material-visible-materials\\chimney-rim.png"
+        },
+        {
+          "id": "handle",
+          "pixels": 116,
+          "bbox": [
+            349,
+            444,
+            358,
+            458
+          ],
+          "deltaE": 5.72,
+          "maskSha256": "9fab69752dcae09f161adff09e11bb9ffd885ae230536ab7e20a41adbd8d83b9",
+          "crop": "evidence\\material-visible-materials\\handle.png"
+        },
+        {
+          "id": "side-handle",
+          "pixels": 34,
+          "bbox": [
+            669,
+            447,
+            672,
+            459
+          ],
+          "deltaE": 7.02,
+          "maskSha256": "53e0e7eb75d5f47b351b70613299da44836f66aca98c629d174b9b730bfc5105",
+          "crop": "evidence\\material-visible-materials\\side-handle.png"
+        },
+        {
+          "id": "bread-left",
+          "pixels": 5816,
+          "bbox": [
+            78,
+            439,
+            225,
+            499
+          ],
+          "deltaE": 10.04,
+          "maskSha256": "b37b2010e1e3fa8be6bff78754f517dd9eba3dbf1df23906b4220d2c82987727",
+          "crop": "evidence\\material-visible-materials\\bread-left.png"
+        },
+        {
+          "id": "bread-right",
+          "pixels": 4061,
+          "bbox": [
+            364,
+            453,
+            460,
+            516
+          ],
+          "deltaE": 9.93,
+          "maskSha256": "665d9ee0e4a9a443f0a7daee1803d7a240aac853bae6c308d2b2aec7bb0bcf99",
+          "crop": "evidence\\material-visible-materials\\bread-right.png"
+        },
+        {
+          "id": "herb-left",
+          "pixels": 1520,
+          "bbox": [
+            54,
+            406,
+            88,
+            476
+          ],
+          "deltaE": 5.94,
+          "maskSha256": "9b997650d1a34210d64dbf86a52c74df0ef10210fd93298096c6f666aaf814a0",
+          "crop": "evidence\\material-visible-materials\\herb-left.png"
+        },
+        {
+          "id": "herb-right",
+          "pixels": 2419,
+          "bbox": [
+            512,
+            477,
+            562,
+            551
+          ],
+          "deltaE": 8.9,
+          "maskSha256": "15dc063eb7811da368d3171e8afa54bd18d18e397b638b36f2e070ac1fa018ec",
+          "crop": "evidence\\material-visible-materials\\herb-right.png"
+        }
+      ],
+      "occludedNotMeasured": [],
+      "unresolved": []
+    }
+  },
+  "failures": [],
+  "maskWarnings": [],
+  "renderHash": "5d511eed1d896c9b",
+  "passId": "material-pass",
+  "originalDiagnostic": "evidence/material-diagnostics.json",
+  "originalPassed": false,
+  "scopeNote": "Original global-palette result retained, not overwritten. Rendered occlusion masks select actual visible pixels. No claim for hidden material or reference PBR recovery."
+}

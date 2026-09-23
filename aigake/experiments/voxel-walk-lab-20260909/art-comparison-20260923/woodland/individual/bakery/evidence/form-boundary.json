@@ -1,0 +1,10 @@
+{
+  "passed": true,
+  "stage": "form",
+  "cells": 19681,
+  "renderTriangles": 13624,
+  "expectedFaces": 20020,
+  "actualFaces": 20020,
+  "area": 20020,
+  "method": "Exhaustive signed axis-grid face equality and summed triangle area. Rendered surface equals occupancy boundary exactly; analysis tessellation preserves the same surface."
+}

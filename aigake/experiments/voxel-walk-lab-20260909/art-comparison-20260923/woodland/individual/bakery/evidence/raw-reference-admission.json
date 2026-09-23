@@ -1,0 +1,16 @@
+{
+  "admitted": false,
+  "reasons": [
+    "foreground coverage 0.983 > 0.97 (no background to segment against — silhouette not isolable)"
+  ],
+  "provenance": {
+    "viewpoint": "reference",
+    "sourcePath": "C:\\calude\\sleepwork\\aigake\\experiments\\voxel-walk-lab-20260909\\art-comparison-20260923\\woodland\\references\\crops\\bakery.png",
+    "width": 385,
+    "height": 333,
+    "foregroundCoverage": 0.9826,
+    "largestComponentFraction": 1.0,
+    "pHash": 11588591375006464668,
+    "duplicateOfHash": null
+  }
+}

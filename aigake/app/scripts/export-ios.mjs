@@ -45,6 +45,21 @@ async function copyHomeStudy(relative=''){
  }
 }
 await copyHomeStudy();
+// Independent bakery study, including real review evidence; outside the native bundle.
+const bakeryStudy=artStudy+'woodland/individual/bakery/';
+async function copyBakeryStudy(relative=''){
+ for(const e of await readdir(path.join(source,bakeryStudy,relative),{withFileTypes:true})){
+  if(e.name==='__pycache__')continue;
+  // Derived diagnostic tessellations are reproducible from retained browser geometry.
+  if(/-(unit-surface|geometric-normals|unit-geometric-normals)\.json$/.test(e.name))continue;
+  if(e.isSymbolicLink())throw Error('Unexpected bakery-study symlink');
+  const next=path.join(relative,e.name);
+  if(e.isDirectory()){if(!['evidence','.img2threejs'].includes(next)&&!next.startsWith('evidence'+path.sep))throw Error('Unexpected bakery-study directory: '+next);await copyBakeryStudy(next);}
+  else if(/\.(mjs|py|html|md|json|png)$/.test(e.name)||/-gate\.txt$/.test(e.name))await copySource(bakeryStudy+next.replaceAll('\\','/'));
+  else throw Error('Unexpected bakery-study file: '+next);
+ }
+}
+await copyBakeryStudy();
 for(const name of ['detail-observations.md'])await copySource(artStudy+'woodland/individual/cafe/evidence/'+name);
 for(const name of ['roof4-match.png','roof4-right.png'])await copySource(artStudy+'woodland/individual/cafe/evidence/'+name);
 for(const view of ['match','front','right','back','left','grid','bevel','texture','neutral','grazing','comparison'])await copySource(artStudy+'woodland/individual/cafe/evidence/grid5-'+view+'.png');

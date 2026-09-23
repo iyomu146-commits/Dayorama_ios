@@ -1,0 +1,20 @@
+{
+  "referenceAreaFraction": 0.5787196287196287,
+  "angles": [
+    {
+      "path": "evidence\\bakery-interaction-front-mask.png",
+      "areaFraction": 0.5478101478101478,
+      "ratio": 0.9465898867507473,
+      "degenerate": false
+    },
+    {
+      "path": "evidence\\bakery-interaction-right-mask.png",
+      "areaFraction": 0.39675909675909676,
+      "ratio": 0.6855808530927054,
+      "degenerate": false
+    }
+  ],
+  "degenerate": false,
+  "collapseRatio": 0.15,
+  "note": "deterministic; zero token; a flat-plane-faking-a-volume collapses in silhouette area when orbited"
+}

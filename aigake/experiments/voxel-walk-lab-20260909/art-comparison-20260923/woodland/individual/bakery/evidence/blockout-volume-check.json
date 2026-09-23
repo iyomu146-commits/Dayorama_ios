@@ -1,0 +1,95 @@
+{
+  "selfIntersecting": true,
+  "meshCount": 1,
+  "insideVertexCount": 748,
+  "undecidedVertexCount": 0,
+  "sampledVertexCount": 3945,
+  "totalVertexCount": 23670,
+  "meshes": [
+    {
+      "name": "bakery-assembled-surface",
+      "analyzed": true,
+      "error": null,
+      "selfIntersecting": true,
+      "insideVertexCount": 748,
+      "undecidedVertexCount": 0,
+      "outsideVertexCount": 3197,
+      "sampledVertexCount": 3945,
+      "totalVertexCount": 23670,
+      "samplingStride": 6,
+      "triangleCount": 7890,
+      "degenerateTriangleCount": 0,
+      "worstRegions": [
+        {
+          "vertexIndex": 24,
+          "position": [
+            -2.549999952316284,
+            3.1500000953674316,
+            2.0999999046325684
+          ]
+        },
+        {
+          "vertexIndex": 5964,
+          "position": [
+            0.6000000238418579,
+            3.75,
+            -2.25
+          ]
+        },
+        {
+          "vertexIndex": 6978,
+          "position": [
+            -0.75,
+            4.050000190734863,
+            -1.9500000476837158
+          ]
+        },
+        {
+          "vertexIndex": 8250,
+          "position": [
+            -2.25,
+            4.349999904632568,
+            -1.5
+          ]
+        },
+        {
+          "vertexIndex": 9402,
+          "position": [
+            -3.0,
+            4.650000095367432,
+            -1.0499999523162842
+          ]
+        },
+        {
+          "vertexIndex": 10494,
+          "position": [
+            -2.8499999046325684,
+            4.949999809265137,
+            -0.75
+          ]
+        },
+        {
+          "vertexIndex": 11670,
+          "position": [
+            3.299999952316284,
+            5.099999904632568,
+            -0.44999998807907104
+          ]
+        },
+        {
+          "vertexIndex": 12558,
+          "position": [
+            2.549999952316284,
+            5.400000095367432,
+            -0.15000000596046448
+          ]
+        }
+      ],
+      "normalSource": "vertexNormals",
+      "normalFallbackCount": 136,
+      "epsilon": 0.012402016041284386,
+      "rayDirectionCount": 3
+    }
+  ],
+  "errors": []
+}
