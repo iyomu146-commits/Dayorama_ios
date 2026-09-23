@@ -24,6 +24,9 @@ const artStudy='experiments/voxel-walk-lab-20260909/art-comparison-20260923/';
 for(const name of ['index.html','style.css','app.mjs','voxel-worker.mjs','design.test.mjs','refined.test.mjs','scene.test.mjs','refinement-spec.json','scene-spec.json','README.md','reference.png','reference-prompt.txt','sculpt-spec.json','build-spec.mjs','assessment.json','evidence/intake.md','evidence/refinement-review.md','evidence/site-review.md'])await copySource(artStudy+name);
 for(const name of ['density.html','density.css','density-app.mjs','density-worker.mjs','density.test.mjs','evidence/density-review.md'])await copySource(artStudy+name);
 for(const name of ['coarse.html','coarse.css','coarse-app.mjs','coarse-cafe.test.mjs','evidence/coarse-review.md'])await copySource(artStudy+name);
+// Keep the accepted art references and reusable rules with the source, outside the app bundle.
+for(const name of ['IMAGE-GENERATION-RULES.md','content/ART_DIRECTION.md'])await copySource('experiments/voxel-walk-lab-20260909/'+name);
+for(const name of ['prompts.md','town-voxel-v1.png','town-voxel-v2.png'])await copySource(artStudy+'woodland/references/'+name);
 // Test commands evolve independently of the app's runtime imports. Include their
 // entry points and dependency graph so a fresh GitHub checkout can run them all.
 const pkg=JSON.parse(await readFile(path.join(app,'package.json'),'utf8'));
