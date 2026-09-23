@@ -23,13 +23,14 @@ self.onmessage=({data:d})=>{
   if(isLoad)merge=d.merge??merge;
   if(scope!=='blank'&&!fine){fine=voxelizeRefined(makeSceneDesign());for(const f of [1,2])workspaces.install('building',f,resample(fine,f));}
   if(d.type==='export'){self.postMessage({id:d.id,type:'export',text:encodeDensity(state().map,factor,scope==='blank'?'blank':'sample')});return;}
+  if(d.type==='preview'){const result=workspaces.preview(scope,factor,d.edit);self.postMessage({id:d.id,type:'preview',changed:result.patch.length,blocked:result.blocked,points:result.patch.map(({key,old})=>{const c=result.map.get(key)||old;return [c.x,c.y,c.z];}),tool:d.edit.tool});return;}
   if(d.type==='edit')edited=workspaces.edit(scope,factor,d.edit);
   if(d.type==='clear')edited=workspaces.clear(scope,factor);
   if(d.type==='undo')edited=workspaces.undo(scope,factor);
   const completed=filtered(state().map);let complete;
   if(isLoad){current=new Map();chunks=new Map();complete=compile(completed,true);}
   const steps=scope==='blank'?20000:d.steps??20000,map=steps===20000?completed:filtered(atSteps(state().timeline,steps)),active=compile(map,isLoad);
-  const output={id:d.id,type:'geometry',factor,scope,merge,steps,complete,active,total:summary(state().map),visible:summary(map),completed:summary(completed),undo:state().history.length,edited,workerMs:performance.now()-start};
+  const output={id:d.id,type:'geometry',factor,scope,merge,steps,complete,active,total:summary(state().map),visible:summary(map),completed:summary(completed),undo:state().history.length,edited,blocked:d.type==='edit'?state().lastBlocked||0:0,workerMs:performance.now()-start};
   self.postMessage(output,[...transferMeshes(complete?.items||[]),...transferMeshes(active.items)]);
  }catch(error){self.postMessage({id:d.id,error:error.message});}
 };

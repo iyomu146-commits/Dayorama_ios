@@ -35,6 +35,15 @@ export function createDensityView(host,{onPick,onFrame}){
  const pathMaterial=new THREE.MeshStandardMaterial({color:'#c8b99a',roughness:1});for(const [x,z,w,d] of [[0,.65,42,1.65],[0,10.65,42,1.65],[-20,5.65,1.65,11],[20,5.65,1.65,11]]){const road=new THREE.Mesh(new THREE.BoxGeometry(w,.04,d),pathMaterial);road.position.set(x,0,z);road.receiveShadow=true;townBase.add(road);}
  const people=residents(scene),completeGroup=new THREE.Group(),activeGroup=new THREE.Group();scene.add(completeGroup,activeGroup);const active=new Map();let completeGeometry,scope='building',factor=2,night=false,steps=20000,dirty=true,shadowDirty=true,rotating=false,editing=false,lastTime=0,lastShadow=0,down;
  const selection=new THREE.Box3Helper(new THREE.Box3(new THREE.Vector3(),new THREE.Vector3()),0xbd794e);selection.visible=false;selection.material.depthTest=false;selection.renderOrder=10;scene.add(selection);
+ const previewRoot=new THREE.Group(),previewGeometry=new THREE.BoxGeometry(1,1,1);scene.add(previewRoot);
+ const previewMaterials=[new THREE.MeshBasicMaterial({color:'#539879',transparent:true,opacity:.38,depthWrite:false}),new THREE.MeshBasicMaterial({color:'#bb6555',transparent:true,opacity:.24,depthWrite:false})];
+ function preview(data){
+  for(const mesh of previewRoot.children)mesh.dispose();previewRoot.clear();
+  if(data){const matrix=new THREE.Matrix4(),size=CELL*factor;for(const [points,index] of [[data.points,data.tool==='erase'?1:0],[data.blocked,1]]){
+   if(!points?.length)continue;const mesh=new THREE.InstancedMesh(previewGeometry,previewMaterials[index],points.length);mesh.renderOrder=7;
+   points.forEach((q,i)=>{matrix.makeScale(size*.98,size*.98,size*.98);matrix.setPosition(...q.map(v=>(v+.5)*size));mesh.setMatrixAt(i,matrix);});mesh.instanceMatrix.needsUpdate=true;previewRoot.add(mesh);
+  }}dirty=true;
+ }
  const hover=new THREE.Box3Helper(new THREE.Box3(new THREE.Vector3(),new THREE.Vector3()),0x678e75);hover.visible=false;hover.material.depthTest=false;hover.renderOrder=9;scene.add(hover);let editTool='view',brush=1,lastHover=0,editLayer=null,layerBounds,layerGrid,layerGridKey='';
  const layerGuide=new THREE.Group();layerGuide.visible=false;scene.add(layerGuide);
  const layerSurface=new THREE.Mesh(new THREE.PlaneGeometry(1,1),new THREE.MeshBasicMaterial({color:'#d3a766',transparent:true,opacity:.07,side:THREE.DoubleSide,depthWrite:false,depthTest:false}));layerSurface.rotation.x=-Math.PI/2;layerSurface.renderOrder=5;layerGuide.add(layerSurface);
@@ -49,8 +58,10 @@ export function createDensityView(host,{onPick,onFrame}){
 
  const light=new THREE.PointLight('#ffd09c',0,7,2);scene.add(light);
  function cameraAngle(angle='corner'){
+  // Stop leftover orbit inertia before snapping to a touch view preset.
+  controls.enableDamping=false;controls.update();
   let height=0;if(scope==='blank')for(const mesh of active.values()){mesh.geometry.computeBoundingBox();height=Math.max(height,mesh.geometry.boundingBox.max.y);}
-  const district=scope==='district',target=district?[-.7,1.5,0]:scope==='blank'?[0,height/2,0]:[-.3,2.2,.2];controls.target.set(...target);const dir=angle==='front'?[0,7,24]:angle==='back'?[-16,12,-22]:angle==='top'?[.001,25,0]:[16,12,22];camera.position.copy(controls.target).add(new THREE.Vector3(...dir).multiplyScalar(district?2:1));camera.zoom=scope==='blank'?Math.min(1,6/(height*.85+3.6)):1;camera.updateProjectionMatrix();controls.update();dirty=true;
+  const district=scope==='district',target=district?[-.7,1.5,0]:scope==='blank'?[0,height/2,0]:[-.3,2.2,.2];controls.target.set(...target);const dir=angle==='front'?[0,7,24]:angle==='back'?[-16,12,-22]:angle==='top'?[.001,25,0]:[16,12,22];camera.position.copy(controls.target).add(new THREE.Vector3(...dir).multiplyScalar(district?2:1));camera.zoom=scope==='blank'?Math.min(1,6/(height*.85+3.6)):1;camera.updateProjectionMatrix();controls.update();controls.enableDamping=true;dirty=true;
  }
  function resize(){const {width,height}=host.getBoundingClientRect();if(!width||!height)return;renderer.setSize(width,height,false);const aspect=width/height,half=scope==='district'?Math.max(13.5,26/aspect):scope==='blank'?Math.max(3.1,4/aspect):Math.max(3.7,4.8/aspect);camera.left=-half*aspect;camera.right=half*aspect;camera.top=half;camera.bottom=-half;camera.updateProjectionMatrix();dirty=true;}
  new ResizeObserver(resize).observe(host);controls.addEventListener('change',()=>dirty=true);
@@ -68,10 +79,11 @@ export function createDensityView(host,{onPick,onFrame}){
   if(!hit&&scope==='blank'){hit=ray.intersectObject(board,false).find(h=>h.face.normal.y>.5);if(hit){const q=hit.point.toArray().map(v=>Math.floor(v/(CELL*factor)));q[1]=-1;const bounds=workbenchBounds(factor);if(q[0]<bounds.min[0]||q[0]>bounds.max[0]||q[2]<bounds.min[2]||q[2]>bounds.max[2])return null;return {q,n:[0,1,0],floor:true};}}
   if(!hit)return null;const n=hit.face.normal.clone(),p=hit.point.clone().addScaledVector(n,-CELL*factor*.01),q=p.toArray().map(v=>Math.floor(v/(CELL*factor)));return {q,n:n.toArray().map(Math.round),floor:false};
  }
- const pointers=new Set();let gesture=false;
- host.addEventListener('pointerdown',e=>{pointers.add(e.pointerId);if(pointers.size>1)gesture=true;down=[e.clientX,e.clientY];});
- host.addEventListener('pointerup',e=>{pointers.delete(e.pointerId);const cancelled=gesture;if(!pointers.size)gesture=false;if(!editing||cancelled||e.button!==0||!down||Math.hypot(e.clientX-down[0],e.clientY-down[1])>5)return;const hit=hitCell(e);down=null;if(hit)onPick?.(hit.q,hit.n,hit.floor);});
- host.addEventListener('pointercancel',e=>{pointers.delete(e.pointerId);down=null;gesture=pointers.size>0;});
+ const pointers=new Set();let gesture=false,dragged=false,downHit;
+ host.addEventListener('pointerdown',e=>{pointers.add(e.pointerId);if(pointers.size>1){gesture=true;return;}dragged=false;down=[e.clientX,e.clientY];downHit=editing?hitCell(e):null;});
+ host.addEventListener('pointermove',e=>{if(down&&Math.hypot(e.clientX-down[0],e.clientY-down[1])>(e.pointerType==='touch'?10:5))dragged=true;});
+ host.addEventListener('pointerup',e=>{pointers.delete(e.pointerId);const cancelled=gesture||dragged,hit=downHit;if(!pointers.size)gesture=false;down=null;downHit=null;if(!editing||cancelled||e.button!==0)return;if(hit)onPick?.(hit.q,hit.n,hit.floor);});
+ host.addEventListener('pointercancel',e=>{pointers.delete(e.pointerId);down=null;downHit=null;gesture=pointers.size>0;dragged=true;});
  host.addEventListener('pointermove',e=>{if(!editing||(scope!=='blank'&&editLayer===null)||e.timeStamp-lastHover<30)return;lastHover=e.timeStamp;const hit=hitCell(e);hover.visible=false;if(hit&&(['place','extrude'].includes(editTool)||!hit.floor)){
    const add=['place','extrude'].includes(editTool),q=hit.q.map((v,i)=>v+(add?hit.n[i]:0)),radius=add?(brush-1)/2:0,bounds=editLayer!==null?layerBounds:workbenchBounds(factor),lo=q.map((v,i)=>Math.max(bounds.min[i],v-(hit.n[i]?0:radius))),hi=q.map((v,i)=>Math.min(bounds.max[i],v+(hit.n[i]?0:radius)));
    if(lo.every((v,i)=>v<=hi[i])){hover.box.set(new THREE.Vector3(...lo.map(v=>v*CELL*factor)),new THREE.Vector3(...hi.map(v=>(v+1)*CELL*factor)));hover.visible=true;}
@@ -84,5 +96,5 @@ export function createDensityView(host,{onPick,onFrame}){
   const cpuStart=performance.now();renderer.render(scene,camera);const cpuMs=performance.now()-cpuStart;onFrame?.({now,dt,rendered:true,cpuMs,triangles:renderer.info.render.triangles,draws:renderer.info.render.calls,geometries:renderer.info.memory.geometries,width:renderer.domElement.width,height:renderer.domElement.height});dirty=false;
  });
  cameraAngle();resize();visibility();
- return {load,angle:cameraAngle,rotate(v){rotating=v;dirty=true;},zoom(multiplier){camera.zoom=Math.max(controls.minZoom,Math.min(controls.maxZoom,camera.zoom*multiplier));camera.updateProjectionMatrix();dirty=true;},edit(v,tool='view',size=1,layer=null){editing=v;editTool=tool;brush=size;editLayer=layer;controls.enableRotate=scope==='blank'||!v;hover.visible=false;updateLayerGuide();dirty=true;},select(a,b){selection.visible=!!a;if(a){const lo=a.map((v,i)=>Math.min(v,(b||a)[i])*CELL*factor),hi=a.map((v,i)=>(Math.max(v,(b||a)[i])+1)*CELL*factor);selection.box.set(new THREE.Vector3(...lo),new THREE.Vector3(...hi));}dirty=true;},night(v){night=v;uniform.value=v?1:0;renderer.setClearColor(v?'#253446':'#e7e7dd');floor.material.color.set(v?'#253446':'#e7e7dd');hemi.intensity=v?.65:1.75;sun.intensity=v?.65:3.1;sun.color.set(v?'#abc5ee':'#ffe8cb');fill.intensity=v?.2:.65;light.intensity=v?9:0;visibility();dirty=shadowDirty=true;},get viewport(){return {width:renderer.domElement.width,height:renderer.domElement.height,pixelRatio:renderer.getPixelRatio()};}};
+ return {load,preview,angle:cameraAngle,rotate(v){rotating=v;dirty=true;},zoom(multiplier){camera.zoom=Math.max(controls.minZoom,Math.min(controls.maxZoom,camera.zoom*multiplier));camera.updateProjectionMatrix();dirty=true;},edit(v,tool='view',size=1,layer=null){editing=v;editTool=tool;brush=size;editLayer=layer;controls.enableRotate=scope==='blank'||!v;hover.visible=false;updateLayerGuide();dirty=true;},select(a,b){selection.visible=!!a;if(a){const lo=a.map((v,i)=>Math.min(v,(b||a)[i])*CELL*factor),hi=a.map((v,i)=>(Math.max(v,(b||a)[i])+1)*CELL*factor);selection.box.set(new THREE.Vector3(...lo),new THREE.Vector3(...hi));}dirty=true;},night(v){night=v;uniform.value=v?1:0;renderer.setClearColor(v?'#253446':'#e7e7dd');floor.material.color.set(v?'#253446':'#e7e7dd');hemi.intensity=v?.65:1.75;sun.intensity=v?.65:3.1;sun.color.set(v?'#abc5ee':'#ffe8cb');fill.intensity=v?.2:.65;light.intensity=v?9:0;visibility();dirty=shadowDirty=true;},get viewport(){return {width:renderer.domElement.width,height:renderer.domElement.height,pixelRatio:renderer.getPixelRatio()};}};
 }

@@ -45,8 +45,9 @@ test('scratch starts empty, stacks cells and keeps both densities separate from 
 });
 test('same physical workbench bounds clip brushes, mirror and copy at each resolution',()=>{
  const works=new DensityWorkspaces();for(const factor of [1,2]){const bounds=workbenchBounds(factor);assert.equal(bounds.width*.075*factor,4.8);const top=bounds.max;
-  works.edit('blank',factor,{a:top,b:top.map(v=>v+2),tool:'fill',mirror:true});assert.equal(works.get('blank',factor).map.size,2);
-  const before=works.get('blank',factor).history.length;works.edit('blank',factor,{a:top,b:top,tool:'copy',offset:[0,1,0]});assert.equal(works.get('blank',factor).map.size,2);assert.equal(works.get('blank',factor).history.length,before);
+  const base=[];for(let y=0;y<top[1];y++){base.push(cell(top[0],y,top[2]),cell(-top[0]-1,y,top[2]));}works.replace('blank',factor,mapOf(base));
+  works.edit('blank',factor,{a:top,b:top.map(v=>v+2),tool:'fill',mirror:true});assert.equal(works.get('blank',factor).map.size,base.length+2);
+  const before=works.get('blank',factor).history.length;works.edit('blank',factor,{a:top,b:top,tool:'copy',offset:[0,1,0]});assert.equal(works.get('blank',factor).map.size,base.length+2);assert.equal(works.get('blank',factor).history.length,before);
  }
 });
 test('scratch files preserve their workspace and reject out-of-board imports',()=>{
@@ -54,22 +55,33 @@ test('scratch files preserve their workspace and reject out-of-board imports',()
  const text=encodeDensity(mapOf([cell(0,0,0,'glassSea',4)]),1,'blank'),saved=decodeDensity(text);assert.equal(saved.workspace,'blank');assert.equal(saved.factor,1);assert.equal(saved.map.get('0,0,0').emission,true);
  const d=JSON.parse(text);d.cells[0].x=100;assert.throws(()=>decodeDensity(JSON.stringify(d)));delete d.workspace;assert.equal(decodeDensity(JSON.stringify(d)).workspace,'sample');
 });
-test('horizontal selection fills only layer two, preserving lower and higher cells at either density',()=>{
+test('layer two needs actual supports and preview is non-mutating at both densities',()=>{
  for(const factor of [1,2]){
   const works=new DensityWorkspaces(),bounds=workbenchBounds(factor),size=.075*factor;
-  works.install('blank',factor,[cell(0,0,0,'wood'),cell(1,2,1,'glassSea')]);
-  // Plane picks do not inherit the height of an occupied surface or require supports below.
   const a=layerCell([.2*size,4*size,.2*size],factor,2,bounds),b=layerCell([2.8*size,0,1.8*size],factor,2,bounds);
-  assert.deepEqual(a,[0,1,0]);assert.deepEqual(b,[2,1,1]);
-  works.edit('blank',factor,{a,b,tool:'fill',color:'brick'});
-  const map=works.get('blank',factor).map;assert.equal(map.size,8);assert.equal([...map.values()].filter(c=>c.y===1).length,6);
-  assert.equal(map.get('0,0,0').color,'wood');assert.equal(map.get('1,2,1').color,'glassSea');
+  const command={a,b,tool:'fill',color:'brick',support:'below'};
+  const empty=works.preview('blank',factor,command);assert.equal(empty.patch.length,0);assert.equal(empty.blocked.length,6);assert.equal(works.get('blank',factor).map.size,0);
+  works.edit('blank',factor,command);assert.equal(works.get('blank',factor).history.length,0);
+  works.edit('blank',factor,{a:[0,0,0],b:[1,0,1],tool:'fill',color:'wood'});
+  const preview=works.preview('blank',factor,command);assert.equal(preview.patch.length,4);assert.equal(preview.blocked.length,2);assert.equal(works.get('blank',factor).map.size,4);
+  works.edit('blank',factor,command);assert.equal(works.get('blank',factor).map.size,8);
+  assert.equal(works.get('blank',factor).map.get('0,0,0').color,'wood');assert.equal(works.get('blank',factor).map.has('2,1,0'),false);
   works.edit('blank',factor,{a,b,tool:'paint',color:'stone'});assert.equal(works.get('blank',factor).map.get('1,1,1').color,'stone');
-  works.edit('blank',factor,{a,b,tool:'erase'});assert.equal(works.get('blank',factor).map.size,2);
+  works.edit('blank',factor,{a,b,tool:'erase'});assert.equal(works.get('blank',factor).map.size,4);
   works.undo('blank',factor);assert.equal(works.get('blank',factor).map.size,8);
   works.undo('blank',factor);assert.equal(works.get('blank',factor).map.get('1,1,1').color,'brick');
-  works.undo('blank',factor);assert.equal(works.get('blank',factor).map.size,2);
+  works.undo('blank',factor);assert.equal(works.get('blank',factor).map.size,4);
  }
+});
+test('support validation permits attached overhangs but blocks floating copy, symmetry and support removal',()=>{
+ const works=new DensityWorkspaces();
+ works.edit('blank',2,{a:[1,0,0],b:[1,2,0],tool:'fill',support:'below'});assert.equal(works.get('blank',2).map.size,3);
+ works.edit('blank',2,{a:[2,2,0],b:[2,2,0],tool:'fill'});assert.equal(works.get('blank',2).map.size,4);
+ const original=works.get('blank',2).map,history=works.get('blank',2).history.length;
+ assert.throws(()=>works.edit('blank',2,{a:[1,0,0],b:[1,0,0],tool:'erase'}),/浮く/);assert.equal(works.get('blank',2).map,original);assert.equal(works.get('blank',2).history.length,history);
+ works.edit('blank',2,{a:[1,2,0],b:[2,2,0],tool:'copy',offset:[5,0,0]});assert.equal(works.get('blank',2).map.size,4);assert.equal(works.get('blank',2).lastBlocked,2);
+ works.edit('blank',2,{a:[1,3,0],b:[1,3,0],tool:'fill',mirror:true,support:'below'});assert.equal(works.get('blank',2).map.size,5);assert.equal(works.get('blank',2).lastBlocked,1);
+ works.edit('blank',2,{a:[1,0,0],b:[2,3,0],tool:'erase'});assert.equal(works.get('blank',2).map.size,0);
 });
 test('layer picking handles negative coordinates, last layer and out-of-board clicks',()=>{
  for(const factor of [1,2]){const bounds=workbenchBounds(factor),size=.075*factor;

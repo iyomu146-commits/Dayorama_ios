@@ -99,7 +99,12 @@ export function meshChunk(cells,map,cellSize,{merge=true}={}){
  return {positions,normals,colors,surfaces,triangles:quads.length*2,surfaceFaces,bytes:positions.byteLength+normals.byteLength+colors.byteLength+surfaces.byteLength};
 }
 
-export function editBox(map,{a,b,tool,color='roof',mirror=false,offset=[0,0,0],bounds=null}){
+export function groundedCells(map){
+ const found=new Set(),queue=[];for(const [key,c] of map)if(c.y===0){found.add(key);queue.push(c);}
+ for(let i=0;i<queue.length;i++){const c=queue[i];for(const n of directions){const key=coordKey([c.x+n[0],c.y+n[1],c.z+n[2]]);if(found.has(key)||!map.has(key))continue;found.add(key);queue.push(map.get(key));}}
+ return found;
+}
+export function editBox(map,{a,b,tool,color='roof',mirror=false,offset=[0,0,0],bounds=null,support='none'}){
  if(!['fill','erase','paint','copy'].includes(tool)||!Object.hasOwn(COLORS,color))throw Error('Invalid edit');
  if(![...a,...b,...offset].every(v=>Number.isInteger(v)&&Math.abs(v)<=160))throw Error('範囲が大きすぎます');
  const lo=a.map((v,i)=>Math.min(v,b[i])),hi=a.map((v,i)=>Math.max(v,b[i]));
@@ -111,9 +116,20 @@ export function editBox(map,{a,b,tool,color='roof',mirror=false,offset=[0,0,0],b
   const target=tool==='copy'?q.map((v,i)=>v+offset[i]):q,c=tool==='erase'?null:tool==='copy'?old:{...old,color};
   put(target,c);if(mirror)put([-target[0]-1,target[1],target[2]],c);
  }
+ const blocked=[];
+ if(support!=='none'){
+  // Layer stacking needs a cell immediately below. Process bottom-up for volume fills.
+  if(support==='below')for(const c of [...next.values()].filter(c=>!map.has(coordKey(xyz(c)))).sort((a,b)=>a.y-b.y)){
+   if(c.y>0&&!next.has(coordKey([c.x,c.y-1,c.z]))){next.delete(coordKey(xyz(c)));blocked.push(xyz(c));}
+  }
+  const grounded=groundedCells(next);
+  for(const [key,c] of next)if(!map.has(key)&&!grounded.has(key)){next.delete(key);blocked.push(xyz(c));}
+  // Never leave previously supported parts floating after removing a support.
+  if(tool==='erase'){const before=groundedCells(map);for(const key of before)if(next.has(key)&&!grounded.has(key))throw Error('上や横のブロックが浮くため消せません。先にその部分を消してください。');}
+ }
  if(next.size>240000)throw Error('作品は240,000粒までです');
  const patch=[...changes.values()].filter(({key,old})=>{const n=next.get(key);return (!old)!==(!n)||(old&&n&&(material(old)!==material(n)||old.phase!==n.phase));});
- return {map:next,patch};
+ return {map:next,patch,blocked};
 }
 export function encodeDensity(cells,factor,workspace='sample'){return JSON.stringify({format:'dayorama-density-study',version:1,factor,cell:CELL*factor,workspace,cells:[...cells.values()].map(({x,y,z,color,phase,group,under})=>({x,y,z,color,phase,group,under}))});}
 export function decodeDensity(text){

@@ -3,82 +3,128 @@ import {createDensityView} from './density-render.mjs';
 import {workbenchBounds} from './density-core.mjs';
 const $=id=>document.getElementById(id),fmt=n=>Math.round(n).toLocaleString('ja-JP');
 const worker=new Worker(new URL('./density-worker.mjs',import.meta.url),{type:'module'}),pending=new Map();
-const initialMode=new URLSearchParams(location.search).get('mode');
-let editLevel=1,serial=0,busy=false,scope=['blank','district'].includes(initialMode)?initialMode:'building',factor=2,steps=20000,playing=false,playAt=0,playSteps=0,night=false,selection=[],latest,frameStats,measuring=null,results=[],lastStats=0,lastDraws=-1,animationAt=0,ready=false;
+const initialMode=new URLSearchParams(location.search).get('mode'),rangeTools=['fill','paint','erase','copy'];
+let editLevel=1,serial=0,busy=false,scope=['blank','district'].includes(initialMode)?initialMode:'building',factor=2,steps=20000,playing=false,playAt=0,playSteps=0,night=false,selection=[],latest,latestComplete,frameStats,measuring=null,results=[],lastStats=0,lastDraws=-1,animationAt=0,ready=false,previewReady=false,previewCount=0;
 const view=createDensityView($('density-view'),{onPick:pick,onFrame:frame});
-function lock(){const blocked=busy||!!measuring;for(const id of ['density','mesh-mode','camera','night','play','restart','steps','tool','color','brush','mirror','undo','apply','clear-selection','clear-work','export-work','import-work','measure','offset-x','offset-y','offset-z','range-mode','edit-layer','layer-up','layer-down'])$(id).disabled=blocked;document.querySelectorAll('[data-scope],[data-steps]').forEach(b=>b.disabled=blocked);$('undo').disabled=blocked||!latest?.undo;$('clear-work').disabled=blocked||!latest?.completed.count;$('apply').disabled=blocked||selection.length!==2;$('layer-down').disabled=blocked||Number($('edit-layer').value)<=1;$('layer-up').disabled=blocked||Number($('edit-layer').value)>=Number($('edit-layer').max);$('cancel-measure').hidden=!measuring;$('measure').textContent=measuring?'測定中':'25秒測る';}
-function syncScope(){
- const blank=scope==='blank';document.body.dataset.mode=scope;$('editor').hidden=scope==='district';$('construction').hidden=blank;$('measurement').hidden=blank;$('clear-work').hidden=!blank;$('blank-navigation').hidden=!blank;$('mesh-mode').parentElement.hidden=blank;$('night').hidden=blank;
- if(blank&&night){night=false;view.night(false);$('night').setAttribute('aria-pressed','false');}
- $('edit-title').textContent=blank?'ゼロから作る':'範囲で編集';$('edit-note').textContent=blank?'クリックで積む、ドラッグで回転。ピンチで拡大、2本指または右ドラッグで移動。粗さごとに作品を保持します。':'範囲編集は2点を選んで適用。「面に足す」は押した面に追加します。';
- document.querySelectorAll('[data-scope]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.scope===scope)));
- $('density-view').setAttribute('aria-label',blank?'空から作れるボクセルの作業台。クリックで編集、ドラッグで回転。':'密度比較の模型。ドラッグで回転、ホイールで拡大。');
+const status=text=>$('selection-status').textContent=text;
+function lock(){
+ const blocked=busy||!!measuring;
+ for(const id of ['density','mesh-mode','camera','night','play','restart','steps','tool','color','brush','mirror','undo','apply','clear-selection','clear-work','export-work','import-work','measure','offset-x','offset-y','offset-z','range-mode','edit-layer','layer-up','layer-down'])$(id).disabled=blocked;
+ document.querySelectorAll('[data-scope],[data-steps],[data-tool],[data-color]').forEach(b=>b.disabled=blocked);
+ $('undo').disabled=blocked||!latest?.undo;$('clear-work').disabled=blocked||!latest?.completed.count;
+ $('apply').disabled=blocked||selection.length!==2||!previewReady||previewCount===0;
+ $('layer-down').disabled=blocked||editLevel<=1;$('layer-up').disabled=blocked||editLevel>=Number($('edit-layer').max);
+ $('cancel-measure').hidden=!measuring;$('measure').textContent=measuring?'測定中':'25秒測る';
 }
-const rangeTools=['fill','paint','erase','copy'];
-function selectedLayer(){return scope!=='district'&&rangeTools.includes($('tool').value)&&$('range-mode').value==='layer'?editLevel:null;}
+function syncScope(){
+ const blank=scope==='blank',district=scope==='district';document.body.dataset.mode=scope;
+ for(const id of ['editor','quick-tools','touch-actions'])$(id).hidden=district;
+ $('construction').hidden=blank;$('measurement').hidden=blank;$('clear-work').hidden=!blank;$('blank-navigation').hidden=!blank;$('mesh-mode').parentElement.hidden=blank;$('night').hidden=blank;
+ if(blank&&night){night=false;view.night(false);$('night').setAttribute('aria-pressed','false');}
+ $('edit-title').textContent=blank?'ゼロから作る':'範囲で編集';$('top-view').setAttribute('aria-pressed',String($('camera').value==='top'));
+ document.querySelectorAll('[data-scope]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.scope===scope)));
+ $('density-view').setAttribute('aria-label','ボクセルの作業台。タップで編集、ドラッグで回転。');
+}
+function selectedLayer(){
+ if(scope==='district'||!rangeTools.includes($('tool').value))return null;
+ return $('range-mode').value==='layer'||($('range-mode').value==='surface'&&selection.length)?editLevel:null;
+}
 function syncTool(){
- const range=rangeTools.includes($('tool').value),max=scope==='blank'?workbenchBounds(factor).width:161;
- $('edit-layer').max=String(max);$('edit-layer').value=String(Math.max(1,Math.min(max,Math.round(Number($('edit-layer').value)||1))));
- editLevel=Number($('edit-layer').value);const layer=selectedLayer();view.edit($('tool').value!=='view',$('tool').value,Number($('brush').value),layer);
- $('offsets').hidden=$('tool').value!=='copy';$('range-controls').hidden=!range||scope==='district';$('layer-controls').hidden=layer===null;$('brush-label').hidden=range;
- $('layer-hint').textContent=layer===null?'':`${layer}段目 · 地面から${Math.round((layer-1)*CELL*factor*1000)/10}cm`;
- $('edit-note').textContent=range?(layer!==null?'選んだ段のガイド上で対角の2点を押し、「選択に適用」。段は地面から1、2、3と数えます。':'2点の高さを含む立体の範囲を選び、「選択に適用」。'):scope==='blank'?'クリックで積む、ドラッグで回転。ピンチで拡大、2本指または右ドラッグで移動。粗さごとに作品を保持します。':'範囲編集は2点を選んで適用。「面に足す」は押した面に追加します。';
- $('layer-badge').hidden=layer===null;$('layer-badge').textContent=layer===null?'':`${layer}段目だけを選択`;
+ const tool=$('tool').value,range=rangeTools.includes(tool),max=scope==='blank'?workbenchBounds(factor).width:161;
+ editLevel=Math.max(1,Math.min(max,Math.round(editLevel)||1));$('edit-layer').max=String(max);$('edit-layer').value=String(editLevel);
+ const layer=selectedLayer();view.edit(tool!=='view',tool,Number($('brush').value),layer);
+ $('offsets').hidden=tool!=='copy';$('range-controls').hidden=!range||scope==='district';$('layer-controls').hidden=$('range-mode').value!=='layer';$('brush-label').hidden=range;
+ $('layer-hint').textContent=`${editLevel}段目`;
+ $('apply').hidden=$('clear-selection').hidden=!range;
+ $('apply').textContent=({fill:'ここに積む',paint:'ここを塗る',erase:'ここを消す',copy:'ここへ複製'})[tool]||'選択に適用';
+ $('edit-note').textContent=range?(tool==='fill'?'下にブロックのある場所だけに重ねます。2点を選ぶと配置予定が表示されます。':'2点で範囲を選び、配置予定を確認して確定。'):'タップで編集。ドラッグで回転、2本指で移動・拡大。';
+ $('layer-badge').hidden=layer===null;$('layer-badge').textContent=layer===null?'':`${layer}段目`;
+ document.querySelectorAll('[data-tool]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.tool===tool||(b.dataset.tool==='fill'&&range))));
+ document.querySelectorAll('[data-color]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.color===$('color').value)));
  lock();
 }
 function request(type,extra={},overlay=false){
  busy=true;lock();if(overlay)$('busy').hidden=false;const id=++serial,start=performance.now();
  return new Promise((resolve,reject)=>{pending.set(id,{resolve,reject,start,type,measure:measuring?.phase});worker.postMessage({id,type,factor,scope,merge:$('mesh-mode').value==='merged',steps,...extra});});
 }
-worker.onmessage=({data:d})=>{const p=pending.get(d.id);if(!p)return;pending.delete(d.id);busy=pending.size>0;$('busy').hidden=true;
- if(d.error){$('selection-status').textContent=d.error;lock();p.reject(Error(d.error));return;}
+worker.onmessage=({data:d})=>{
+ const p=pending.get(d.id);if(!p)return;pending.delete(d.id);busy=pending.size>0;$('busy').hidden=true;
+ if(d.error){previewReady=false;view.preview();status(d.error);lock();p.reject(Error(d.error));return;}
+ if(d.type==='preview'){
+  previewReady=true;previewCount=d.changed;view.preview(d);
+  status(d.changed?`${fmt(d.changed)}粒を${({fill:'積む',paint:'塗る',erase:'消す',copy:'複製する'})[d.tool]}${d.blocked.length?` · 支えのない${fmt(d.blocked.length)}粒は置きません`:''}`:d.blocked.length?'下に支えがありません。床やブロックの上から選び直してください。':'この範囲には変更するブロックがありません。');
+ }
  if(d.type==='geometry'){
-  const applyStart=performance.now();const changedScope=scope!==d.scope;scope=d.scope;if(changedScope){$('tool').value=scope==='blank'?'place':'view';$('camera').value='corner';clearSelection();}factor=d.factor;view.load(d);syncScope();syncTool();const applyMs=performance.now()-applyStart;if(d.complete)d.complete.items=[];d.active.items=[];latest=d;factor=d.factor;steps=d.steps;$('density').value=String(factor);
+  const applyStart=performance.now(),changedScope=scope!==d.scope;scope=d.scope;factor=d.factor;steps=d.steps;
+  if(changedScope){$('tool').value=scope==='blank'?'place':'view';$('range-mode').value=scope==='blank'?'surface':'volume';$('camera').value='corner';clearSelection();}
+  view.load(d);latest=d;syncScope();syncTool();const applyMs=performance.now()-applyStart;if(d.complete)d.complete.items=[];d.active.items=[];$('density').value=String(factor);
   $('model-count').textContent=scope==='district'?`5棟 · 樹5本 · 住民${night?'0':'12'}人`:scope==='blank'?`作品 ${fmt(d.completed.count)}粒`:`建物・テラス ${fmt(d.completed.count)}粒`;
-  $('scene-status').textContent=scope==='district'?`手前右の1棟を建築 · ${fmt(d.completed.count*4+d.visible.count)}粒`:scope==='blank'?`作業台 ${workbenchBounds(factor).width} × ${workbenchBounds(factor).width} · 4.8m四方`:`主屋の幅${factor===2?32:64}粒`;
+  $('scene-status').textContent=scope==='district'?`手前右の1棟を建築 · ${fmt(d.completed.count*4+d.visible.count)}粒`:scope==='blank'?`${workbenchBounds(factor).width} × ${workbenchBounds(factor).width}`:`主屋の幅${factor===2?32:64}粒`;
   $('mesh-time').textContent=(d.active.meshMs+(d.complete?.meshMs||0)).toFixed(1)+' ms';$('chunk-count').textContent=fmt(d.active.updated);$('response-time').textContent=(performance.now()-p.start).toFixed(0)+' ms';
   const full=d.complete||latestComplete;if(d.complete)latestComplete=d.complete;
   const triangles=scope==='district'?(full?.triangles||0)*4+(steps===20000?(full?.triangles||0):d.active.triangles):d.active.triangles;
   $('triangles').textContent=fmt(triangles);$('buffer-size').textContent=((d.active.bytes+(scope==='district'?(full?.bytes||0):0))/1048576).toFixed(1)+' MiB';
-  if(d.edited)$('selection-status').textContent=p.type==='clear'?'作業台を空にしました。「戻す」で復元できます。':`${fmt(d.edited)}粒を変更`;
-  else if(p.type==='edit')$('selection-status').textContent='変更はありません（作業台の外には置けません）';
+  if(d.edited)status(p.type==='clear'?'作業台を空にしました。「戻す」で復元できます。':`${fmt(d.edited)}粒を変更${d.blocked?` · 支えのない${fmt(d.blocked)}粒は置きません`:''}`);
+  else if(p.type==='edit')status(d.blocked?'支えがないため置けません。床やブロックにつなげてください。':'変更はありません。');
   updateProgress();if(measuring&&p.type==='progress')measuring.updates.push({phase:p.measure,meshMs:d.active.meshMs,workerMs:d.workerMs,applyMs,responseMs:performance.now()-p.start,chunks:d.active.updated});
  }
  lock();p.resolve(d);
 };
-let latestComplete;
-worker.onerror=e=>{$('busy').hidden=true;$('selection-status').textContent='模型の処理を続けられませんでした。ページを開き直してください。';for(const p of pending.values())p.reject(Error(e.message));pending.clear();busy=false;stop();lock();};
+worker.onerror=e=>{$('busy').hidden=true;status('模型の処理を続けられませんでした。ページを開き直してください。');for(const p of pending.values())p.reject(Error(e.message));pending.clear();busy=false;stop();lock();};
 function updateProgress(){$('steps').value=steps;$('step-value').textContent=fmt(steps)+'歩';$('build-status').textContent=(scope==='district'?'5棟目 · ':'')+(steps===20000?'完成':PHASES.find(p=>steps<=p.end)?.name||'完成');}
-function clearSelection(){selection=[];view.select();$('apply').disabled=true;const tool=$('tool').value;$('selection-status').textContent=['place','extrude'].includes(tool)?(scope==='blank'?'作業台やブロックの面を押して追加':'追加する面を押してください'):tool==='erase-one'?'消す粒を押してください':tool==='paint-one'?'色を変える粒を押してください':tool==='view'?'ドラッグで回転、ホイール・ピンチで拡大':selectedLayer()!==null?`${selectedLayer()}段目の対角の2か所を選択`:'2か所を押して範囲を選択';}
+function clearSelection(keepStatus=false){
+ selection=[];previewReady=false;previewCount=0;view.select();view.preview();syncTool();
+ if(keepStatus)return;
+ const tool=$('tool').value;
+ status(['place','extrude'].includes(tool)?'床やブロックをタップして積む':tool==='erase-one'?'消すブロックをタップ':tool==='paint-one'?'色を変えるブロックをタップ':tool==='view'?'ドラッグで回転、2本指で移動・拡大':selectedLayer()!==null?`${selectedLayer()}段目の最初の角をタップ`:$('range-mode').value==='surface'?(tool==='fill'?'1. 積む場所をタップ（床またはブロック）':'1. 編集するブロックをタップ'):'1. 範囲の最初の角をタップ');
+}
 function stop(){playing=false;$('play').textContent='▶';$('play').setAttribute('aria-label','建築を再生');}
 async function progress(n){steps=Math.max(0,Math.min(20000,Math.round(n/250)*250));updateProgress();return request('progress');}
 async function load(){stop();clearSelection();return request('load',{},true);}
-async function setScope(next){if(next!==scope)$('camera').value='corner';scope=next;$('tool').value=scope==='blank'?'place':'view';$('range-mode').value=scope==='blank'?'layer':'volume';if(scope==='blank'){$('brush').value='1';steps=20000;}syncScope();syncTool();await load();}
-function safe(fn){return(...args)=>Promise.resolve().then(()=>fn(...args)).catch(e=>{$('selection-status').textContent=e.message;if(measuring)cancelMeasure('処理エラーのため測定を中止しました。');});}
+async function setScope(next){if(next!==scope)$('camera').value='corner';scope=next;$('tool').value=scope==='blank'?'place':'view';$('range-mode').value=scope==='blank'?'surface':'volume';if(scope==='blank'){$('brush').value='1';steps=20000;}syncScope();syncTool();await load();}
+function safe(fn){return(...args)=>Promise.resolve().then(()=>fn(...args)).catch(e=>{status(e.message);if(measuring)cancelMeasure('処理エラーのため測定を中止しました。');});}
+function rangeCommand(){return {a:selection[0],b:selection[1],tool:$('tool').value,color:$('color').value,mirror:$('mirror').checked,offset:['x','y','z'].map(a=>Number($('offset-'+a).value)),support:$('tool').value==='fill'?'below':'connected'};}
+async function previewSelection(){previewReady=false;view.preview();lock();if(selection.length===2)await request('preview',{edit:rangeCommand()});}
 async function pick(q,n,onFloor=false){
  if(busy||measuring||scope==='district'||steps!==20000||$('tool').value==='view')return;
  const tool=$('tool').value;
  if(['place','extrude'].includes(tool)){
   const r=(Number($('brush').value)-1)/2,a=q.map((v,i)=>v+n[i]-(n[i]?0:r)),b=q.map((v,i)=>v+n[i]+(n[i]?0:r));
-  try{await request('edit',{edit:{a,b,tool:'fill',color:$('color').value,mirror:$('mirror').checked}});}catch(e){$('selection-status').textContent=e.message;}return;
+  try{await request('edit',{edit:{a,b,tool:'fill',color:$('color').value,mirror:$('mirror').checked}});}catch(e){status(e.message);}return;
  }
- if(['erase-one','paint-one'].includes(tool)){if(onFloor)return;try{await request('edit',{edit:{a:q,b:q,tool:tool==='erase-one'?'erase':'paint',color:$('color').value,mirror:$('mirror').checked}});}catch(e){$('selection-status').textContent=e.message;}return;}
- const layer=selectedLayer();if(layer!==null)q=[q[0],layer-1,q[2]];else if(onFloor)q=[q[0],0,q[2]];
- if(selection.length===2)selection=[];selection.push(q);view.select(selection[0],selection[1]);$('selection-status').textContent=selection.length===1?'もう1か所を選択':`${layer===null?'':layer+'段目 · '}${fmt(selection[0].reduce((n,v,i)=>n*(Math.abs(v-selection[1][i])+1),1))}粒分の範囲`;$('apply').disabled=selection.length!==2;
+ if(['erase-one','paint-one'].includes(tool)){if(onFloor)return;try{await request('edit',{edit:{a:q,b:q,tool:tool==='erase-one'?'erase':'paint',color:$('color').value,mirror:$('mirror').checked}});}catch(e){status(e.message);}return;}
+ if($('range-mode').value==='surface'&&!selection.length){
+  editLevel=onFloor?1:q[1]+(tool==='fill'?2:1);
+  if(editLevel>Number($('edit-layer').max)){status('作業台の高さの上限です。');return;}
+  q=[q[0],editLevel-1,q[2]];
+ }else {const layer=selectedLayer();if(layer!==null)q=[q[0],layer-1,q[2]];else if(onFloor)q=[q[0],0,q[2]];}
+ if(!selection.length)selection.push(q);else selection[1]=q;
+ view.select(selection[0],selection[1]);syncTool();
+ if(selection.length===1)status(`2. 反対の角をタップ${selectedLayer()!==null?` · ${editLevel}段目`:''}`);
+ else try{await previewSelection();}catch(e){status(e.message);}
 }
 function save(name,text){const url=URL.createObjectURL(new Blob([text],{type:'application/json'})),a=document.createElement('a');a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);}
 $('density').onchange=safe(async()=>{factor=Number($('density').value);syncTool();await load();});$('mesh-mode').onchange=safe(load);document.querySelectorAll('[data-scope]').forEach(b=>b.onclick=safe(()=>setScope(b.dataset.scope)));
-$('camera').onchange=()=>view.angle($('camera').value);$('night').onclick=()=>{night=!night;view.night(night);$('night').setAttribute('aria-pressed',String(night));if(scope==='district')$('model-count').textContent=`5棟 · 樹5本 · 住民${night?'0':'12'}人`;};
+$('camera').onchange=()=>{view.angle($('camera').value);$('top-view').setAttribute('aria-pressed',String($('camera').value==='top'));};
+$('top-view').onclick=()=>{$('camera').value=$('camera').value==='top'?'corner':'top';$('camera').onchange();};
+$('night').onclick=()=>{night=!night;view.night(night);$('night').setAttribute('aria-pressed',String(night));if(scope==='district')$('model-count').textContent=`5棟 · 樹5本 · 住民${night?'0':'12'}人`;};
 $('zoom-in').onclick=()=>view.zoom(1.5);$('zoom-out').onclick=()=>view.zoom(1/1.5);$('fit-work').onclick=()=>view.angle($('camera').value);
-$('steps').onchange=safe(()=>{stop();view.edit(false);$('tool').value='view';return progress(Number($('steps').value));});document.querySelectorAll('[data-steps]').forEach(b=>b.onclick=safe(()=>{stop();view.edit(false);$('tool').value='view';return progress(Number(b.dataset.steps));}));$('restart').onclick=safe(()=>{stop();view.edit(false);$('tool').value='view';return progress(0);});
-$('play').onclick=safe(async()=>{if(playing){stop();return;}view.edit(false);$('tool').value='view';if(steps===20000)await progress(0);playAt=performance.now();playSteps=steps;playing=true;$('play').textContent='Ⅱ';$('play').setAttribute('aria-label','建築を一時停止');});
-$('tool').onchange=safe(async()=>{stop();syncTool();clearSelection();if(steps!==20000)await progress(20000);syncTool();});$('brush').onchange=syncTool;$('clear-selection').onclick=clearSelection;
-$('range-mode').onchange=()=>{syncTool();clearSelection();};
-$('edit-layer').onchange=$('edit-layer').onblur=()=>{syncTool();clearSelection();};
-$('edit-layer').oninput=()=>{const n=Number($('edit-layer').value);if(Number.isInteger(n)&&n>=1&&n<=Number($('edit-layer').max)){syncTool();clearSelection();}};
-for(const [id,delta] of [['layer-down',-1],['layer-up',1]])$(id).onclick=()=>{$('edit-layer').value=String(Number($('edit-layer').value)+delta);syncTool();clearSelection();};
+function stopEditing(){$('tool').value='view';clearSelection();}
+$('steps').onchange=safe(()=>{stop();stopEditing();return progress(Number($('steps').value));});document.querySelectorAll('[data-steps]').forEach(b=>b.onclick=safe(()=>{stop();stopEditing();return progress(Number(b.dataset.steps));}));$('restart').onclick=safe(()=>{stop();stopEditing();return progress(0);});
+$('play').onclick=safe(async()=>{if(playing){stop();return;}stopEditing();if(steps===20000)await progress(0);playAt=performance.now();playSteps=steps;playing=true;$('play').textContent='Ⅱ';$('play').setAttribute('aria-label','建築を一時停止');});
+async function toolChanged(){stop();clearSelection();if(steps!==20000)await progress(20000);syncTool();}
+$('tool').onchange=safe(toolChanged);document.querySelectorAll('[data-tool]').forEach(b=>b.onclick=safe(()=>{$('tool').value=b.dataset.tool;return toolChanged();}));
+$('brush').onchange=syncTool;$('clear-selection').onclick=()=>clearSelection();
+$('color').onchange=safe(()=>{syncTool();return previewSelection();});
+for(const id of ['mirror','offset-x','offset-y','offset-z'])$(id).onchange=safe(previewSelection);
+for(const b of document.querySelectorAll('[data-color]'))b.onclick=safe(()=>{$('color').value=b.dataset.color;syncTool();return previewSelection();});
+$('range-mode').onchange=()=>clearSelection();
+$('edit-layer').onchange=$('edit-layer').onblur=()=>{editLevel=Number($('edit-layer').value);clearSelection();};
+$('edit-layer').oninput=()=>{const n=Number($('edit-layer').value);if(Number.isInteger(n)&&n>=1&&n<=Number($('edit-layer').max)){editLevel=n;clearSelection();}};
+for(const [id,delta] of [['layer-down',-1],['layer-up',1]])$(id).onclick=()=>{editLevel+=delta;clearSelection();};
 $('clear-work').onclick=safe(async()=>{clearSelection();await request('clear');});
-$('apply').onclick=safe(async()=>{if(selection.length!==2)return;await request('edit',{edit:{a:selection[0],b:selection[1],tool:$('tool').value,color:$('color').value,mirror:$('mirror').checked,offset:['x','y','z'].map(a=>Number($('offset-'+a).value))}});view.select();selection=[];lock();});$('undo').onclick=safe(()=>request('undo'));
+$('apply').onclick=safe(async()=>{if(selection.length!==2||!previewReady||!previewCount)return;await request('edit',{edit:rangeCommand()});clearSelection(true);});
+$('undo').onclick=safe(async()=>{clearSelection();await request('undo');});
 $('export-work').onclick=safe(async()=>{const d=await request('export');save(`dayorama-${scope==='blank'?'scratch':'density'}-${factor}.json`,d.text);});$('import-work').onclick=()=>$('work-file').click();$('work-file').onchange=safe(async e=>{const f=e.target.files[0];if(!f)return;if(f.size>24000000)throw Error('作品ファイルが大きすぎます');stop();clearSelection();steps=20000;await request('import',{text:await f.text()},true);e.target.value='';});
 
 const quantile=(a,p)=>{if(!a.length)return null;const sorted=[...a].sort((a,b)=>a-b);return sorted[Math.min(sorted.length-1,Math.floor(sorted.length*p))];};

@@ -48,8 +48,17 @@ Browser checks: placed the first coarse cell on the empty board, stacked a secon
 Multi-touch suppression and two-finger navigation are implemented but have not been tested on an actual iPhone. This extension does not add native touch/haptic integration, automatic persistence, or a connection to the published UGC gallery.
 
 
-## Horizontal layer selection
+## Horizontal layer selection (prior iteration; support rules superseded below)
 
 Range operations now switch between a single numbered layer and the original 3D bounding volume. A translucent guide is drawn at the base of the selected layer. Ray picking intersects that plane before considering voxel surfaces, so tall cells cannot pull either endpoint onto a different height. Blank starts with single-layer selection; the reference building retains volume selection by default. The guide is excluded from saved voxel data.
 
 Ten density tests pass, including fill/paint/erase/undo restricted to layer two with untouched cells above and below at both densities; negative coordinates, last-layer and out-of-board picks are covered. In the desktop browser, entered layer 2 directly, selected a 78-cell rectangle and filled a one-cell-thick floating slab with no base cells. Switched to volume selection and back, undid the fill, then switched to 7.5cm: the UI showed layer 2 at 7.5cm with an empty 64×64 workspace. Touch interaction on iPhone remains untested.
+
+
+## Supported stacking and touch-oriented controls
+
+The scratch editor now checks support in the Worker for both preview and commit. Range fill requires an immediate lower cell (or ground at layer 1); a multi-level volume is evaluated bottom-up. Other additions and copies must remain face-connected to ground, which preserves the ability to make attached overhangs. Erasing a support is rejected if it detaches previously grounded cells. Existing imported floating cells are not silently repaired, and the sample-building workspace retains its unconstrained editing behavior.
+
+Default range picking derives the target layer from the first tapped surface, then locks the second tap to that plane. The proposed cells appear green and unsupported ones red, with explicit counts. Applying changes only the supported candidates. Neither previews nor the guide enter saved voxel data or undo history. Main actions, swatches, confirm, undo and view controls have at least 44px targets. Number entry and less frequent tools remain available. Pointer travel is tracked across the whole gesture; a drag that returns to its start and multi-pointer gestures do not place cells.
+
+Eleven data tests pass. Desktop browser at a 390×844 viewport: created a 95-cell base through two-point preview and confirmation; tapped an existing block from the top view to select layer 2 automatically; a wider rectangle previewed 30 accepted plus 50 unsupported cells, and commit increased the work from 95 to 125 cells. Selecting layer 4 above this two-layer work produced the no-support message and kept confirmation disabled. No console errors or warnings in that run. These are mouse-driven browser checks at a mobile viewport; physical iPhone touch/pinch accuracy is not yet verified.
