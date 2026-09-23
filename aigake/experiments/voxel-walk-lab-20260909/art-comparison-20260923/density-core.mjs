@@ -68,7 +68,7 @@ export function buckets(map){const out=new Map();for(const c of map.values()){co
 // Exact face merging: only faces with identical material and uniform, equal AO merge.
 // Nonuniform AO keeps its original four vertices and triangulation. Chunk boundaries
 // query the complete occupancy map, so they never expose hidden internal faces.
-export function meshChunk(cells,map,cellSize,{merge=true}={}){
+export function meshChunk(cells,map,cellSize,{merge=true,palette=rgb,roughnessFor=c=>c.color.startsWith('glass')?.35:.9,aoStrength=.095}={}){
  const planes=new Map(),quads=[];let surfaceFaces=0;
  for(const c of cells)for(let f=0;f<6;f++){
   const n=directions[f],o=xyz(c);if(map.has(coordKey(o.map((v,i)=>v+n[i]))))continue;surfaceFaces++;
@@ -91,9 +91,9 @@ export function meshChunk(cells,map,cellSize,{merge=true}={}){
  }
  const positions=new Float32Array(quads.length*18),normals=new Float32Array(quads.length*18),colors=new Float32Array(quads.length*18),surfaces=new Float32Array(quads.length*12);
  let vertex=0;
- for(const q of quads){const order=q.sign>0?[0,1,2,0,2,3]:[0,3,2,0,2,1],corners=[[0,0],[q.w,0],[q.w,q.h],[0,q.h]],base=rgb[q.c.color];
+ for(const q of quads){const order=q.sign>0?[0,1,2,0,2,3]:[0,3,2,0,2,1],corners=[[0,0],[q.w,0],[q.w,q.h],[0,q.h]],base=palette[q.c.color];
   for(const i of order){const p=[0,0,0],n=[0,0,0];p[q.d]=q.plane*cellSize;p[q.u]=(q.a+corners[i][0])*cellSize;p[q.v]=(q.b+corners[i][1])*cellSize;n[q.d]=q.sign;
-   positions.set(p,vertex*3);normals.set(n,vertex*3);colors.set(base.map(c=>c*(1-q.shade[i]*.095)),vertex*3);surfaces.set([q.c.emission?1:0,q.c.color.startsWith('glass')?.35:.9],vertex*2);vertex++;
+   positions.set(p,vertex*3);normals.set(n,vertex*3);colors.set(base.map(c=>c*(1-q.shade[i]*aoStrength)),vertex*3);surfaces.set([q.c.emission?1:0,roughnessFor(q.c)],vertex*2);vertex++;
   }
  }
  return {positions,normals,colors,surfaces,triangles:quads.length*2,surfaceFaces,bytes:positions.byteLength+normals.byteLength+colors.byteLength+surfaces.byteLength};

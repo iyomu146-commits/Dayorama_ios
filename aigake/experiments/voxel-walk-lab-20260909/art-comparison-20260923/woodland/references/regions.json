@@ -1,0 +1,17 @@
+{
+  "source": "town-voxel-v2.png",
+  "sourceSize": [1536, 1024],
+  "method": "Unmodified source image clipped to a viewport; rectangular crops may include neighbouring objects.",
+  "regions": [
+    {"id":"town","name":"全景","rect":[0,0,1536,1024]},
+    {"id":"home","name":"住宅","rect":[205,48,354,423]},
+    {"id":"bakery","name":"パン屋","rect":[562,135,385,333]},
+    {"id":"books","name":"本屋","rect":[978,125,396,374]},
+    {"id":"florist","name":"花屋","rect":[267,410,453,310]},
+    {"id":"cafe","name":"喫茶店","rect":[791,420,490,357]},
+    {"id":"tree","name":"樹木","rect":[64,139,181,300]},
+    {"id":"flowers","name":"花・鉢","rect":[480,590,232,126]},
+    {"id":"bridge","name":"橋","rect":[517,723,244,160]},
+    {"id":"bench","name":"ベンチ","rect":[117,640,144,84]}
+  ]
+}
