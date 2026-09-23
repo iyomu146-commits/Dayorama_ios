@@ -1,0 +1,19 @@
+{
+  "sourceCells": 13945,
+  "coarseCells": 2939,
+  "sourceCellSize": 0.15,
+  "coarseCellSize": 0.3,
+  "triangles": 54672,
+  "partMeshes": 22,
+  "checks": [
+    "Eight 15cm positions form one real 30cm cube",
+    "Source unchanged; exactly one coarse cell per occupied 2x2x2 bucket",
+    "Whole-building size retained within a 15cm grid snap",
+    "All coarse cells remain connected to ground",
+    "Front and side window centres remain glass without a white bar",
+    "Entry clear and each chair/table retains four supported legs",
+    "Roof connected across courses and chimney flue still open",
+    "Every rendered triangle stays within one 30cm cell"
+  ],
+  "scope": "Grid coarsening comparison. The scene is not scaled up. Thin structures expand to one 30cm cell; small decorative details are simplified. iPhone performance not measured."
+}

@@ -5,9 +5,10 @@ import {FINISH_BEVEL} from './architectural-finish.mjs?v=grid5';
 
 // The same chamfer can be applied to a component or an individual grid cell.
 // A box has 6 planes, 12 edge strips and 8 corner triangles = 44 triangles.
-export function chamferBox(box,radius=FINISH_BEVEL,occupancy=null){
+export function chamferBox(box,radius=FINISH_BEVEL,occupancy=null,cellSize=CELL){
  if(box.length!==6||!box.every(Number.isInteger)||box.slice(3).some(v=>v<1))throw new Error('Finish boxes must occupy whole grid cells');
  if(!Number.isFinite(radius)||radius<=0||radius>FINISH_BEVEL)throw new Error('Finish bevel exceeds the shared grid allowance');
+ if(!Number.isFinite(cellSize)||cellSize<=0)throw new Error('Invalid cell size');
  const [x,y,z,w,h,d]=box;
  const half=[w/2,h/2,d/2],center=[x+w/2,y+h/2,z+d/2],b=Math.min(radius,...half.map(v=>v*.7));
  const positions=[],normals=[],polys=[],signs=[-1,1];
@@ -35,7 +36,7 @@ export function chamferBox(box,radius=FINISH_BEVEL,occupancy=null){
  }
  for(const sx of signs)for(const sy of signs)for(const sz of signs)if(!hidden([[0,sx],[1,sy],[2,sz]]))polys.push([0,1,2].map(a=>[sx,sy,sz].map((s,i)=>s*(half[i]-(i===a?0:b)))));
  // Only remove material at the edges; never resize, tilt, jitter or offset a unit.
- const toWorld=p=>p.map((v,i)=>(v+center[i])*CELL);
+ const toWorld=p=>p.map((v,i)=>(v+center[i])*cellSize);
  const cross=(a,b)=>[a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]],sub=(a,b)=>a.map((v,i)=>v-b[i]);
  for(let poly of polys){const n=cross(sub(poly[1],poly[0]),sub(poly[2],poly[0])),mid=poly.reduce((a,p)=>a.map((v,i)=>v+p[i]),[0,0,0]);if(n.reduce((s,v,i)=>s+v*mid[i],0)<0)poly=poly.toReversed();
   const pts=poly.map(toWorld);for(let i=1;i<pts.length-1;i++){const tri=[pts[0],pts[i],pts[i+1]],normal=cross(sub(tri[1],tri[0]),sub(tri[2],tri[0])),len=Math.hypot(...normal);for(const p of tri){positions.push(...p);normals.push(...normal.map(v=>v/len));}}
@@ -44,17 +45,17 @@ export function chamferBox(box,radius=FINISH_BEVEL,occupancy=null){
 }
 
 export const intactFinishUnit=(u,cells)=>u.keys.length>0&&u.keys.every((k,i)=>cells.get(k)?.part===u.part&&cells.get(k)?.finishUnit===u.id&&cells.get(k)?.color===u.colors?.[i]);
-export function buildCafeSurfaces(cells,palette,{finish=true,isolated=false,unit='component'}={}){
- if(finish&&unit==='voxel')return buildUniformVoxelSurfaces(cells,palette,{isolated});
+export function buildCafeSurfaces(cells,palette,{finish=true,isolated=false,unit='component',cellSize=CELL}={}){
+ if(finish&&unit==='voxel')return buildUniformVoxelSurfaces(cells,palette,{isolated,cellSize});
  const units=finish?(cells.finishUnits||[]).filter(u=>intactFinishUnit(u,cells)):[],replaced=new Set(units.flatMap(u=>u.keys));
  const raw=new Map([...cells].filter(([k])=>!replaced.has(k))),result=[];
  for(const part of new Set([...cells.values()].map(c=>c.part))){
   const selected=[...raw.values()].filter(c=>c.part===part),occupancy=isolated?new Map(selected.map(c=>[`${c.x},${c.y},${c.z}`,c])):raw;
-  const m=meshChunk(selected,occupancy,CELL,{palette,roughnessFor:c=>roughness(c.color),aoStrength:.065});
+  const m=meshChunk(selected,occupancy,cellSize,{palette,roughnessFor:c=>roughness(c.color),aoStrength:.065});
   const positions=[...m.positions],normals=[...m.normals],colors=[...m.colors],surfaces=[...m.surfaces];
   const finishOccupancy=isolated?new Map([...cells].filter(([,c])=>c.part===part)):cells;
   for(const u of units.filter(u=>u.part===part))for(const b of u.shape.boxes||[u.shape.box]){
-   const g=chamferBox(b,u.shape.bevel,finishOccupancy),c=palette[u.shape.color],r=roughness(u.shape.color);
+   const g=chamferBox(b,u.shape.bevel,finishOccupancy,cellSize),c=palette[u.shape.color],r=roughness(u.shape.color);
    positions.push(...g.positions);normals.push(...g.normals);
    for(let i=0;i<g.positions.length/3;i++){colors.push(...c);surfaces.push(0,r);}
   }
@@ -66,7 +67,7 @@ export function buildCafeSurfaces(cells,palette,{finish=true,isolated=false,unit
 // Every material, including glass, furniture and plants, uses the identical
 // 1x1x1 envelope and inward bevel. Only colors/roughness differ between cells.
 // Combine buffers by selectable part, not by visual block: no object per cube.
-export function buildUniformVoxelSurfaces(cells,palette,{isolated=false}={}){
+export function buildUniformVoxelSurfaces(cells,palette,{isolated=false,cellSize=CELL}={}){
  const parts=new Map();
  for(const c of cells.values()){if(!parts.has(c.part))parts.set(c.part,[]);parts.get(c.part).push(c);}
  const result=[];
@@ -74,7 +75,7 @@ export function buildUniformVoxelSurfaces(cells,palette,{isolated=false}={}){
   const occupancy=isolated?new Map(selected.map(c=>[`${c.x},${c.y},${c.z}`,c])):cells;
   const positions=[],normals=[],colors=[],surfaces=[];let visibleCells=0;
   for(const c of selected){
-   const g=chamferBox([c.x,c.y,c.z,1,1,1],FINISH_BEVEL,occupancy);
+   const g=chamferBox([c.x,c.y,c.z,1,1,1],FINISH_BEVEL,occupancy,cellSize);
    if(!g.positions.length)continue;
    visibleCells++;
    positions.push(...g.positions);normals.push(...g.normals);
