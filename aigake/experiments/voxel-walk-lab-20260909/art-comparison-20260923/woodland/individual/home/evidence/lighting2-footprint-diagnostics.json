@@ -1,0 +1,300 @@
+{
+  "passed": true,
+  "checks": {
+    "silhouetteIoU": 0.9131,
+    "aspectRatioDelta": 0.0222,
+    "scaleDelta": 0.0217,
+    "bilateralSymmetryError": 0.1284,
+    "colorDelta": {
+      "gated": true,
+      "method": "palette measured only within each component visible footprint, not overall image clusters",
+      "threshold": 20.0,
+      "perComponent": [
+        {
+          "id": "roof",
+          "pixels": 114226,
+          "bbox": [
+            12,
+            103,
+            652,
+            373
+          ],
+          "deltaE": 4.15,
+          "maskSha256": "a3dfe08e3f786ace2f92069ac560313ddcdd368a114f06bbf12510856dd1bdaf",
+          "crop": "evidence\\lighting2-visible-materials\\roof.png"
+        },
+        {
+          "id": "chimney",
+          "pixels": 3044,
+          "bbox": [
+            477,
+            73,
+            548,
+            126
+          ],
+          "deltaE": 4.6,
+          "maskSha256": "9d49a534b56d66eb2b473295a1bc0368d54bd804c5bbb5411e26b06a7c3179c5",
+          "crop": "evidence\\lighting2-visible-materials\\chimney.png"
+        },
+        {
+          "id": "plinth",
+          "pixels": 8619,
+          "bbox": [
+            60,
+            580,
+            604,
+            696
+          ],
+          "deltaE": 1.23,
+          "maskSha256": "dcfdb490a36ca154d9580bcf9559d0e1102d875c93f27fb32cf0e34bfe0f686f",
+          "crop": "evidence\\lighting2-visible-materials\\plinth.png"
+        },
+        {
+          "id": "lower-wall",
+          "pixels": 46593,
+          "bbox": [
+            60,
+            420,
+            604,
+            675
+          ],
+          "deltaE": 6.15,
+          "maskSha256": "a17c6ea41ae2331c6aff8e63d20d2b35d3e19ef4e75cfbb5086389093f7759cf",
+          "crop": "evidence\\lighting2-visible-materials\\lower-wall.png"
+        },
+        {
+          "id": "upper-wall",
+          "pixels": 36020,
+          "bbox": [
+            60,
+            251,
+            604,
+            505
+          ],
+          "deltaE": 7.22,
+          "maskSha256": "4eeb465c5d0fb59a64291b67c8fd28076b306c23a7bec6f6a9981bf5ecbcd810",
+          "crop": "evidence\\lighting2-visible-materials\\upper-wall.png"
+        },
+        {
+          "id": "floor-band",
+          "pixels": 3759,
+          "bbox": [
+            60,
+            410,
+            604,
+            516
+          ],
+          "deltaE": 3.04,
+          "maskSha256": "d1e6979fe180ddc1ecd5c8b7faa502ab96f081215559124a5764b5a121781758",
+          "crop": "evidence\\lighting2-visible-materials\\floor-band.png"
+        },
+        {
+          "id": "gable",
+          "pixels": 4767,
+          "bbox": [
+            510,
+            188,
+            604,
+            318
+          ],
+          "deltaE": 12.48,
+          "maskSha256": "3537323aec8a5deb29c0a0c6ada2b9f7e34b52655a97f41a3dfb982c482e967c",
+          "crop": "evidence\\lighting2-visible-materials\\gable.png"
+        },
+        {
+          "id": "front-low",
+          "pixels": 13391,
+          "bbox": [
+            93,
+            495,
+            224,
+            630
+          ],
+          "deltaE": 7.36,
+          "maskSha256": "f28f05c07200d8eda8a0fb988a192ab36c90be0d6b105d3269de6d6b289b0f33",
+          "crop": "evidence\\lighting2-visible-materials\\front-low.png"
+        },
+        {
+          "id": "front-upper-left",
+          "pixels": 8094,
+          "bbox": [
+            104,
+            328,
+            213,
+            438
+          ],
+          "deltaE": 10.41,
+          "maskSha256": "ba21263bb1e3471e255552cb651eccdced9eebfceb8189a1749f4556bb783faa",
+          "crop": "evidence\\lighting2-visible-materials\\front-upper-left.png"
+        },
+        {
+          "id": "front-upper-right",
+          "pixels": 8157,
+          "bbox": [
+            299,
+            352,
+            409,
+            461
+          ],
+          "deltaE": 10.52,
+          "maskSha256": "0c620d3ec7459a5d120a4f3e41ea17b8c6a504218e72c9c30b2e3933b32debd2",
+          "crop": "evidence\\lighting2-visible-materials\\front-upper-right.png"
+        },
+        {
+          "id": "right-low",
+          "pixels": 6940,
+          "bbox": [
+            509,
+            477,
+            579,
+            629
+          ],
+          "deltaE": 5.98,
+          "maskSha256": "52c5224c3757e85f1a4fe5798a7f88a0eda02ab02be8e76b883f1326f578737f",
+          "crop": "evidence\\lighting2-visible-materials\\right-low.png"
+        },
+        {
+          "id": "right-upper",
+          "pixels": 4686,
+          "bbox": [
+            513,
+            297,
+            574,
+            435
+          ],
+          "deltaE": 5.98,
+          "maskSha256": "4a8c4d569be7de20c5eb96862f324abb93af70c90d27495da57ff54c69d755ce",
+          "crop": "evidence\\lighting2-visible-materials\\right-upper.png"
+        },
+        {
+          "id": "door",
+          "pixels": 14280,
+          "bbox": [
+            302,
+            521,
+            409,
+            671
+          ],
+          "deltaE": 5.18,
+          "maskSha256": "f58117a376319cb7d56bb2166d41aab53a7f504baccc3a6f06168fc5a6c285a7",
+          "crop": "evidence\\lighting2-visible-materials\\door.png"
+        },
+        {
+          "id": "porch",
+          "pixels": 9323,
+          "bbox": [
+            257,
+            455,
+            429,
+            543
+          ],
+          "deltaE": 4.33,
+          "maskSha256": "2202865f86e72c1a09f2ed13682710d2d2ffacc4a39485170ca8a047b0d585d2",
+          "crop": "evidence\\lighting2-visible-materials\\porch.png"
+        },
+        {
+          "id": "steps",
+          "pixels": 6780,
+          "bbox": [
+            255,
+            659,
+            419,
+            720
+          ],
+          "deltaE": 1.26,
+          "maskSha256": "59f991eea1108b509fd798ff2c8273b670ddcc2e16a0a2353b926d0cc11bd0cd",
+          "crop": "evidence\\lighting2-visible-materials\\steps.png"
+        },
+        {
+          "id": "rail-left",
+          "pixels": 4708,
+          "bbox": [
+            89,
+            388,
+            224,
+            453
+          ],
+          "deltaE": 4.63,
+          "maskSha256": "698926b605888308a9c2154664b42acf01b2c889ce0605df3bf5d59c71442060",
+          "crop": "evidence\\lighting2-visible-materials\\rail-left.png"
+        },
+        {
+          "id": "rail-right",
+          "pixels": 4735,
+          "bbox": [
+            284,
+            411,
+            419,
+            477
+          ],
+          "deltaE": 4.54,
+          "maskSha256": "3e25b69dfede675d236a40dfd89646e3f1f6357435fb180f16bd6c0f670d1d24",
+          "crop": "evidence\\lighting2-visible-materials\\rail-right.png"
+        },
+        {
+          "id": "rail-side",
+          "pixels": 3478,
+          "bbox": [
+            509,
+            369,
+            589,
+            450
+          ],
+          "deltaE": 9.79,
+          "maskSha256": "dcdc7c722cfad90d4e595bbe8d662e93f4bc47d4352c86184c014fdf2d90d6f8",
+          "crop": "evidence\\lighting2-visible-materials\\rail-side.png"
+        },
+        {
+          "id": "ridge",
+          "pixels": 13066,
+          "bbox": [
+            88,
+            73,
+            576,
+            159
+          ],
+          "deltaE": 4.73,
+          "maskSha256": "9c5f9588de09c2d6d308ad52c27fdcb788e55b69a0978541477aebf9daecabc7",
+          "crop": "evidence\\lighting2-visible-materials\\ridge.png"
+        },
+        {
+          "id": "chimney-cap",
+          "pixels": 3842,
+          "bbox": [
+            462,
+            32,
+            563,
+            82
+          ],
+          "deltaE": 5.77,
+          "maskSha256": "23f374347891ae776aab341953ad0603b1a990d6d271521df0c063f67ddcf457",
+          "crop": "evidence\\lighting2-visible-materials\\chimney-cap.png"
+        },
+        {
+          "id": "door-handle",
+          "pixels": 174,
+          "bbox": [
+            380,
+            595,
+            394,
+            609
+          ],
+          "deltaE": 4.15,
+          "maskSha256": "fd59e402081f975d04a39fb7450ae4a97084bded7019649306cfd8b964f6962f",
+          "crop": "evidence\\lighting2-visible-materials\\door-handle.png"
+        }
+      ],
+      "occludedNotMeasured": [
+        "building"
+      ],
+      "unresolved": []
+    }
+  },
+  "failures": [],
+  "maskWarnings": [],
+  "renderHash": "2430970a3b9ee98b",
+  "passId": "lighting-pass",
+  "originalDiagnostic": "evidence/lighting2-diagnostics.json",
+  "originalPassed": true,
+  "scopeNote": "Original global-palette result retained, not overwritten. Rendered occlusion masks select actual visible pixels. No claim for hidden material or reference PBR recovery."
+}

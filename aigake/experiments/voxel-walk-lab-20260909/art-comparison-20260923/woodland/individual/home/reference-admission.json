@@ -1,0 +1,14 @@
+{
+  "admitted": true,
+  "reasons": [],
+  "provenance": {
+    "viewpoint": "reference",
+    "sourcePath": "C:\\calude\\sleepwork\\aigake\\experiments\\voxel-walk-lab-20260909\\art-comparison-20260923\\woodland\\references\\crops\\home.png",
+    "width": 354,
+    "height": 423,
+    "foregroundCoverage": 0.9433,
+    "largestComponentFraction": 1.0,
+    "pHash": 14697763147518478369,
+    "duplicateOfHash": null
+  }
+}

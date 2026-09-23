@@ -1,0 +1,11 @@
+{
+  "ok": true,
+  "errors": [],
+  "warnings": [],
+  "summary": {
+    "targetName": "Dayorama woodland two-storey home",
+    "suitability": "conditional",
+    "components": 22,
+    "materials": 9
+  }
+}

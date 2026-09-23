@@ -1,0 +1,45 @@
+{
+  "stage": "structure",
+  "checks": [
+    "Uniform integer 15cm cells with defined palette",
+    "Every cell face-connected to ground",
+    "Five glass openings without centre mullions or wall behind",
+    "Door route clear and porch above door",
+    "Chimney aperture stays open through pale cap",
+    "Window guards connected by side returns, slots stay open",
+    "Compiled surfaces equal exact voxel boundary"
+  ],
+  "cells": 19607,
+  "triangles": 16758,
+  "surfaceFaces": 22422,
+  "parts": [
+    "plinth",
+    "lower-wall",
+    "front-low",
+    "right-low",
+    "floor-band",
+    "upper-wall",
+    "porch",
+    "rail-left",
+    "front-upper-left",
+    "rail-right",
+    "front-upper-right",
+    "rail-side",
+    "right-upper",
+    "building",
+    "gable",
+    "door",
+    "door-handle",
+    "steps",
+    "roof",
+    "ridge",
+    "chimney",
+    "chimney-cap"
+  ],
+  "boundary": {
+    "expected": 22422,
+    "actual": 22422,
+    "area": 22422
+  },
+  "visualAcceptance": "Not measured by this script; no phone performance claim."
+}

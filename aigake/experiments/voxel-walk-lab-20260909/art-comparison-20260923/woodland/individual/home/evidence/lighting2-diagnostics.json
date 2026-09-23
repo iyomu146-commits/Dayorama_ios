@@ -1,0 +1,108 @@
+{
+  "passed": true,
+  "checks": {
+    "silhouetteIoU": 0.9131,
+    "aspectRatioDelta": 0.0222,
+    "scaleDelta": 0.0217,
+    "bilateralSymmetryError": 0.1284,
+    "colorDelta": {
+      "checked": 22,
+      "maxDeltaE": 19.99,
+      "perComponent": [
+        {
+          "componentId": null,
+          "deltaE": 7.17
+        },
+        {
+          "componentId": null,
+          "deltaE": 5.21
+        },
+        {
+          "componentId": null,
+          "deltaE": 14.34
+        },
+        {
+          "componentId": null,
+          "deltaE": 5.36
+        },
+        {
+          "componentId": null,
+          "deltaE": 13.75
+        },
+        {
+          "componentId": null,
+          "deltaE": 7.17
+        },
+        {
+          "componentId": null,
+          "deltaE": 5.36
+        },
+        {
+          "componentId": null,
+          "deltaE": 7.17
+        },
+        {
+          "componentId": null,
+          "deltaE": 9.75
+        },
+        {
+          "componentId": null,
+          "deltaE": 9.75
+        },
+        {
+          "componentId": null,
+          "deltaE": 9.75
+        },
+        {
+          "componentId": null,
+          "deltaE": 9.75
+        },
+        {
+          "componentId": null,
+          "deltaE": 9.75
+        },
+        {
+          "componentId": null,
+          "deltaE": 7.64
+        },
+        {
+          "componentId": null,
+          "deltaE": 5.21
+        },
+        {
+          "componentId": null,
+          "deltaE": 5.36
+        },
+        {
+          "componentId": null,
+          "deltaE": 19.99
+        },
+        {
+          "componentId": null,
+          "deltaE": 19.99
+        },
+        {
+          "componentId": null,
+          "deltaE": 19.99
+        },
+        {
+          "componentId": null,
+          "deltaE": 5.21
+        },
+        {
+          "componentId": null,
+          "deltaE": 5.36
+        },
+        {
+          "componentId": null,
+          "deltaE": 9.7
+        }
+      ],
+      "gated": true
+    }
+  },
+  "failures": [],
+  "maskWarnings": [],
+  "renderHash": "2430970a3b9ee98b",
+  "passId": "lighting-pass"
+}

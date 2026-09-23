@@ -32,6 +32,19 @@ for(const name of ['refinement-v2.md','before-refinement-corner.png','refinement
 // Exact crops and the individually authored cafe remain a standalone art study.
 for(const name of ['crop_references.py','crops/index.html','crops/manifest.json','crops/home.png','crops/bakery.png','crops/books.png','crops/florist.png','crops/cafe.png'])await copySource(artStudy+'woodland/references/'+name);
 await copySource(artStudy+'woodland/individual/README.md');
+// Individually authored home: source plus real stage evidence. No native bundle integration.
+const homeStudy=artStudy+'woodland/individual/home/';
+async function copyHomeStudy(relative=''){
+ for(const e of await readdir(path.join(source,homeStudy,relative),{withFileTypes:true})){
+  if(e.name==='__pycache__')continue;
+  if(e.isSymbolicLink())throw Error('Unexpected home-study symlink');
+  const next=path.join(relative,e.name);
+  if(e.isDirectory()){if(!['evidence','.img2threejs'].includes(next)&&!next.startsWith('evidence'+path.sep))throw Error('Unexpected home-study directory: '+next);await copyHomeStudy(next);}
+  else if(/\.(mjs|py|html|md|json|png)$/.test(e.name))await copySource(homeStudy+next.replaceAll('\\','/'));
+  else throw Error('Unexpected home-study file: '+next);
+ }
+}
+await copyHomeStudy();
 for(const name of ['detail-observations.md'])await copySource(artStudy+'woodland/individual/cafe/evidence/'+name);
 for(const name of ['roof4-match.png','roof4-right.png'])await copySource(artStudy+'woodland/individual/cafe/evidence/'+name);
 for(const view of ['match','front','right','back','left','grid','bevel','texture','neutral','grazing','comparison'])await copySource(artStudy+'woodland/individual/cafe/evidence/grid5-'+view+'.png');

@@ -1,0 +1,109 @@
+{
+  "passed": true,
+  "checks": {
+    "silhouetteIoU": 0.93,
+    "aspectRatioDelta": 0.0455,
+    "scaleDelta": 0.0435,
+    "bilateralSymmetryError": 0.1266,
+    "colorDelta": {
+      "checked": 22,
+      "maxDeltaE": 36.41,
+      "perComponent": [
+        {
+          "componentId": null,
+          "deltaE": 15.57
+        },
+        {
+          "componentId": null,
+          "deltaE": 22.78
+        },
+        {
+          "componentId": null,
+          "deltaE": 36.41
+        },
+        {
+          "componentId": null,
+          "deltaE": 10.25
+        },
+        {
+          "componentId": null,
+          "deltaE": 17.52
+        },
+        {
+          "componentId": null,
+          "deltaE": 15.57
+        },
+        {
+          "componentId": null,
+          "deltaE": 10.25
+        },
+        {
+          "componentId": null,
+          "deltaE": 15.57
+        },
+        {
+          "componentId": null,
+          "deltaE": 18.02
+        },
+        {
+          "componentId": null,
+          "deltaE": 18.02
+        },
+        {
+          "componentId": null,
+          "deltaE": 18.02
+        },
+        {
+          "componentId": null,
+          "deltaE": 18.02
+        },
+        {
+          "componentId": null,
+          "deltaE": 18.02
+        },
+        {
+          "componentId": null,
+          "deltaE": 27.62
+        },
+        {
+          "componentId": null,
+          "deltaE": 22.78
+        },
+        {
+          "componentId": null,
+          "deltaE": 10.25
+        },
+        {
+          "componentId": null,
+          "deltaE": 1.73
+        },
+        {
+          "componentId": null,
+          "deltaE": 1.73
+        },
+        {
+          "componentId": null,
+          "deltaE": 1.73
+        },
+        {
+          "componentId": null,
+          "deltaE": 22.78
+        },
+        {
+          "componentId": null,
+          "deltaE": 10.25
+        },
+        {
+          "componentId": null,
+          "deltaE": 29.02
+        }
+      ],
+      "gated": false
+    }
+  },
+  "failures": [],
+  "maskWarnings": [],
+  "renderHash": "c169d11ae9f39828",
+  "passId": "blockout",
+  "mapStrippedRender": "evidence\\home-blockout-match-mask.png"
+}

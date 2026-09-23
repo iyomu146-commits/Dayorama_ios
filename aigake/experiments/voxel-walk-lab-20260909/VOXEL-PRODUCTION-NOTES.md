@@ -99,3 +99,9 @@
 - 採用版・残る差・本体／実機で未確認の点：
 
 詳しい試行履歴は喫茶店の[形状と面取り](./art-comparison-20260923/woodland/individual/cafe/finish-study.md)、[素材表現](./art-comparison-20260923/woodland/individual/cafe/MATERIAL-STUDY.md)、[屋根・色・明暗](./art-comparison-20260923/woodland/individual/cafe/ROOF-STUDY.md)、[制作状態](./art-comparison-20260923/woodland/individual/cafe/STATUS.md)を参照する。
+
+### 住宅での適用例
+
+[住宅の個別試作](./art-comparison-20260923/woodland/individual/home/README.md)では、住宅の正本から形・開口・配色を独立設計し、表面生成と素材処理だけを再利用した。特に `cream` は住宅では漆喰であり、喫茶店の花・植栽向けの色名判定をそのまま使わない。材質分類と木目方向は対象側で定義する。
+
+分解表示では、組み立て時に隠れていた面を対象部品のセルから再生成する。地面に落ちる影を建物の寸法検査へ混ぜない。小さな部品の色は全景の代表色だけで判定せず、遮蔽を保った部品ID画像の実際の可視画素でも確認する。元の不合格記録は残す。これらは各対象の問題に応じて使う検証上の知見であり、全棟の形を統一するルールではない。

@@ -1,0 +1,7 @@
+{
+ "pass":"structural-pass","action":"continue","overall":0.78,
+ "render":"evidence/home-structure-match.png","comparison":"evidence/structure-comparison.png",
+ "layers":{"silhouetteProportion":0.80,"componentStructure":0.80,"formDetail":0.71,"materialSurface":0,"localFeatures":0.70,"lightingCamera":0.70},
+ "features":[{"id":"mass","score":0.80,"notes":"Both storeys and visible side retain the reference proportions."},{"id":"roof-system","score":0.78,"notes":"Closed eaves, ridge and flue are present; thin tile grouping is a later form operation."},{"id":"facade","score":0.76,"notes":"Five apertures, three supported guards and the right door/porch are present. Inner pane width is narrow and will be enlarged one cell per side in the form pass."}],
+ "notes":"Agent inspected structure-comparison and right orbit. Structure matches the source assembly; surfaces intentionally clay. Exact voxel boundary and grounding tests pass. Next form pass widens glass panes, articulates tile noses and timber panels; lighting and palette remain unassessed."
+}

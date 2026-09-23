@@ -1,0 +1,634 @@
+{
+  "targetName": "Dayorama woodland two-storey home",
+  "sourceImage": "../../references/crops/home.png",
+  "preSpecAssessment": {
+    "objectClass": {
+      "primaryType": "two-storey woodland dwelling",
+      "primaryDomain": "object",
+      "formLanguage": [
+        "architectural",
+        "rectilinear",
+        "voxel"
+      ],
+      "structureKind": [
+        "layered shell",
+        "repeated tile courses"
+      ],
+      "motionPotential": [
+        "construction",
+        "component inspection"
+      ],
+      "materialFamilies": [
+        "plaster",
+        "stone",
+        "slate",
+        "wood",
+        "opaque glass",
+        "brick"
+      ],
+      "notes": "Exact approved town crop; 15cm sharp editable cells; no centre mullions, no shutters. Not a recovered physical material."
+    },
+    "complexity": {
+      "tier": "complex",
+      "scores": {
+        "silhouetteComplexity": 2,
+        "componentCount": 3,
+        "hierarchyDepth": 2,
+        "repetitionDensity": 2,
+        "materialLayerCount": 2,
+        "localDetailDensity": 2,
+        "occlusionRisk": 2,
+        "actionReadinessNeed": 1
+      },
+      "estimatedCounts": {
+        "macroComponents": 3,
+        "mesoComponents": 13,
+        "microFeatureGroups": 6,
+        "materialLayers": 8,
+        "repetitionSystems": 2
+      },
+      "reasoning": [
+        "Specific two-storey facade, five windows, three guards, closed tiled roof and hollow chimney need independent specification."
+      ]
+    },
+    "specDepthDecision": {
+      "requiredDepth": "complex",
+      "minimumComponentLevels": [
+        "macro",
+        "meso",
+        "micro"
+      ],
+      "needsRepetitionSystems": true,
+      "needsMaterialLocalOverrides": true,
+      "needsMultipleReviewViews": true,
+      "needsActionReadyHierarchy": true,
+      "rationale": "Choose simple/moderate/complex/ultra-complex from observed structure, not from a hardcoded domain."
+    },
+    "unknownsToResolveBeforeImplementation": [],
+    "detailInventory": {
+      "scanMethod": "component-zones",
+      "targetMinDetails": 10,
+      "note": "Enumerate every identity-defining small detail before authoring the spec. Each detail must map to a component.localFeatures entry or material.localOverrides entry, never prose only. Use forge/stage1_intake/build_detail_inventory.py to scan zones.",
+      "details": [
+        {
+          "id": "plinth-identity",
+          "name": "Low connected stone foundation.",
+          "kind": "ridge",
+          "zone": "plinth",
+          "importance": "important",
+          "componentRef": "plinth",
+          "localFeatureRef": "plinth-identity",
+          "mapsTo": {
+            "ref": "plinth-identity"
+          },
+          "evidenceRefs": [
+            "home-crop"
+          ],
+          "observed": true
+        },
+        {
+          "id": "lower-wall-identity",
+          "name": "Sage plaster at lower floor with sparse grouped stone repairs.",
+          "kind": "ridge",
+          "zone": "lower-wall",
+          "importance": "important",
+          "componentRef": "lower-wall",
+          "localFeatureRef": "lower-wall-identity",
+          "mapsTo": {
+            "ref": "lower-wall-identity"
+          },
+          "evidenceRefs": [
+            "home-crop"
+          ],
+          "observed": true
+        },
+        {
+          "id": "upper-wall-identity",
+          "name": "Cream upper floor with warm corner patches and actual openings.",
+          "kind": "ridge",
+          "zone": "upper-wall",
+          "importance": "important",
+          "componentRef": "upper-wall",
+          "localFeatureRef": "upper-wall-identity",
+          "mapsTo": {
+            "ref": "upper-wall-identity"
+          },
+          "evidenceRefs": [
+            "home-crop"
+          ],
+          "observed": true
+        },
+        {
+          "id": "floor-band-identity",
+          "name": "Pale horizontal belt at floor division.",
+          "kind": "ridge",
+          "zone": "floor-band",
+          "importance": "important",
+          "componentRef": "floor-band",
+          "localFeatureRef": "floor-band-identity",
+          "mapsTo": {
+            "ref": "floor-band-identity"
+          },
+          "evidenceRefs": [
+            "home-crop"
+          ],
+          "observed": true
+        },
+        {
+          "id": "gable-identity",
+          "name": "Right stepped triangular gable closes directly under the roof.",
+          "kind": "ridge",
+          "zone": "gable",
+          "importance": "important",
+          "componentRef": "gable",
+          "localFeatureRef": "gable-identity",
+          "mapsTo": {
+            "ref": "gable-identity"
+          },
+          "evidenceRefs": [
+            "home-crop"
+          ],
+          "observed": true
+        },
+        {
+          "id": "front-low-identity",
+          "name": "Lower left window, uninterrupted inset opaque blue-green glass.",
+          "kind": "ridge",
+          "zone": "front-low",
+          "importance": "important",
+          "componentRef": "front-low",
+          "localFeatureRef": "front-low-identity",
+          "mapsTo": {
+            "ref": "front-low-identity"
+          },
+          "evidenceRefs": [
+            "home-crop"
+          ],
+          "observed": true
+        },
+        {
+          "id": "front-upper-left-identity",
+          "name": "Upper left window with perimeter frame only.",
+          "kind": "ridge",
+          "zone": "front-upper-left",
+          "importance": "important",
+          "componentRef": "front-upper-left",
+          "localFeatureRef": "front-upper-left-identity",
+          "mapsTo": {
+            "ref": "front-upper-left-identity"
+          },
+          "evidenceRefs": [
+            "home-crop"
+          ],
+          "observed": true
+        },
+        {
+          "id": "front-upper-right-identity",
+          "name": "Upper right window, same scale as upper left.",
+          "kind": "ridge",
+          "zone": "front-upper-right",
+          "importance": "important",
+          "componentRef": "front-upper-right",
+          "localFeatureRef": "front-upper-right-identity",
+          "mapsTo": {
+            "ref": "front-upper-right-identity"
+          },
+          "evidenceRefs": [
+            "home-crop"
+          ],
+          "observed": true
+        },
+        {
+          "id": "right-low-identity",
+          "name": "Side ground-floor window with ivory sill.",
+          "kind": "ridge",
+          "zone": "right-low",
+          "importance": "important",
+          "componentRef": "right-low",
+          "localFeatureRef": "right-low-identity",
+          "mapsTo": {
+            "ref": "right-low-identity"
+          },
+          "evidenceRefs": [
+            "home-crop"
+          ],
+          "observed": true
+        },
+        {
+          "id": "right-upper-identity",
+          "name": "Side upper-floor window above lower opening.",
+          "kind": "ridge",
+          "zone": "right-upper",
+          "importance": "important",
+          "componentRef": "right-upper",
+          "localFeatureRef": "right-upper-identity",
+          "mapsTo": {
+            "ref": "right-upper-identity"
+          },
+          "evidenceRefs": [
+            "home-crop"
+          ],
+          "observed": true
+        },
+        {
+          "id": "door-identity",
+          "name": "Recessed timber door on the right; no shutters.",
+          "kind": "ridge",
+          "zone": "door",
+          "importance": "important",
+          "componentRef": "door",
+          "localFeatureRef": "door-identity",
+          "mapsTo": {
+            "ref": "door-identity"
+          },
+          "evidenceRefs": [
+            "home-crop"
+          ],
+          "observed": true
+        },
+        {
+          "id": "porch-identity",
+          "name": "Small blue lean-to porch, attached at wall, clear above doorway.",
+          "kind": "ridge",
+          "zone": "porch",
+          "importance": "important",
+          "componentRef": "porch",
+          "localFeatureRef": "porch-identity",
+          "mapsTo": {
+            "ref": "porch-identity"
+          },
+          "evidenceRefs": [
+            "home-crop"
+          ],
+          "observed": true
+        },
+        {
+          "id": "steps-identity",
+          "name": "Two shallow connected steps; direct clear approach.",
+          "kind": "ridge",
+          "zone": "steps",
+          "importance": "important",
+          "componentRef": "steps",
+          "localFeatureRef": "steps-identity",
+          "mapsTo": {
+            "ref": "steps-identity"
+          },
+          "evidenceRefs": [
+            "home-crop"
+          ],
+          "observed": true
+        },
+        {
+          "id": "rail-left-identity",
+          "name": "Dark upper window guard with open slots and two wall-return brackets.",
+          "kind": "ridge",
+          "zone": "rail-left",
+          "importance": "important",
+          "componentRef": "rail-left",
+          "localFeatureRef": "rail-left-identity",
+          "mapsTo": {
+            "ref": "rail-left-identity"
+          },
+          "evidenceRefs": [
+            "home-crop"
+          ],
+          "observed": true
+        },
+        {
+          "id": "rail-right-identity",
+          "name": "Second upper window guard; both stay below upper half of glass.",
+          "kind": "ridge",
+          "zone": "rail-right",
+          "importance": "important",
+          "componentRef": "rail-right",
+          "localFeatureRef": "rail-right-identity",
+          "mapsTo": {
+            "ref": "rail-right-identity"
+          },
+          "evidenceRefs": [
+            "home-crop"
+          ],
+          "observed": true
+        },
+        {
+          "id": "rail-side-identity",
+          "name": "Side window guard; brackets connect to the side wall.",
+          "kind": "ridge",
+          "zone": "rail-side",
+          "importance": "important",
+          "componentRef": "rail-side",
+          "localFeatureRef": "rail-side-identity",
+          "mapsTo": {
+            "ref": "rail-side-identity"
+          },
+          "evidenceRefs": [
+            "home-crop"
+          ],
+          "observed": true
+        },
+        {
+          "id": "ridge-identity",
+          "name": "Low continuous ridge with small grouped tile color differences.",
+          "kind": "ridge",
+          "zone": "ridge",
+          "importance": "important",
+          "componentRef": "ridge",
+          "localFeatureRef": "ridge-identity",
+          "mapsTo": {
+            "ref": "ridge-identity"
+          },
+          "evidenceRefs": [
+            "home-crop"
+          ],
+          "observed": true
+        },
+        {
+          "id": "chimney-cap-identity",
+          "name": "Pale projecting rim with a true upward opening.",
+          "kind": "ridge",
+          "zone": "chimney-cap",
+          "importance": "important",
+          "componentRef": "chimney-cap",
+          "localFeatureRef": "chimney-cap-identity",
+          "mapsTo": {
+            "ref": "chimney-cap-identity"
+          },
+          "evidenceRefs": [
+            "home-crop"
+          ],
+          "observed": true
+        },
+        {
+          "id": "door-handle-identity",
+          "name": "Small handle on right side of timber door.",
+          "kind": "ridge",
+          "zone": "door-handle",
+          "importance": "important",
+          "componentRef": "door-handle",
+          "localFeatureRef": "door-handle-identity",
+          "mapsTo": {
+            "ref": "door-handle-identity"
+          },
+          "evidenceRefs": [
+            "home-crop"
+          ],
+          "observed": true
+        }
+      ]
+    },
+    "anatomy": {
+      "applies": false,
+      "styleHeads": 0,
+      "proportions": {
+        "headUnit": 0,
+        "torso": 0,
+        "legs": 0,
+        "shoulderWidth": 0,
+        "hipWidth": 0
+      },
+      "pose": {
+        "type": "unassessed",
+        "jointAngles": {}
+      },
+      "faceLandmarks": {
+        "eyeLine": 0,
+        "eyeSpacing": 0,
+        "noseBase": 0,
+        "mouthLine": 0,
+        "hairline": 0
+      },
+      "features": [],
+      "confidence": 0,
+      "note": "Only meaningful when objectClass.primaryDomain is character or hybrid. Set applies=true and fill from forge/stage1_intake/extract_landmarks.py. See grimoire/character/reconstruction.md and grimoire/character/likeness_maximization.md."
+    },
+    "sourceImage": "../../references/crops/home.png"
+  },
+  "qualityContract": {
+    "qualityBar": "complex",
+    "definitionOfDone": [
+      "Independent 15cm editable reconstruction of the exact home crop. Match the two-storey silhouette, gabled roof, openings and palette; keep upper window guards but remove mullions and shutters as user requested.",
+      "No detached components, roof holes, inaccessible doorway, fractional block scales or missing faces. Keep inference and unmeasured iPhone performance explicit."
+    ],
+    "minimumSpecDepth": {
+      "macroComponents": 3,
+      "mesoComponents": 8,
+      "microFeatureGroups": 5,
+      "materialLayers": 3,
+      "repetitionSystems": 1,
+      "reviewViewpoints": 4
+    },
+    "featureGroups": [
+      {
+        "id": "overall-silhouette",
+        "name": "Overall silhouette and proportions",
+        "required": true,
+        "qualityCriteria": [
+          "Bounding shape, dominant curves, negative spaces, and scale relationships are explicitly described."
+        ],
+        "evidenceRefs": [
+          "full-object"
+        ],
+        "failureModes": [
+          "model reads as a generic placeholder instead of the reference object",
+          "major proportions are guessed without evidence"
+        ]
+      },
+      {
+        "id": "primary-structure",
+        "name": "Primary structure and hierarchy",
+        "required": true,
+        "qualityCriteria": [
+          "Major parts, joints, seams, contact points, and parent-child relationships are named before code generation."
+        ],
+        "evidenceRefs": [
+          "full-object"
+        ],
+        "failureModes": [
+          "large visible parts are merged into one mesh",
+          "component hierarchy is too shallow for the observed complexity"
+        ]
+      },
+      {
+        "id": "attachment-joint-correctness",
+        "name": "Attachment and joint correctness",
+        "required": true,
+        "qualityCriteria": [
+          "Every visible child appendage, branch, limb, handle, connector, tube, cable, horn, wing, leg, or hinged part has an attachment contract with parent socket, localStart/localEnd, contact type, embed/overlap, and gap tolerance."
+        ],
+        "evidenceRefs": [
+          "full-object"
+        ],
+        "failureModes": [
+          "child part root floats away from the parent",
+          "branch/limb/tube is centered in space instead of pivoting from its root",
+          "parent-child transform mixes world and local coordinates"
+        ]
+      },
+      {
+        "id": "surface-material-response",
+        "name": "Surface material response",
+        "required": true,
+        "qualityCriteria": [
+          "Albedo zones, roughness, normal/bump/displacement intent, cavity dirt, edge wear, and local overrides are specified where visible.",
+          "Important materials define independent albedo, roughness, height/normal, and AO responses instead of reusing one texture for unrelated PBR channels.",
+          "Surface response is decomposed into macro, meso, and micro frequency bands with scale and amplitude tied to object scale."
+        ],
+        "evidenceRefs": [
+          "full-object"
+        ],
+        "failureModes": [
+          "surface looks like flat plastic",
+          "local material variation is missing or not tied to image evidence"
+        ]
+      },
+      {
+        "id": "reference-lookdev",
+        "name": "Reference color, material, and lighting response",
+        "required": true,
+        "qualityCriteria": [
+          "Material-pass names the reference-derived albedo palette, roughness variation, tactile normal/bump/displacement response, and local masks.",
+          "When a source image is available, run reference PBR extraction and require confidence >= 0.7 before treating maps as implementation-ready.",
+          "Lighting-pass names key/fill/rim or environment light, exposure, tone mapping, background, and contact shadow behavior.",
+          "Neutral, grazing-angle, and reference-matched renders prove that surface relief survives relighting and is not painted into albedo."
+        ],
+        "evidenceRefs": [
+          "full-object"
+        ],
+        "failureModes": [
+          "model has acceptable shape but reads as flat shaded or plastic",
+          "colors are a generic average instead of reference-observed local color zones",
+          "lighting is evenly ambient and cannot reproduce the source value range"
+        ]
+      }
+    ],
+    "visualDeltaChecks": [
+      "silhouette and negative-space delta",
+      "component hierarchy depth delta",
+      "repetition density and distribution delta",
+      "material albedo/roughness/normal response delta",
+      "local feature placement and scale delta"
+    ],
+    "antiShallowSpecRules": [
+      "Do not proceed to code if qualityContract.qualityBar is unassessed.",
+      "Do not proceed to code if the spec only contains a root component for a moderate or complex object.",
+      "Do not proceed to code if required featureGroups are not represented by componentTree, materials, or repetitionSystems.",
+      "Do not proceed to code if visible local features are described only in prose and not attached to components/materials/evidenceRefs.",
+      "Do not proceed past structural-pass if attached child parts lack attachment.parentSocket, localStart, localEnd, embedDepth/overlap, and gapTolerance.",
+      "Do not pass material look-dev when albedo is reused as roughness, height, normal, or AO.",
+      "Do not pass material look-dev without macro, meso, and micro surface frequency bands for close-up materials.",
+      "Do not pass reference-fidelity material look-dev from a source image without usable referencePbr maps or an explicit documented limitation.",
+      "Do not patch a spec with extracted PBR maps when extraction confidence is below the target threshold unless the user explicitly accepts lower fidelity.",
+      "Do not place adjacent separate-geometry parts below 0.02 world-unit seam overlap (source: grimoire/build/geometry_patterns.md).",
+      "Do not satisfy raised or recessed relief, fasteners, or grip structure with a map alone when the feature affects form; use geometry or displacement (source: grimoire/build/geometry_patterns.md).",
+      "Adjacent components must overlap by at least 0.02 world units at shared seams (source: grimoire/build/geometry_patterns.md).",
+      "Raised or recessed relief and fasteners must be geometry, instanced micro-parts, or displacement; a map alone is an approximation (source: grimoire/build/geometry_patterns.md)."
+    ],
+    "mustNotDo": [
+      "Do not proceed to code if qualityContract.qualityBar is unassessed.",
+      "Do not proceed to code if the spec only contains a root component for a moderate or complex object.",
+      "Do not proceed to code if required featureGroups are not represented by componentTree, materials, or repetitionSystems.",
+      "Do not proceed to code if visible local features are described only in prose and not attached to components/materials/evidenceRefs.",
+      "Do not proceed past structural-pass if attached child parts lack attachment.parentSocket, localStart, localEnd, embedDepth/overlap, and gapTolerance.",
+      "Do not pass material look-dev when albedo is reused as roughness, height, normal, or AO.",
+      "Do not pass material look-dev without macro, meso, and micro surface frequency bands for close-up materials.",
+      "Do not pass reference-fidelity material look-dev from a source image without usable referencePbr maps or an explicit documented limitation.",
+      "Do not patch a spec with extracted PBR maps when extraction confidence is below the target threshold unless the user explicitly accepts lower fidelity.",
+      "Do not place adjacent separate-geometry parts below 0.02 world-unit seam overlap (source: grimoire/build/geometry_patterns.md).",
+      "Do not satisfy raised or recessed relief, fasteners, or grip structure with a map alone when the feature affects form; use geometry or displacement (source: grimoire/build/geometry_patterns.md).",
+      "Adjacent components must overlap by at least 0.02 world units at shared seams (source: grimoire/build/geometry_patterns.md).",
+      "Raised or recessed relief and fasteners must be geometry, instanced micro-parts, or displacement; a map alone is an approximation (source: grimoire/build/geometry_patterns.md)."
+    ]
+  },
+  "authoringInstruction": "Fill observed object class, complexity reasoning, featureGroups, visualDeltaChecks, and unknowns before generating or implementing ObjectSculptSpec.",
+  "localSpecSearch": {
+    "collection": "core_3d",
+    "query": "Dayorama woodland two-storey home architecture slate roof plaster wooden window railing voxel mesh",
+    "index": {
+      "status": "hit",
+      "reason": "current",
+      "fingerprint": "6857e5ab528b42ac12f4f411f862610a0bffce8e47aee3610a7603c318072fe8"
+    },
+    "matches": [
+      {
+        "record_id": "core.description-controlled-vocabulary-aat-facets",
+        "file_path": "docs/raw/img2threejs-skill-dataset.json",
+        "heading": null,
+        "key_path": "categories.description_conventions[5]",
+        "score": 4.441703167424,
+        "snippets": [
+          "Standardized terminology (Getty Art & Architecture Thesaurus facets for materials, activities, physical attributes) replacing vague or inconsistent free-text terms. Thuật ngữ chuẩn hóa (các facet của Getty Art & Architecture Thesaurus cho vật ..."
+        ],
+        "source_refs": [
+          {
+            "path": "docs/raw/img2threejs-skill-dataset.json",
+            "heading": null,
+            "key_path": "categories.description_conventions[5]"
+          }
+        ],
+        "evidence_refs": [
+          {
+            "kind": "source",
+            "ref": "docs/raw/img2threejs-skill-dataset.json",
+            "note": "img2threejs NotebookLM research distillation"
+          }
+        ]
+      },
+      {
+        "record_id": "core.topology-intent",
+        "file_path": "grimoire/glossary/3d_vocabulary.md",
+        "heading": "Geometry And Topology",
+        "key_path": null,
+        "score": 4.394515582459,
+        "snippets": [
+          "Topology intent classifies a surface as hard-surface blockout, subdivision-ready, low-poly prop, organic deformed mesh, or alpha-card cluster."
+        ],
+        "source_refs": [
+          {
+            "path": "grimoire/glossary/3d_vocabulary.md",
+            "heading": "Geometry And Topology",
+            "key_path": null
+          }
+        ],
+        "evidence_refs": [
+          {
+            "kind": "source",
+            "ref": "grimoire/glossary/3d_vocabulary.md"
+          },
+          {
+            "kind": "notebooklm-research",
+            "ref": "notebooklm:4b03c2f9-8393-411f-b5b4-039ab9532843",
+            "note": "Validated generic schema vocabulary; numeric claims remain backed by local source_refs."
+          }
+        ]
+      },
+      {
+        "record_id": "core.runtime-hierarchy",
+        "file_path": "grimoire/readiness/action_rigging.md",
+        "heading": "Hierarchy Pattern",
+        "key_path": null,
+        "score": 4.377257479872,
+        "snippets": [
+          "An action-ready model uses a root, component pivot groups, visual meshes, sockets, collider metadata or proxies, and destruction-group metadata."
+        ],
+        "source_refs": [
+          {
+            "path": "grimoire/readiness/action_rigging.md",
+            "heading": "Hierarchy Pattern",
+            "key_path": null
+          }
+        ],
+        "evidence_refs": [
+          {
+            "kind": "source",
+            "ref": "grimoire/readiness/action_rigging.md"
+          },
+          {
+            "kind": "notebooklm-research",
+            "ref": "notebooklm:4b03c2f9-8393-411f-b5b4-039ab9532843",
+            "note": "Validated generic schema vocabulary; numeric claims remain backed by local source_refs."
+          }
+        ]
+      }
+    ]
+  }
+}

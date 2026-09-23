@@ -1,0 +1,111 @@
+{
+  "passed": false,
+  "checks": {
+    "silhouetteIoU": 0.8606,
+    "aspectRatioDelta": 0.1078,
+    "scaleDelta": 0.0602,
+    "bilateralSymmetryError": 0.1407,
+    "colorDelta": {
+      "checked": 22,
+      "maxDeltaE": 22.96,
+      "perComponent": [
+        {
+          "componentId": null,
+          "deltaE": 11.07
+        },
+        {
+          "componentId": null,
+          "deltaE": 7.15
+        },
+        {
+          "componentId": null,
+          "deltaE": 22.96
+        },
+        {
+          "componentId": null,
+          "deltaE": 6.84
+        },
+        {
+          "componentId": null,
+          "deltaE": 10.24
+        },
+        {
+          "componentId": null,
+          "deltaE": 11.07
+        },
+        {
+          "componentId": null,
+          "deltaE": 6.84
+        },
+        {
+          "componentId": null,
+          "deltaE": 11.07
+        },
+        {
+          "componentId": null,
+          "deltaE": 9.7
+        },
+        {
+          "componentId": null,
+          "deltaE": 9.7
+        },
+        {
+          "componentId": null,
+          "deltaE": 9.7
+        },
+        {
+          "componentId": null,
+          "deltaE": 9.7
+        },
+        {
+          "componentId": null,
+          "deltaE": 9.7
+        },
+        {
+          "componentId": null,
+          "deltaE": 10.17
+        },
+        {
+          "componentId": null,
+          "deltaE": 7.15
+        },
+        {
+          "componentId": null,
+          "deltaE": 6.84
+        },
+        {
+          "componentId": null,
+          "deltaE": 16.62
+        },
+        {
+          "componentId": null,
+          "deltaE": 16.62
+        },
+        {
+          "componentId": null,
+          "deltaE": 16.62
+        },
+        {
+          "componentId": null,
+          "deltaE": 7.15
+        },
+        {
+          "componentId": null,
+          "deltaE": 6.84
+        },
+        {
+          "componentId": null,
+          "deltaE": 11.16
+        }
+      ],
+      "gated": true
+    }
+  },
+  "failures": [
+    "aspect-ratio delta 0.108 exceeds threshold 0.05",
+    "max per-part color delta-E 22.96 exceeds threshold 20.0"
+  ],
+  "maskWarnings": [],
+  "renderHash": "7fa76f77e88814a4",
+  "passId": "lighting-pass"
+}

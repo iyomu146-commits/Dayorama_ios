@@ -1,0 +1,110 @@
+{
+  "passed": false,
+  "checks": {
+    "silhouetteIoU": 0.9131,
+    "aspectRatioDelta": 0.0222,
+    "scaleDelta": 0.0217,
+    "bilateralSymmetryError": 0.1284,
+    "colorDelta": {
+      "checked": 22,
+      "maxDeltaE": 25.28,
+      "perComponent": [
+        {
+          "componentId": null,
+          "deltaE": 12.71
+        },
+        {
+          "componentId": null,
+          "deltaE": 4.38
+        },
+        {
+          "componentId": null,
+          "deltaE": 25.28
+        },
+        {
+          "componentId": null,
+          "deltaE": 5.95
+        },
+        {
+          "componentId": null,
+          "deltaE": 17.06
+        },
+        {
+          "componentId": null,
+          "deltaE": 12.71
+        },
+        {
+          "componentId": null,
+          "deltaE": 5.95
+        },
+        {
+          "componentId": null,
+          "deltaE": 12.71
+        },
+        {
+          "componentId": null,
+          "deltaE": 9.01
+        },
+        {
+          "componentId": null,
+          "deltaE": 9.01
+        },
+        {
+          "componentId": null,
+          "deltaE": 9.01
+        },
+        {
+          "componentId": null,
+          "deltaE": 9.01
+        },
+        {
+          "componentId": null,
+          "deltaE": 9.01
+        },
+        {
+          "componentId": null,
+          "deltaE": 9.7
+        },
+        {
+          "componentId": null,
+          "deltaE": 4.38
+        },
+        {
+          "componentId": null,
+          "deltaE": 5.95
+        },
+        {
+          "componentId": null,
+          "deltaE": 4.86
+        },
+        {
+          "componentId": null,
+          "deltaE": 4.86
+        },
+        {
+          "componentId": null,
+          "deltaE": 4.86
+        },
+        {
+          "componentId": null,
+          "deltaE": 4.38
+        },
+        {
+          "componentId": null,
+          "deltaE": 5.95
+        },
+        {
+          "componentId": null,
+          "deltaE": 9.09
+        }
+      ],
+      "gated": true
+    }
+  },
+  "failures": [
+    "max per-part color delta-E 25.28 exceeds threshold 20.0"
+  ],
+  "maskWarnings": [],
+  "renderHash": "a2e5a8fcf081b152",
+  "passId": "material-pass"
+}

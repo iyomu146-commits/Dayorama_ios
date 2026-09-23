@@ -1,0 +1,12 @@
+{
+  "reviewer": "Codex agent vision; direct inspection of the browser comparison and right orbit on 2026-09-23",
+  "pass": "blockout",
+  "overall": 0.80,
+  "layers": {"silhouetteProportion":0.82,"componentStructure":0.79,"formDetail":0.70,"materialSurface":0.0,"localFeatures":0.0,"lightingCamera":0.76},
+  "features": [
+    {"id":"mass","score":0.82,"notes":"Front width versus wall height and right-side depth read as the two-storey source; corner is slightly wider than source. Windows and finish are not part of this pass."},
+    {"id":"roof-system","score":0.78,"notes":"Ridge direction, front gable slope, eave projection and right-rear chimney agree in the primary view. Side view retains full depth. Individual tile lanes and chimney opening are scheduled in structure/form passes."}
+  ],
+  "evidence":["blockout-comparison.png","home-blockout-match.png","home-blockout-right.png","blockout-diagnostics.json","blockout-multi-angle.json"],
+  "limits":"Stage-specific judgement, not finished-house quality. Manual building mask is inferred where plants occlude corners. The standard square comparison sheet crops the chimney top; the original match image and source were also inspected. No phone performance inference."
+}
