@@ -1,43 +1,59 @@
 import {meshChunk} from '../../../density-core.mjs';
-import {CELL} from './model.mjs?v=finish3';
-import {roughness} from './palette.mjs?v=finish3';
+import {CELL} from './model.mjs?v=grid5';
+import {roughness} from './palette.mjs?v=grid5';
+import {FINISH_BEVEL} from './architectural-finish.mjs?v=grid5';
 
 // Low-poly chamfers belong to a whole tile/sill, not every editable cube.
 // A box has 6 planes, 12 edge strips and 8 corner triangles = 44 triangles.
-export function chamferBox(box,radius,{seed=0,tile=false,sign=1,overlay=false,axis=2,relief=false,backPlane}={}){
- let [x,y,z,w,h,d]=box;
- // Keep a narrow joint; strong bevels plus a wide inset made each tile look detached.
- if(tile){x+=.03;w-=.06;h=1.9;radius=Math.min(radius,.085);}
+export function chamferBox(box,radius=FINISH_BEVEL,occupancy=null){
+ if(box.length!==6||!box.every(Number.isInteger)||box.slice(3).some(v=>v<1))throw new Error('Finish boxes must occupy whole grid cells');
+ if(!Number.isFinite(radius)||radius<=0||radius>FINISH_BEVEL)throw new Error('Finish bevel exceeds the shared grid allowance');
+ const [x,y,z,w,h,d]=box;
  const half=[w/2,h/2,d/2],center=[x+w/2,y+h/2,z+d/2],b=Math.min(radius,...half.map(v=>v*.7));
  const positions=[],normals=[],polys=[],signs=[-1,1];
+ // Hide a face/edge/corner only when its entire adjacent integer-cell shell
+ // exists. Partial neighbours retain the whole facet, so openings stay intact.
+ const hiddenCache=new Map(),origin=[x,y,z],extent=[w,h,d];
+ const hidden=directions=>{
+  if(!occupancy)return false;
+  const tag=directions.map(([a,s])=>`${a}:${s}`).join('/');
+  if(hiddenCache.has(tag))return hiddenCache.get(tag);
+  for(let mask=1;mask<(1<<directions.length);mask++){
+   const lo=[...origin],hi=origin.map((v,a)=>v+extent[a]);
+   directions.forEach(([a,s],i)=>{if(mask&(1<<i)){lo[a]=s<0?origin[a]-1:hi[a];hi[a]=lo[a]+1;}});
+   for(let i=lo[0];i<hi[0];i++)for(let j=lo[1];j<hi[1];j++)for(let k=lo[2];k<hi[2];k++)if(!occupancy.has(`${i},${j},${k}`)){hiddenCache.set(tag,false);return false;}
+  }
+  hiddenCache.set(tag,true);return true;
+ };
  for(let axis=0;axis<3;axis++)for(const s of signs){
-  const u=(axis+1)%3,v=(axis+2)%3;
+  const u=(axis+1)%3,v=(axis+2)%3;if(hidden([[axis,s]]))continue;
   polys.push([[-1,-1],[1,-1],[1,1],[-1,1]].map(([su,sv])=>{const p=[0,0,0];p[axis]=s*half[axis];p[u]=su*(half[u]-b);p[v]=sv*(half[v]-b);return p;}));
  }
  for(let axis=0;axis<3;axis++)for(const su of signs)for(const sv of signs){
-  const u=(axis+1)%3,v=(axis+2)%3,pts=[];
+  const u=(axis+1)%3,v=(axis+2)%3,pts=[];if(hidden([[u,su],[v,sv]]))continue;
   for(const [sa,t] of [[-1,0],[1,0],[1,1],[-1,1]]){const p=[0,0,0];p[axis]=sa*(half[axis]-b);p[u]=su*(half[u]-(t?b:0));p[v]=sv*(half[v]-(t?0:b));pts.push(p);}polys.push(pts);
  }
- for(const sx of signs)for(const sy of signs)for(const sz of signs)polys.push([0,1,2].map(a=>[sx,sy,sz].map((s,i)=>s*(half[i]-(i===a?0:b)))));
- const yaw=tile?Math.sin(seed*7.31)*.005:0,tilt=tile?sign*(.025+Math.sin(seed*3.73)*.009):0,raise=tile?.02+Math.sin(seed*11.41)*.025:0;
- const warp=p=>{const [px,py,pz]=p,yy=py*Math.cos(tilt)-pz*Math.sin(tilt)+(tile?.07*Math.sin(seed*1.37)*px/half[0]+.035*Math.sin(seed*5.17)*px*pz/(half[0]*half[2]):0),zz=py*Math.sin(tilt)+pz*Math.cos(tilt);const q=[px*Math.cos(yaw)+zz*Math.sin(yaw)+center[0],yy+center[1]+raise,-px*Math.sin(yaw)+zz*Math.cos(yaw)+center[2]];if(relief)q[axis]+=.025*Math.sin(seed*3.71)*py/half[1];return q.map(v=>v*CELL);};
+ for(const sx of signs)for(const sy of signs)for(const sz of signs)if(!hidden([[0,sx],[1,sy],[2,sz]]))polys.push([0,1,2].map(a=>[sx,sy,sz].map((s,i)=>s*(half[i]-(i===a?0:b)))));
+ // Only remove material at the edges; never resize, tilt, jitter or offset a unit.
+ const toWorld=p=>p.map((v,i)=>(v+center[i])*CELL);
  const cross=(a,b)=>[a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]],sub=(a,b)=>a.map((v,i)=>v-b[i]);
  for(let poly of polys){const n=cross(sub(poly[1],poly[0]),sub(poly[2],poly[0])),mid=poly.reduce((a,p)=>a.map((v,i)=>v+p[i]),[0,0,0]);if(n.reduce((s,v,i)=>s+v*mid[i],0)<0)poly=poly.toReversed();
-  const pts=poly.map(warp);for(let i=1;i<pts.length-1;i++){const tri=[pts[0],pts[i],pts[i+1]],normal=cross(sub(tri[1],tri[0]),sub(tri[2],tri[0])),len=Math.hypot(...normal);if(overlay&&(normal[axis]*sign< -len*.1||Number.isFinite(backPlane)&&tri.every(p=>p[axis]*sign<=backPlane*CELL*sign+1e-7)))continue;for(const p of tri){positions.push(...p);normals.push(...normal.map(v=>v/len));}}
+  const pts=poly.map(toWorld);for(let i=1;i<pts.length-1;i++){const tri=[pts[0],pts[i],pts[i+1]],normal=cross(sub(tri[1],tri[0]),sub(tri[2],tri[0])),len=Math.hypot(...normal);for(const p of tri){positions.push(...p);normals.push(...normal.map(v=>v/len));}}
  }
  return {positions,normals};
 }
 
-export const intactFinishUnit=(u,cells)=>u.keys.every((k,i)=>cells.get(k)?.part===u.part&&(u.shape.overlay||cells.get(k)?.finishUnit===u.id)&&cells.get(k)?.color===u.colors?.[i]);
+export const intactFinishUnit=(u,cells)=>u.keys.length>0&&u.keys.every((k,i)=>cells.get(k)?.part===u.part&&cells.get(k)?.finishUnit===u.id&&cells.get(k)?.color===u.colors?.[i]);
 export function buildCafeSurfaces(cells,palette,{finish=true,isolated=false}={}){
- const units=finish?(cells.finishUnits||[]).filter(u=>intactFinishUnit(u,cells)):[],replaced=new Set(units.filter(u=>!u.shape.overlay).flatMap(u=>u.keys));
+ const units=finish?(cells.finishUnits||[]).filter(u=>intactFinishUnit(u,cells)):[],replaced=new Set(units.flatMap(u=>u.keys));
  const raw=new Map([...cells].filter(([k])=>!replaced.has(k))),result=[];
  for(const part of new Set([...cells.values()].map(c=>c.part))){
   const selected=[...raw.values()].filter(c=>c.part===part),occupancy=isolated?new Map(selected.map(c=>[`${c.x},${c.y},${c.z}`,c])):raw;
   const m=meshChunk(selected,occupancy,CELL,{palette,roughnessFor:c=>roughness(c.color),aoStrength:.065});
   const positions=[...m.positions],normals=[...m.normals],colors=[...m.colors],surfaces=[...m.surfaces];
+  const finishOccupancy=isolated?new Map([...cells].filter(([,c])=>c.part===part)):cells;
   for(const u of units.filter(u=>u.part===part))for(const b of u.shape.boxes||[u.shape.box]){
-   const g=chamferBox(b,u.shape.bevel,u.shape),c=palette[u.shape.color],r=roughness(u.shape.color);
+   const g=chamferBox(b,u.shape.bevel,finishOccupancy),c=palette[u.shape.color],r=roughness(u.shape.color);
    positions.push(...g.positions);normals.push(...g.normals);
    for(let i=0;i<g.positions.length/3;i++){colors.push(...c);surfaces.push(0,r);}
   }

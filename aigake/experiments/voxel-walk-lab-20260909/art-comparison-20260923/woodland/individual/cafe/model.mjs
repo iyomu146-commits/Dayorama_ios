@@ -1,6 +1,6 @@
 // Cafe only. Dimensions are authored from references/crops/cafe.png.
 // Shared infrastructure handles faces, never architectural design.
-import {addArchitecturalFinish} from './architectural-finish.mjs?v=finish3';
+import {addArchitecturalFinish,FINISH_BEVEL} from './architectural-finish.mjs?v=grid5';
 export const CELL=.15;
 export function createCafeBlockoutCells(){
  const cells=new Map();
@@ -41,13 +41,13 @@ export function createCafeCells({stage='structure',color=true}={}){
  box('front-window',-13,6,12,15,12,3,'ivory');
  box('front-window',-12,7,14,13,10,1,'wood');
  box('front-window',-11,8,13,11,8,1,(x,y)=>y<10+Math.floor((x+11)/4)?'glassMid':x<-8&&y>13?'glassPale':'glass');cut(-11,8,14,11,8,1);
- for(const [i,b] of [[-12,7,14,1,10,1],[0,7,14,1,10,1],[-11,7,14,11,1,1],[-11,16,14,11,1,1]].entries())unit(`front-frame-${i}`,'front-window',{box:b,color:'wood',bevel:.10},()=>box('front-window',...b,'wood'));
- unit('front-sill','front-window',{box:[-14,5,13,17,1,3],color:'ivory',bevel:.14},()=>box('front-window',-14,5,13,17,1,3,'ivory'));
+ for(const [i,b] of [[-12,7,14,1,10,1],[0,7,14,1,10,1],[-11,7,14,11,1,1],[-11,16,14,11,1,1]].entries())unit(`front-frame-${i}`,'front-window',{box:b,color:'wood',bevel:FINISH_BEVEL},()=>box('front-window',...b,'wood'));
+ unit('front-sill','front-window',{box:[-14,5,13,17,1,3],color:'ivory',bevel:FINISH_BEVEL},()=>box('front-window',-14,5,13,17,1,3,'ivory'));
  box('side-window',15,6,-7,3,12,13,'ivory');
  box('side-window',17,7,-6,1,10,11,'wood');
  box('side-window',16,8,-5,1,8,9,(_x,y,z)=>y<10+Math.floor((z+5)/4)?'glassMid':'glass');cut(17,8,-5,1,8,9);
- for(const [i,b] of [[17,7,-6,1,10,1],[17,7,4,1,10,1],[17,7,-5,1,1,9],[17,16,-5,1,1,9]].entries())unit(`side-frame-${i}`,'side-window',{box:b,color:'wood',bevel:.10},()=>box('side-window',...b,'wood'));
- unit('side-sill','side-window',{box:[16,5,-8,3,1,15],color:'ivory',bevel:.14},()=>box('side-window',16,5,-8,3,1,15,'ivory'));
+ for(const [i,b] of [[17,7,-6,1,10,1],[17,7,4,1,10,1],[17,7,-5,1,1,9],[17,16,-5,1,1,9]].entries())unit(`side-frame-${i}`,'side-window',{box:b,color:'wood',bevel:FINISH_BEVEL},()=>box('side-window',...b,'wood'));
+ unit('side-sill','side-window',{box:[16,5,-8,3,1,15],color:'ivory',bevel:FINISH_BEVEL},()=>box('side-window',16,5,-8,3,1,15,'ivory'));
  box('door',5,2,12,10,18,3,'woodDark');
  box('door',6,2,14,8,17,1,'wood');box('door',7,3,14,6,6,1,'woodPanel');
  box('door',7,10,13,6,8,1,'glass');cut(7,10,14,6,8,1);
@@ -56,7 +56,7 @@ export function createCafeCells({stage='structure',color=true}={}){
  // Eaves and front fabric share actual wall contact. Door top stays below fabric.
  for(let strip=0;strip<12;strip++){
   const x=-18+strip*3,c=strip%2?'ivory':'cloth';
-  unit(`awning-${strip}`,'awning',{boxes:[[x,21,14,3,1,4],[x,20,18,3,2,3],[x,19,21,3,2,2]],color:c,bevel:.18},()=>{box('awning',x,21,14,3,1,4,c,3);box('awning',x,20,18,3,2,3,c,3);box('awning',x,19,21,3,2,2,c,3);});
+  unit(`awning-${strip}`,'awning',{boxes:[[x,21,14,3,1,4],[x,20,18,3,2,3],[x,19,21,3,2,2]],color:c,bevel:FINISH_BEVEL},()=>{box('awning',x,21,14,3,1,4,c,3);box('awning',x,20,18,3,2,3,c,3);box('awning',x,19,21,3,2,2,c,3);});
  }
  box('steps',4,0,14,12,1,7,'stoneLight',0);box('steps',5,1,14,10,1,5,'stoneLight',0);
  // Closed roof underlay; a groove is one cell lower, never an open hole.
@@ -70,7 +70,7 @@ export function createCafeCells({stage='structure',color=true}={}){
  const tones=[['slate','slate2','slateMuted','slate','slate2','slate'],['slate','slateSage','slateSage2','slate2','slateSage','slate'],['slateMuted','slate','slate2','slateMuted','slate','slate2'],['slate','slate2','slateMuted','slate2','slate','slate'],['slate','slateSage2','slateSage','slate2','slateSage','slate']];
  for(const sign of [-1,1])for(let lane=0;lane<10;lane++)for(let row=0;row<6;row++){
   const x=-20+lane*4,z=sign>0?15-row*3:-18+row*3,y=23+row*2,c=tones[Math.floor(lane/2)][row];
-  unit(`tile-${sign}-${lane}-${row}`,'tiles',{box:[x,y,z,4,2,3],color:c,bevel:.17,tile:true,seed:lane*19+row*7+(sign>0?71:0),sign},()=>{
+  unit(`tile-${sign}-${lane}-${row}`,'tiles',{boxes:[[x,y,z,4,1,3],[x,y+1,z+(sign>0?1:0),4,1,2]],color:c,bevel:FINISH_BEVEL,tile:true},()=>{
   box('tiles',x,y,z,4,1,3,c,3);
   box('tiles',x,y+1,z+(sign>0?1:0),4,1,2,c,3);
   // Two- or three-cell patches stay within the tile; never per-cell random noise.
@@ -78,15 +78,15 @@ export function createCafeCells({stage='structure',color=true}={}){
   box('tiles',x+px,y+1,z+(sign>0?1:0),1,1,2,pc,3);
   });
  }
- for(let i=0;i<10;i++){const c=i%3===1?'slateMuted':'slateEdge';unit(`ridge-${i}`,'ridge',{box:[-20+i*4,34,-1,4,2,2],color:c,bevel:.22},()=>box('ridge',-20+i*4,34,-1,4,2,2,c,3));}
+ for(let i=0;i<10;i++){const c=i%3===1?'slateMuted':'slateEdge';unit(`ridge-${i}`,'ridge',{box:[-20+i*4,34,-1,4,2,2],color:c,bevel:FINISH_BEVEL},()=>box('ridge',-20+i*4,34,-1,4,2,2,c,3));}
  // Back of chimney is inferred; shaft starts within the roof support, cap has a real opening.
  box('chimney',-13,27,-11,5,10,5,(x,y,z)=>brick(x,y,z),3);
  box('chimney',-12,32,-10,3,1,3,'soot',3);cut(-12,33,-10,3,5,3);
  const cap=[[ -14,37,-12,7,1,2 ],[ -14,37,-7,7,1,2 ],[ -14,37,-10,2,1,3 ],[ -9,37,-10,2,1,3 ]];
- cap.forEach((b,i)=>unit(`cap-${i}`,'chimney',{box:b,color:'ivory',bevel:.16},()=>box('chimney',...b,'ivory',3)));
+ cap.forEach((b,i)=>unit(`cap-${i}`,'chimney',{box:b,color:'ivory',bevel:FINISH_BEVEL},()=>box('chimney',...b,'ivory',3)));
  // Individual paving stones. All loose objects stand on the same Y=1 surface.
  for(let x=19;x<40;x++)for(let z=-5;z<23;z++)if(!(x>35&&z>19)&&!(x<21&&z<-1))put('terrace',x,0,z,((Math.floor((x-19)/4)+Math.floor((z+5)/4))%4===0?'stoneLight':'stone'),0);
- unit('table-top','table',{box:[24,8,5,8,1,8],color:'wood',bevel:.14},()=>box('table',24,8,5,8,1,8,(x)=>x%3===0?'woodLight':'wood',4));
+ unit('table-top','table',{box:[24,8,5,8,1,8],color:'wood',bevel:FINISH_BEVEL},()=>box('table',24,8,5,8,1,8,(x)=>x%3===0?'woodLight':'wood',4));
  for(const x of [24,30])for(const z of [5,11])box('table',x,1,z,1,7,1,'woodDark',4);
  box('table',24,7,5,8,1,1,'wood',4);box('table',24,7,12,8,1,1,'wood',4);
  function chair(id,z,back){for(const x of [25,30])for(const dz of [0,5])box(id,x,1,z+dz,1,4,1,'woodDark',4);box(id,25,5,z,6,1,6,'woodLight',4);box(id,25,6,back,1,5,1,'wood',4);box(id,30,6,back,1,5,1,'wood',4);box(id,25,9,back,6,2,1,'woodLight',4);}

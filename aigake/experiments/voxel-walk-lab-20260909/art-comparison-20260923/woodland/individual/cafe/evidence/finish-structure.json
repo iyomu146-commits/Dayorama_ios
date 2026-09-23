@@ -1,18 +1,25 @@
 {
   "cells": 13945,
+  "cellSizeMetres": 0.15,
+  "bevelInCells": 0.055,
   "gridTriangles": 11258,
-  "finishedTriangles": 23978,
-  "finishUnits": 598,
+  "finishedTriangles": 24760,
+  "finishUnits": 584,
+  "finishBoxes": 700,
   "checks": [
-    "44-triangle chamfer is watertight",
+    "44-triangle unculled chamfer is watertight",
     "Finite vertices and unit normals",
     "Same editable grid for all finishes",
+    "Every component has integer coordinates and dimensions",
+    "Component boxes exactly cover their source cells without overlap",
+    "Finish stays inside source boxes and retains their outer dimensions",
+    "Shared small inward bevel; no fractional overlays or random transforms",
+    "Roof tiles remain four cells wide with one-cell layers",
+    "Interior facets cull only with complete neighbours; exploded parts recover contact faces",
     "Partial voxel removal or painting invalidates affected finish unit",
-    "Roof tiles are four cells wide, half the previous width",
-    "Facade relief penetrates continuous backing and projects less than 0.4 cell",
     "All finish source anchors match current cells",
     "Same selectable part hierarchy",
     "Under 25,000 surface triangles"
   ],
-  "scope": "Geometry checks only; no visual-quality score or device performance claim."
+  "scope": "Geometry checks only; inward edge cuts intentionally differ from cube corners. No visual-quality score or device performance claim."
 }

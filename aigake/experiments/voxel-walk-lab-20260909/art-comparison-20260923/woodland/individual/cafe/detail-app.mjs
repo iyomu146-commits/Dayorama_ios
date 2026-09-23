@@ -1,8 +1,8 @@
 import * as THREE from 'three';
 import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
-import {createCafeCells,CELL} from './model.mjs?v=finish3';
-import {PALETTE,PART_NAMES} from './palette.mjs?v=finish3';
-import {buildCafeSurfaces,installSurfaceShader} from './surface-finish.mjs?v=roof4';
+import {createCafeCells,CELL} from './model.mjs?v=grid5';
+import {PALETTE,PART_NAMES} from './palette.mjs?v=grid5';
+import {buildCafeSurfaces,installSurfaceShader} from './surface-finish.mjs?v=grid5';
 const $=id=>document.getElementById(id),cells=createCafeCells({stage:'detail'}),root=new THREE.Group();root.name='cafe';
 const scene=new THREE.Scene(),camera=new THREE.OrthographicCamera(-5,5,4,-4,.1,200),renderer=new THREE.WebGLRenderer({antialias:true,preserveDrawingBuffer:true,alpha:true});
 renderer.setSize(980,754,false);renderer.setPixelRatio(1);renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1;renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFShadowMap;$('view').append(renderer.domElement);scene.add(root);
@@ -42,6 +42,6 @@ $('sheet').onclick=()=>{const c=document.createElement('canvas');c.width=1960;c.
 $('bundle').onclick=()=>{document.getElementById('proof')?.remove();explode(false);clay=false;const proof=document.createElement('details');proof.id='proof';proof.open=true;const summary=document.createElement('summary');summary.textContent='検証画像';proof.append(summary);function capture(name){const figure=document.createElement('figure'),img=document.createElement('img'),caption=document.createElement('figcaption');img.src=renderer.domElement.toDataURL('image/png');img.alt=name;caption.textContent=name;figure.append(img,caption);proof.append(figure);}
  light('day');masked=false;finish('texture');for(const view of ['match','front','right','back','left']){fit(view);look();capture(`finish-${view}`);}
  fit('match');for(const mode of ['grid','bevel','texture']){finish(mode);look();capture(`finish-${mode}`);}for(const mode of ['neutral','grazing']){light(mode);look();capture(`finish-${mode}`);}light('day');look();document.body.append(proof);};
-$('export').onclick=()=>{const u=URL.createObjectURL(new Blob([JSON.stringify({format:'dayorama-voxel-cafe',version:2,cellSize:CELL,palette:PALETTE,cells:[...cells.values()],finishUnits:cells.finishUnits,finishRecipe:'surface-finish-v1',parts:root.userData.sculptRuntime.parts,source:'references/crops/cafe.png',qualityStatus:'prototype; formal visual gates pending'})],{type:'application/json'}));download('dayorama-cafe.voxels.json',u);setTimeout(()=>URL.revokeObjectURL(u),10000);};
+$('export').onclick=()=>{const u=URL.createObjectURL(new Blob([JSON.stringify({format:'dayorama-voxel-cafe',version:3,cellSize:CELL,palette:PALETTE,cells:[...cells.values()],finishUnits:cells.finishUnits,finishRecipe:'integer-grid-finish-v2',parts:root.userData.sculptRuntime.parts,source:'references/crops/cafe.png',qualityStatus:'prototype; formal visual gates pending'})],{type:'application/json'}));download('dayorama-cafe.voxels.json',u);setTimeout(()=>URL.revokeObjectURL(u),10000);};
 const ray=new THREE.Raycaster(),pointer=new THREE.Vector2();let down;renderer.domElement.addEventListener('pointerdown',e=>down=[e.clientX,e.clientY]);renderer.domElement.addEventListener('pointerup',e=>{if(!down||Math.hypot(e.clientX-down[0],e.clientY-down[1])>5)return;const r=renderer.domElement.getBoundingClientRect();pointer.set((e.clientX-r.left)/r.width*2-1,-(e.clientY-r.top)/r.height*2+1);ray.setFromCamera(pointer,camera);const hit=ray.intersectObjects(root.children)[0];$('selected').textContent=hit?(PART_NAMES[hit.object.name]||hit.object.name):'';});
 $('status').textContent=`${cells.size.toLocaleString()}ボクセル · ${triangles.toLocaleString()}三角形 · ${root.children.length}部材`;look();fit();
