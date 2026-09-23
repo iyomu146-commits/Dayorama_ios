@@ -1,6 +1,7 @@
 // One spatial design, two render routes. Coordinates are metres; +Z is the facade.
 export const CELL=.075, BUDGET=20000;
 export const COLORS={plaster:'#e5d7b6',plaster2:'#d9c8a3',stone:'#b9b09b',stone2:'#ccc3ad',wood:'#a27242',woodLight:'#c39658',woodDark:'#694b34',roof:'#345e62',roofEdge:'#25494e',roofLight:'#47777a',glass:'#749a9b',glassLight:'#aec1b1',metal:'#394841',brick:'#ad7351',brick2:'#c38a63',cloth:'#bc7657',clothLight:'#d0926e',pot:'#b47751',soil:'#5c5340',leaf:'#52744b',leaf2:'#6d8a4c',leaf3:'#8d9c58',leafDark:'#3f6147',grass:'#91a16b',flower:'#e5b9ab',cream:'#f1e6c5',yellow:'#d7b759'};
+Object.assign(COLORS,{roofMuted:'#3a6466',roofSlate:'#3d686b',roofSeam:'#294c51',woodHoney:'#b7884c',bark:'#79694e',barkDark:'#5e513e',barkLight:'#928065',leafGold:'#a5a854',leafLime:'#7d9147',plasterWarm:'#dfcfad',glassSilver:'#96b4ae',glassDeep:'#577d7c',flowerGold:'#d4a85f'});
 export const PHASES=[{name:'基礎',end:2000},{name:'骨組み',end:6000},{name:'壁・窓',end:12000},{name:'屋根',end:17000},{name:'仕上げ',end:20000}];
 const hash=(a,b=0)=>{const v=Math.sin(a*127.1+b*311.7)*43758.5453;return v-Math.floor(v);};
 export function makeDesign(variant=0){
@@ -211,6 +212,6 @@ export function decodeWork(text){
   if(!Array.isArray(a)||![6,7].includes(a.length)||!a.slice(0,3).every(v=>Number.isInteger(v)&&Math.abs(v)<=120)||!valid(a[3],a[4],a[5]))throw Error('作品データに不正な値があります。');
   if(a[6]&&(!Array.isArray(a[6])||a[6].length>8||a[6].some(u=>!Array.isArray(u)||u.length!==3||!valid(...u))))throw Error('建築段階のデータが不正です。');
   const key=a.slice(0,3).join(',');if(seen.has(key))throw Error('重複するブロックがあります。');seen.add(key);
-  return{x:a[0],y:a[1],z:a[2],color:a[3],phase:a[4],group:a[5],part:`import${i}`,emission:a[3]==='glass'||a[3]==='glassLight',under:a[6]?.map(u=>({x:a[0],y:a[1],z:a[2],color:u[0],phase:u[1],group:u[2],part:`import${i}`}))};
+  return{x:a[0],y:a[1],z:a[2],color:a[3],phase:a[4],group:a[5],part:`import${i}`,emission:a[3].startsWith('glass'),under:a[6]?.map(u=>({x:a[0],y:a[1],z:a[2],color:u[0],phase:u[1],group:u[2],part:`import${i}`,emission:u[0].startsWith('glass')}))};
  });
 }

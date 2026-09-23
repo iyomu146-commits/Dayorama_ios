@@ -21,7 +21,7 @@ async function copySource(relative){
 for(const rel of [...manifest.sources,'walk/index.html','walk/README.md','walk/LIVING-TOWN.md','walk/MONETIZATION.md','walk/RELEASE-PLAN-20260920.md','experiments/voxel-walk-lab-20260909/stargazing/README.md'])await copySource(rel);
 // Standalone art study stays out of the native bundle, but remains reviewable in GitHub.
 const artStudy='experiments/voxel-walk-lab-20260909/art-comparison-20260923/';
-for(const name of ['index.html','style.css','app.mjs','voxel-worker.mjs','design.test.mjs','README.md','reference.png','reference-prompt.txt','sculpt-spec.json','build-spec.mjs','assessment.json','evidence/intake.md'])await copySource(artStudy+name);
+for(const name of ['index.html','style.css','app.mjs','voxel-worker.mjs','design.test.mjs','refined.test.mjs','refinement-spec.json','README.md','reference.png','reference-prompt.txt','sculpt-spec.json','build-spec.mjs','assessment.json','evidence/intake.md','evidence/refinement-review.md'])await copySource(artStudy+name);
 // Test commands evolve independently of the app's runtime imports. Include their
 // entry points and dependency graph so a fresh GitHub checkout can run them all.
 const pkg=JSON.parse(await readFile(path.join(app,'package.json'),'utf8'));

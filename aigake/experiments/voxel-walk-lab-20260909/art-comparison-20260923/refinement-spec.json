@@ -1,0 +1,25 @@
+{
+  "version": 1,
+  "scope": "Voxel-only craft pass. Keep the first procedural model as a selectable control.",
+  "cellMetres": 0.075,
+  "budgetSteps": 20000,
+  "targets": {
+    "roof": "Continuous hip shell with a sparse, connected one-cell standing seam. Quiet panel colours, a continuous fascia and ridge cap. No disconnected bright dots.",
+    "tree": "One grounded tapered trunk, major forks, twigs and irregular connected foliage masses. Broad light/dark colour patches and small leaf edges, not horizontal pancakes. Keep the facade visible.",
+    "furniture": "Five separate bench seat boards, sloping back, continuous armrests, braces, four feet. Cafe chairs have connected seat rails and leg stretchers; cups have handles.",
+    "surfaces": "Restrained voxel colour variation on wood and plaster; opaque glazing remains free of centre bars. More legible clustered flowers, with petal colours separate from their centres."
+  },
+  "acceptance": [
+    "Every roof footprint column stays covered; metal seams connect to the shell.",
+    "All tree voxels belong to one 26-neighbour component rooted at the ground.",
+    "Furniture meets the paving and never enters the door clearance.",
+    "All custom colours, edits and construction layers survive file export/import.",
+    "Switching before/after preserves each version's edits separately.",
+    "Same camera, exposure, lights and voxel grid for the before/after views."
+  ],
+  "limitations": [
+    "Stylized voxel artwork, not a high-fidelity reconstruction of the generated image.",
+    "No photographed textures, no transparent glass or hidden mesh replacements.",
+    "iPhone performance, whole-town population and public gallery are outside this art pass."
+  ]
+}
