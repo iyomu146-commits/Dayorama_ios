@@ -62,3 +62,10 @@ The scratch editor now checks support in the Worker for both preview and commit.
 Default range picking derives the target layer from the first tapped surface, then locks the second tap to that plane. The proposed cells appear green and unsupported ones red, with explicit counts. Applying changes only the supported candidates. Neither previews nor the guide enter saved voxel data or undo history. Main actions, swatches, confirm, undo and view controls have at least 44px targets. Number entry and less frequent tools remain available. Pointer travel is tracked across the whole gesture; a drag that returns to its start and multi-pointer gestures do not place cells.
 
 Eleven data tests pass. Desktop browser at a 390×844 viewport: created a 95-cell base through two-point preview and confirmation; tapped an existing block from the top view to select layer 2 automatically; a wider rectangle previewed 30 accepted plus 50 unsupported cells, and commit increased the work from 95 to 125 cells. Selecting layer 4 above this two-layer work produced the no-support message and kept confirmation disabled. No console errors or warnings in that run. These are mouse-driven browser checks at a mobile viewport; physical iPhone touch/pinch accuracy is not yet verified.
+
+
+## Shared range toggle
+
+Range selection is an independent toggle shared by build, erase and paint. Switching the operation preserves the range preference and clears the uncommitted selection/preview. Turning range off restores the matching single-cell tool. View mode remembers the preference, and the advanced tool menu synchronizes the toggle with the chosen action.
+
+390×844 browser check: enabled range while building, previewed and placed 240 cells; switched to paint with range still on and recoloured 72 cells without changing the 240-cell total; switched to erase with range still on, previewed and removed 35 cells (205 remaining), undid to 240, and turned range off to restore single-cell erase. The selected action, range toggle and confirmation labels matched each operation. No console errors/warnings were reported. These remain browser checks, not an iPhone touch-device test.

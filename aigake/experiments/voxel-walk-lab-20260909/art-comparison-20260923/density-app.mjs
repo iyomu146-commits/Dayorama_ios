@@ -4,13 +4,15 @@ import {workbenchBounds} from './density-core.mjs';
 const $=id=>document.getElementById(id),fmt=n=>Math.round(n).toLocaleString('ja-JP');
 const worker=new Worker(new URL('./density-worker.mjs',import.meta.url),{type:'module'}),pending=new Map();
 const initialMode=new URLSearchParams(location.search).get('mode'),rangeTools=['fill','paint','erase','copy'];
-let editLevel=1,serial=0,busy=false,scope=['blank','district'].includes(initialMode)?initialMode:'building',factor=2,steps=20000,playing=false,playAt=0,playSteps=0,night=false,selection=[],latest,latestComplete,frameStats,measuring=null,results=[],lastStats=0,lastDraws=-1,animationAt=0,ready=false,previewReady=false,previewCount=0;
+const rangeVariants={place:'fill','erase-one':'erase','paint-one':'paint'},singleVariants={fill:'place',erase:'erase-one',paint:'paint-one'};
+let rangeEnabled=false,editLevel=1,serial=0,busy=false,scope=['blank','district'].includes(initialMode)?initialMode:'building',factor=2,steps=20000,playing=false,playAt=0,playSteps=0,night=false,selection=[],latest,latestComplete,frameStats,measuring=null,results=[],lastStats=0,lastDraws=-1,animationAt=0,ready=false,previewReady=false,previewCount=0;
 const view=createDensityView($('density-view'),{onPick:pick,onFrame:frame});
 const status=text=>$('selection-status').textContent=text;
 function lock(){
  const blocked=busy||!!measuring;
- for(const id of ['density','mesh-mode','camera','night','play','restart','steps','tool','color','brush','mirror','undo','apply','clear-selection','clear-work','export-work','import-work','measure','offset-x','offset-y','offset-z','range-mode','edit-layer','layer-up','layer-down'])$(id).disabled=blocked;
+ for(const id of ['density','mesh-mode','camera','night','play','restart','steps','tool','color','brush','mirror','undo','apply','clear-selection','clear-work','export-work','import-work','measure','offset-x','offset-y','offset-z','range-mode','edit-layer','layer-up','layer-down','range-toggle'])$(id).disabled=blocked;
  document.querySelectorAll('[data-scope],[data-steps],[data-tool],[data-color]').forEach(b=>b.disabled=blocked);
+ $('range-toggle').disabled=blocked||!Object.hasOwn(rangeVariants,singleVariants[$('tool').value]||$('tool').value);
  $('undo').disabled=blocked||!latest?.undo;$('clear-work').disabled=blocked||!latest?.completed.count;
  $('apply').disabled=blocked||selection.length!==2||!previewReady||previewCount===0;
  $('layer-down').disabled=blocked||editLevel<=1;$('layer-up').disabled=blocked||editLevel>=Number($('edit-layer').max);
@@ -39,7 +41,8 @@ function syncTool(){
  $('apply').textContent=({fill:'ここに積む',paint:'ここを塗る',erase:'ここを消す',copy:'ここへ複製'})[tool]||'選択に適用';
  $('edit-note').textContent=range?(tool==='fill'?'下にブロックのある場所だけに重ねます。2点を選ぶと配置予定が表示されます。':'2点で範囲を選び、配置予定を確認して確定。'):'タップで編集。ドラッグで回転、2本指で移動・拡大。';
  $('layer-badge').hidden=layer===null;$('layer-badge').textContent=layer===null?'':`${layer}段目`;
- document.querySelectorAll('[data-tool]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.tool===tool||(b.dataset.tool==='fill'&&range))));
+ document.querySelectorAll('[data-tool]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.tool===(singleVariants[tool]||tool))));
+ $('range-toggle').setAttribute('aria-pressed',String(rangeEnabled));$('range-label').textContent=tool==='fill'?'置く段':'編集する段';
  document.querySelectorAll('[data-color]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.color===$('color').value)));
  lock();
 }
@@ -56,7 +59,7 @@ worker.onmessage=({data:d})=>{
  }
  if(d.type==='geometry'){
   const applyStart=performance.now(),changedScope=scope!==d.scope;scope=d.scope;factor=d.factor;steps=d.steps;
-  if(changedScope){$('tool').value=scope==='blank'?'place':'view';$('range-mode').value=scope==='blank'?'surface':'volume';$('camera').value='corner';clearSelection();}
+  if(changedScope){rangeEnabled=false;$('tool').value=scope==='blank'?'place':'view';$('range-mode').value=scope==='blank'?'surface':'volume';$('camera').value='corner';clearSelection();}
   view.load(d);latest=d;syncScope();syncTool();const applyMs=performance.now()-applyStart;if(d.complete)d.complete.items=[];d.active.items=[];$('density').value=String(factor);
   $('model-count').textContent=scope==='district'?`5棟 · 樹5本 · 住民${night?'0':'12'}人`:scope==='blank'?`作品 ${fmt(d.completed.count)}粒`:`建物・テラス ${fmt(d.completed.count)}粒`;
   $('scene-status').textContent=scope==='district'?`手前右の1棟を建築 · ${fmt(d.completed.count*4+d.visible.count)}粒`:scope==='blank'?`${workbenchBounds(factor).width} × ${workbenchBounds(factor).width}`:`主屋の幅${factor===2?32:64}粒`;
@@ -81,7 +84,7 @@ function clearSelection(keepStatus=false){
 function stop(){playing=false;$('play').textContent='▶';$('play').setAttribute('aria-label','建築を再生');}
 async function progress(n){steps=Math.max(0,Math.min(20000,Math.round(n/250)*250));updateProgress();return request('progress');}
 async function load(){stop();clearSelection();return request('load',{},true);}
-async function setScope(next){if(next!==scope)$('camera').value='corner';scope=next;$('tool').value=scope==='blank'?'place':'view';$('range-mode').value=scope==='blank'?'surface':'volume';if(scope==='blank'){$('brush').value='1';steps=20000;}syncScope();syncTool();await load();}
+async function setScope(next){if(next!==scope)$('camera').value='corner';scope=next;rangeEnabled=false;$('tool').value=scope==='blank'?'place':'view';$('range-mode').value=scope==='blank'?'surface':'volume';if(scope==='blank'){$('brush').value='1';steps=20000;}syncScope();syncTool();await load();}
 function safe(fn){return(...args)=>Promise.resolve().then(()=>fn(...args)).catch(e=>{status(e.message);if(measuring)cancelMeasure('処理エラーのため測定を中止しました。');});}
 function rangeCommand(){return {a:selection[0],b:selection[1],tool:$('tool').value,color:$('color').value,mirror:$('mirror').checked,offset:['x','y','z'].map(a=>Number($('offset-'+a).value)),support:$('tool').value==='fill'?'below':'connected'};}
 async function previewSelection(){previewReady=false;view.preview();lock();if(selection.length===2)await request('preview',{edit:rangeCommand()});}
@@ -113,7 +116,9 @@ function stopEditing(){$('tool').value='view';clearSelection();}
 $('steps').onchange=safe(()=>{stop();stopEditing();return progress(Number($('steps').value));});document.querySelectorAll('[data-steps]').forEach(b=>b.onclick=safe(()=>{stop();stopEditing();return progress(Number(b.dataset.steps));}));$('restart').onclick=safe(()=>{stop();stopEditing();return progress(0);});
 $('play').onclick=safe(async()=>{if(playing){stop();return;}stopEditing();if(steps===20000)await progress(0);playAt=performance.now();playSteps=steps;playing=true;$('play').textContent='Ⅱ';$('play').setAttribute('aria-label','建築を一時停止');});
 async function toolChanged(){stop();clearSelection();if(steps!==20000)await progress(20000);syncTool();}
-$('tool').onchange=safe(toolChanged);document.querySelectorAll('[data-tool]').forEach(b=>b.onclick=safe(()=>{$('tool').value=b.dataset.tool;return toolChanged();}));
+$('tool').onchange=safe(()=>{const tool=$('tool').value;if(Object.hasOwn(singleVariants,tool))rangeEnabled=true;else if(tool!=='view')rangeEnabled=false;return toolChanged();});
+ document.querySelectorAll('[data-tool]').forEach(b=>b.onclick=safe(()=>{const base=b.dataset.tool;$('tool').value=rangeEnabled&&rangeVariants[base]?rangeVariants[base]:base;return toolChanged();}));
+ $('range-toggle').onclick=safe(()=>{const base=singleVariants[$('tool').value]||$('tool').value;if(!rangeVariants[base])return;rangeEnabled=!rangeEnabled;$('tool').value=rangeEnabled?rangeVariants[base]:base;return toolChanged();});
 $('brush').onchange=syncTool;$('clear-selection').onclick=()=>clearSelection();
 $('color').onchange=safe(()=>{syncTool();return previewSelection();});
 for(const id of ['mirror','offset-x','offset-y','offset-z'])$(id).onchange=safe(previewSelection);
