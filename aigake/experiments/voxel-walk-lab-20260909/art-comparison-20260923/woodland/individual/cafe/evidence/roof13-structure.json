@@ -1,0 +1,18 @@
+{
+  "cells": 13856,
+  "previousCells": 13945,
+  "triangles": 13018,
+  "meshes": 22,
+  "cellSize": 0.15,
+  "checks": [
+    "15cm integer cells; every palette ID resolves; original model unchanged",
+    "Only roof, tiles and ridge cells change; walls, windows, furniture and chimney preserved",
+    "All cells remain connected to the ground",
+    "All 1440 roof columns have a closed three-cell support layer",
+    "Roof support overlaps across both lane and course joints; no open gutters",
+    "Chimney opening and door approach remain clear",
+    "Every rendered material channel resolves from the edited grid",
+    "Rendered boundary exactly covers exposed integer-cell faces"
+  ],
+  "scope": "Structure and boundary checks; no visual-quality score or device performance claim."
+}

@@ -25,7 +25,7 @@ export function materialChannels(mesh,cells,cellSize){
   const substance=substanceOf(cell.color,cell.part);
   const id=cell.part==='tiles'&&substance===MATERIAL.slate?10:substance;
   // Vertical posts, horizontal rails and top boards use their own grain direction.
-  let axis=1;
+  let axis=id===10?(cell.roofPhase||0):1;
   if(cell.part==='table'&&cell.y>=7||cell.part.startsWith('chair-')&&(cell.y===5||cell.y>=9)||cell.part==='fascia')axis=0;
   if(cell.part==='front-window'&&(cell.y===7||cell.y===16))axis=0;
   if(cell.part==='side-window'&&(cell.y===7||cell.y===16))axis=2;
@@ -57,7 +57,7 @@ float broad=craftNoise(cp*vec3(1.4,2.1,1.7));
 float middle=craftNoise(cp*vec3(9.,13.,11.));
 float fine=craftNoise(cp*155.);
 // Unit-scale patina follows real tile courses; it does not draw a voxel grid.
-vec2 tileUV=vec2((cp.x+3.)/.6,(2.7-abs(cp.z))/.45);
+vec2 tileUV=vec2((cp.x+3.)/.6,(2.7-abs(cp.z))/.45+tile*vSubstance.y/3.);
 float tileTone=craftHash(vec3(floor(tileUV+vec2(.0001)),21.));
 float tileJoint=craftEdge(fract(tileUV.x),.008,fwidth(tileUV.x)*.65);
 float roofMottle=(broad-.5)*.25+(middle-.5)*.12;
