@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {resample,makeTimeline,atSteps,changedChunks,buckets,meshChunk,editBox,encodeDensity,decodeDensity,workbenchBounds} from './density-core.mjs';
+import {resample,makeTimeline,atSteps,changedChunks,buckets,meshChunk,editBox,encodeDensity,decodeDensity,workbenchBounds,layerCell} from './density-core.mjs';
 import {DensityWorkspaces} from './density-workspaces.mjs';
 import {makeSceneDesign} from './scene.mjs';
 import {voxelizeRefined} from './refined.mjs';
@@ -53,4 +53,31 @@ test('scratch files preserve their workspace and reject out-of-board imports',()
  const empty=decodeDensity(encodeDensity(new Map(),2,'blank'));assert.equal(empty.workspace,'blank');assert.equal(empty.map.size,0);
  const text=encodeDensity(mapOf([cell(0,0,0,'glassSea',4)]),1,'blank'),saved=decodeDensity(text);assert.equal(saved.workspace,'blank');assert.equal(saved.factor,1);assert.equal(saved.map.get('0,0,0').emission,true);
  const d=JSON.parse(text);d.cells[0].x=100;assert.throws(()=>decodeDensity(JSON.stringify(d)));delete d.workspace;assert.equal(decodeDensity(JSON.stringify(d)).workspace,'sample');
+});
+test('horizontal selection fills only layer two, preserving lower and higher cells at either density',()=>{
+ for(const factor of [1,2]){
+  const works=new DensityWorkspaces(),bounds=workbenchBounds(factor),size=.075*factor;
+  works.install('blank',factor,[cell(0,0,0,'wood'),cell(1,2,1,'glassSea')]);
+  // Plane picks do not inherit the height of an occupied surface or require supports below.
+  const a=layerCell([.2*size,4*size,.2*size],factor,2,bounds),b=layerCell([2.8*size,0,1.8*size],factor,2,bounds);
+  assert.deepEqual(a,[0,1,0]);assert.deepEqual(b,[2,1,1]);
+  works.edit('blank',factor,{a,b,tool:'fill',color:'brick'});
+  const map=works.get('blank',factor).map;assert.equal(map.size,8);assert.equal([...map.values()].filter(c=>c.y===1).length,6);
+  assert.equal(map.get('0,0,0').color,'wood');assert.equal(map.get('1,2,1').color,'glassSea');
+  works.edit('blank',factor,{a,b,tool:'paint',color:'stone'});assert.equal(works.get('blank',factor).map.get('1,1,1').color,'stone');
+  works.edit('blank',factor,{a,b,tool:'erase'});assert.equal(works.get('blank',factor).map.size,2);
+  works.undo('blank',factor);assert.equal(works.get('blank',factor).map.size,8);
+  works.undo('blank',factor);assert.equal(works.get('blank',factor).map.get('1,1,1').color,'brick');
+  works.undo('blank',factor);assert.equal(works.get('blank',factor).map.size,2);
+ }
+});
+test('layer picking handles negative coordinates, last layer and out-of-board clicks',()=>{
+ for(const factor of [1,2]){const bounds=workbenchBounds(factor),size=.075*factor;
+  assert.deepEqual(layerCell([-size*.2,0,-size*.2],factor,bounds.width,bounds),[-1,bounds.width-1,-1]);
+  assert.equal(layerCell([0,0,0],factor,0,bounds),null);
+  assert.equal(layerCell([0,0,0],factor,1.5,bounds),null);
+  assert.equal(layerCell([0,0,0],factor,bounds.width+1,bounds),null);
+  assert.equal(layerCell([2.41,0,0],factor,2,bounds),null);
+  assert.equal(layerCell([NaN,0,0],factor,2,bounds),null);
+ }
 });

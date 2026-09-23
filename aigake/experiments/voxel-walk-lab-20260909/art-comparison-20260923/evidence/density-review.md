@@ -46,3 +46,10 @@ Data tests now include blank startup, top/side placement commands, four-way stat
 Browser checks: placed the first coarse cell on the empty board, stacked a second above it, added a third from its side; switched to fine (empty, 64×64) and placed one visibly smaller cell at the same zoom. Returned to coarse, cleared it, and undid the clear to recover its three cells. Selected two empty-board points and filled a 20-cell base. Tested the zoom controls and top view. Existing reference models are not cleared by these operations.
 
 Multi-touch suppression and two-finger navigation are implemented but have not been tested on an actual iPhone. This extension does not add native touch/haptic integration, automatic persistence, or a connection to the published UGC gallery.
+
+
+## Horizontal layer selection
+
+Range operations now switch between a single numbered layer and the original 3D bounding volume. A translucent guide is drawn at the base of the selected layer. Ray picking intersects that plane before considering voxel surfaces, so tall cells cannot pull either endpoint onto a different height. Blank starts with single-layer selection; the reference building retains volume selection by default. The guide is excluded from saved voxel data.
+
+Ten density tests pass, including fill/paint/erase/undo restricted to layer two with untouched cells above and below at both densities; negative coordinates, last-layer and out-of-board picks are covered. In the desktop browser, entered layer 2 directly, selected a 78-cell rectangle and filled a one-cell-thick floating slab with no base cells. Switched to volume selection and back, undid the fill, then switched to 7.5cm: the UI showed layer 2 at 7.5cm with an empty 64×64 workspace. Touch interaction on iPhone remains untested.

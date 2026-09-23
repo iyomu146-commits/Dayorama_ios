@@ -5,6 +5,12 @@ export function workbenchBounds(factor){
  if(![1,2].includes(factor))throw Error('Unsupported density');const width=Math.round(WORKBENCH_SIZE/(CELL*factor));
  return {min:[-width/2,0,-width/2],max:[width/2-1,width-1,width/2-1],width};
 }
+// The displayed layer is one-based; picking uses its horizontal plane even over taller cells.
+export function layerCell(point,factor,layer,bounds){
+ if(![1,2].includes(factor)||!Number.isInteger(layer)||layer<1||!point.every(Number.isFinite))return null;
+ const q=[Math.floor(point[0]/(CELL*factor)),layer-1,Math.floor(point[2]/(CELL*factor))];
+ return q.some((v,i)=>v<bounds.min[i]||v>bounds.max[i])?null:q;
+}
 const xyz=c=>[c.x,c.y,c.z], coordKey=q=>q.join(','), material=c=>`${c.color}:${!!c.emission}`;
 export const chunkKey=c=>xyz(c).map(v=>Math.floor(v/CHUNK)).join(',');
 export const directions=[[1,0,0],[-1,0,0],[0,1,0],[0,-1,0],[0,0,1],[0,0,-1]];
