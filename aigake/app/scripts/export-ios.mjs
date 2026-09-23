@@ -13,7 +13,7 @@ async function copySource(relative){
  if(!/\.(mjs|js)$/.test(rel))return;
  const code=await readFile(from,'utf8');
  for(const m of code.matchAll(/(?:\b(?:import|export)\s+(?:[^;]*?\s+from\s*)?|\bimport\s*\()\s*['"]([^'"]+)['"]/g)){
-  const id=m[1];if(id.startsWith('node:')||id==='./capacitor-core.js')continue;
+  const id=m[1].split(/[?#]/,1)[0];if(id.startsWith('node:')||id==='./capacitor-core.js')continue;
   const dep=id==='three'?'vendor/three/three.module.js':id.startsWith('three/addons/')?'vendor/three/examples/jsm/'+id.slice(13):id.startsWith('.')?path.relative(source,path.resolve(path.dirname(from),id)):null;
   if(!dep)throw Error('Unbundled source dependency '+id+' in '+rel);await copySource(dep);
  }
@@ -33,6 +33,7 @@ for(const name of ['refinement-v2.md','before-refinement-corner.png','refinement
 for(const name of ['crop_references.py','crops/index.html','crops/manifest.json','crops/home.png','crops/bakery.png','crops/books.png','crops/florist.png','crops/cafe.png'])await copySource(artStudy+'woodland/references/'+name);
 await copySource(artStudy+'woodland/individual/README.md');
 for(const name of ['detail-observations.md'])await copySource(artStudy+'woodland/individual/cafe/evidence/'+name);
+for(const name of ['finish-study.md','check-finish.mjs','evidence/finish-structure.json','evidence/finish3-comparison.png',...['match','front','right','back','left','grid','bevel','texture','neutral','grazing'].map(view=>'evidence/finish3-'+view+'.png')])await copySource(artStudy+'woodland/individual/cafe/'+name);
 for(const name of ['index.html','detail-app.mjs','app.mjs','model.mjs','palette.mjs','analysis.md','STATUS.md','assessment.json','sculpt-spec.json','.img2threejs/state.json','check-model.mjs','check-boundary.mjs','evidence/user-direction.json','evidence/blockout-review.json','evidence/blockout-comparison.png','evidence/blockout-intersections-normals.json','evidence/blockout-voxel-solids.json','evidence/blockout-boundary.json','evidence/detail-structure.json','evidence/detail-boundary.json','evidence/detail-comparison.png','evidence/detail-v1-comparison.png','evidence/detail-match.png','evidence/detail-front.png','evidence/detail-right.png','evidence/detail-back.png','evidence/detail-left.png','evidence/detail-neutral.png','evidence/detail-grazing.png'])await copySource(artStudy+'woodland/individual/cafe/'+name);
 // Test commands evolve independently of the app's runtime imports. Include their
 // entry points and dependency graph so a fresh GitHub checkout can run them all.

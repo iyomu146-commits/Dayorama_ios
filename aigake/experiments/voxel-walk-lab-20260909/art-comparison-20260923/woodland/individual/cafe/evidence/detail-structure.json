@@ -6,10 +6,10 @@
     "Entrance route clear above stone steps; awning above door",
     "Each chair and table has four continuous grounded legs",
     "Roof has a continuous lower surface across course joints",
-    "Chimney cap has a real empty opening"
+    "Chimney has a continuous open flue through its cap"
   ],
-  "cells": 13545,
-  "triangles": 11584,
+  "cells": 13945,
+  "triangles": 11258,
   "parts": [
     "plinth",
     "walls",

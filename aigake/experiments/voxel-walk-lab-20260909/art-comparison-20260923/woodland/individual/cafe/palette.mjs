@@ -6,7 +6,7 @@ export const PALETTE={
  wood:'#a57637',woodLight:'#c3934c',woodDark:'#80592d',woodPanel:'#b1813a',woodEdge:'#a67335',
  slate:'#35696a',slate2:'#3b7473',slateMuted:'#426f70',slateDark:'#285355',slateEdge:'#294f52',slateSage:'#648474',slateSage2:'#708d79',slatePatina:'#4c7774',slateSagePatina:'#799282',
  glass:'#4c746e',glassDeep:'#3c625f',glassMid:'#567f76',glassPale:'#638e80',
- cloth:'#c47d55',clothLight:'#df9c63',ivory:'#eee3c3',pot:'#b7794b',potLight:'#ce905b',soil:'#68563c',
+ cloth:'#c47d55',clothLight:'#df9c63',ivory:'#eee3c3',pot:'#b7794b',potLight:'#ce905b',soil:'#68563c',soot:'#3a332d',
  leaf:'#4f792f',leafLight:'#7b983d',leafDark:'#42672d',pink:'#d9a496',pinkLight:'#ecc2b1',cream:'#eddeb8',metal:'#514e3d',coffee:'#69543b'
 };
 export const roughness=id=>id.startsWith('glass')?.34:id.startsWith('slate')?.75:id.startsWith('wood')?.82:.94;

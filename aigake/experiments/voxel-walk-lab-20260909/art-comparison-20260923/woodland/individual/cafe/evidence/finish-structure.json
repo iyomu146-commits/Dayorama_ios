@@ -1,0 +1,18 @@
+{
+  "cells": 13945,
+  "gridTriangles": 11258,
+  "finishedTriangles": 23978,
+  "finishUnits": 598,
+  "checks": [
+    "44-triangle chamfer is watertight",
+    "Finite vertices and unit normals",
+    "Same editable grid for all finishes",
+    "Partial voxel removal or painting invalidates affected finish unit",
+    "Roof tiles are four cells wide, half the previous width",
+    "Facade relief penetrates continuous backing and projects less than 0.4 cell",
+    "All finish source anchors match current cells",
+    "Same selectable part hierarchy",
+    "Under 25,000 surface triangles"
+  ],
+  "scope": "Geometry checks only; no visual-quality score or device performance claim."
+}
