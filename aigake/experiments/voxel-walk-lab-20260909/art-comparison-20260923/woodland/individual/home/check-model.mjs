@@ -17,6 +17,16 @@ check('Five glass openings without centre mullions or wall behind',()=>{
 check('Door route clear and porch above door',()=>{for(let x=5;x<13;x++)for(let z=18;z<23;z++)for(let y=2;y<16;y++)assert(!cells.has(`${x},${y},${z}`));});
 check('Chimney aperture stays open through pale cap',()=>{for(let x=13;x<16;x++)for(let z=-9;z<-6;z++)for(let y=44;y<55;y++)assert(!cells.has(`${x},${y},${z}`));});
 check('Window guards connected by side returns, slots stay open',()=>{for(const [start,side] of [[-16,false],[3,false],[-5,true]]){for(const u of [0,11])for(let t=0;t<4;t++){const p=side?[19+t,21,start+u]:[start+u,21,15+t];assert(cells.has(p.join(',')));}for(const u of [1,2,3,5,6,8,9,10]){const p=side?[22,22,start+u]:[start+u,22,18];assert(!cells.has(p.join(',')));}}});
+if(stage==='roof-coarse')check('Broad roof courses have no recessed lanes and remain joined on both axes',()=>{
+ const columns=new Map();
+ for(let x=-23;x<23;x++)for(let z=-20;z<20;z++){
+  const flue=x>=13&&x<16&&z>=-9&&z<-6,depth=19-Math.floor(Math.abs(z+.5)),top=34+Math.round(Math.floor(depth/3)*2.4);
+  if(!flue)assert(cells.has(`${x},${top},${z}`),`Recessed top ${x},${z}`);
+  const ys=new Set();for(let y=31;y<=49;y++)if(['roof','ridge','chimney','chimney-cap'].includes(cells.get(`${x},${y},${z}`)?.part))ys.add(y);
+  assert(ys.size,`Missing roof ${x},${z}`);columns.set(`${x},${z}`,ys);
+ }
+ for(const [key,a] of columns){const [x,z]=key.split(',').map(Number);for(const [dx,dz] of [[1,0],[0,1]]){const b=columns.get(`${x+dx},${z+dz}`);if(b)assert([...a].some(y=>b.has(y)),`Open roof joint ${key}`);}}
+});
 const palette=Object.fromEntries(Object.keys(PALETTE).map(k=>[k,[.5,.5,.5]])),compiled=[];let triangles=0,surfaceFaces=0;
 for(const part of new Set([...cells.values()].map(c=>c.part))){const m=meshChunk([...cells.values()].filter(c=>c.part===part),cells,CELL,{palette,aoStrength:.08});assert([...m.positions].every(Number.isFinite));compiled.push({part,...m});triangles+=m.triangles;surfaceFaces+=m.surfaceFaces;}
 // Exact occupancy boundary: no interior faces, absent boundary faces or non-grid vertices.

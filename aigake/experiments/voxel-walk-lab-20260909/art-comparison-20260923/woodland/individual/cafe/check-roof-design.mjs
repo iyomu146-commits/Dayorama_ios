@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import {writeFile} from 'node:fs/promises';
 import {createCafeCells,CELL} from './model.mjs';
-import {createRoofDesignCells,DESIGN_PALETTE,ROOF_PHASES} from './roof-design.mjs';
+import {createRoofDesignCells,DESIGN_PALETTE,ROOF_PHASES,ROOF_LANE_WIDTH} from './roof-design.mjs';
 import {buildCafeSurfaces} from './surface-finish.mjs';
 import {materialChannels} from './material-study.mjs';
 import {groundedCells} from '../../../density-core.mjs';
@@ -22,9 +22,10 @@ check('All cells remain connected to the ground',()=>assert.equal(groundedCells(
 const deck=new Map();
 check('All 1440 roof columns have a closed three-cell support layer',()=>{
  for(let x=-20;x<20;x++)for(let z=-18;z<18;z++){
-  const lane=Math.floor((x+20)/4),s=z>=0?17-z:z+18,row=Math.min(5,Math.floor((s+ROOF_PHASES[lane])/3)),base=22+2*row,ys=new Set();
+  const lane=Math.floor((x+20)/ROOF_LANE_WIDTH),s=z>=0?17-z:z+18,row=Math.min(5,Math.floor((s+ROOF_PHASES[lane])/3)),base=22+2*row,ys=new Set();
   for(let y=base-1;y<=base+1;y++){assert.ok(cells.has(`${x},${y},${z}`),`Roof gap ${x},${y},${z}`);ys.add(y);}
   deck.set(`${x},${z}`,ys);
+  assert.ok(cells.has(`${x},${base+2},${z}`),`Recessed roof course ${x},${z}`);
  }
 });
 check('Roof support overlaps across both lane and course joints; no open gutters',()=>{
@@ -62,4 +63,4 @@ check('Rendered boundary exactly covers exposed integer-cell faces',()=>{
  assert.equal(area,expected.size);assert.deepEqual(actual,expected);
 });
 const report={cells:cells.size,previousCells:source.size,triangles:meshes.reduce((n,m)=>n+m.triangles,0),meshes:meshes.length,cellSize:CELL,checks,scope:'Structure and boundary checks; no visual-quality score or device performance claim.'};
-await writeFile(new URL('./evidence/roof13-structure.json',import.meta.url),JSON.stringify(report,null,2)+'\n');console.log(JSON.stringify(report,null,2));
+await writeFile(new URL('./evidence/roof14-structure.json',import.meta.url),JSON.stringify(report,null,2)+'\n');console.log(JSON.stringify(report,null,2));

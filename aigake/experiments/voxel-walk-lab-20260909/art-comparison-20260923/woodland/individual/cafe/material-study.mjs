@@ -23,7 +23,8 @@ export function materialChannels(mesh,cells,cellSize){
   if(!cell)throw Error('Finish cannot find source cell at '+q.join(','));
   // Slate underlay and ridge have distinct flags; no fake tile seams there.
   const substance=substanceOf(cell.color,cell.part);
-  const id=cell.part==='tiles'&&substance===MATERIAL.slate?10:substance;
+  // Broad roof bands use the slate finish without the old 60cm tile grid.
+  const id=cell.part==='tiles'&&!cell.roofLaneWidth&&substance===MATERIAL.slate?10:substance;
   // Vertical posts, horizontal rails and top boards use their own grain direction.
   let axis=id===10?(cell.roofPhase||0):1;
   if(cell.part==='table'&&cell.y>=7||cell.part.startsWith('chair-')&&(cell.y===5||cell.y>=9)||cell.part==='fascia')axis=0;

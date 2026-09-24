@@ -1,7 +1,8 @@
 import {createCafeCells} from './model.mjs?v=grid5';
 import {PALETTE} from './palette.mjs?v=grid5';
 
-export const ROOF_PHASES=[0,0,1,1,0,0,0,1,1,0];
+export const ROOF_LANE_WIDTH=8;
+export const ROOF_PHASES=[0,0,0,0,0];
 export const DESIGN_PALETTE={...PALETTE,
  plaster:'#ead6aa',plasterLight:'#f2e3c1',plasterWarm:'#dbc398',repair:'#c7ab83',repairPink:'#c68d6b',ivory:'#f0e2c0',
  brick:'#a75e41',brickLight:'#c07a50',brickDark:'#874a35',brickWarm:'#b36846',
@@ -25,9 +26,9 @@ const tones=[
  ['slateMuted','slate','slate2','slate','slate2','slate']
 ];
 
-// Change integer cell placement, not cube dimensions. Adjacent four-cell lanes
-// start their courses one cell apart. The shallow stagger breaks continuous
-// horizontal risers while three supporting layers keep the roof closed.
+// Five broad colour bands, matching the bakery's visual density. Entire courses
+// have a continuous top, with no lowered strips at lane or ridge boundaries.
+// The source remains editable 15cm cubes; no enlarged primitives are introduced.
 export function createRoofDesignCells(source=createCafeCells()){
  const replaced=new Set(['roof','tiles','ridge']);
  const cells=new Map([...source].filter(([,c])=>!replaced.has(c.part)).map(([k,c])=>[k,{...c}]));
@@ -36,17 +37,17 @@ export function createRoofDesignCells(source=createCafeCells()){
   if(cells.get(key)?.part==='chimney')return;
   cells.set(key,{x,y,z,part,color,phase:3,...extra});
  };
- for(const sign of [-1,1])for(let lane=0;lane<10;lane++)for(let row=0;row<6;row++){
+ for(const sign of [-1,1])for(let lane=0;lane<ROOF_PHASES.length;lane++)for(let row=0;row<6;row++){
   const phase=ROOF_PHASES[lane],start=Math.max(0,row*3-phase),end=row===5?18:(row+1)*3-phase;
-  for(let x=-20+lane*4;x<-16+lane*4;x++)for(let s=start;s<end;s++){
-   const z=sign>0?17-s:s-18,y=22+row*2,color=tones[lane][row],meta={roofPhase:phase,roofLane:lane,roofCourse:row};
+  for(let x=-20+lane*ROOF_LANE_WIDTH;x<-20+(lane+1)*ROOF_LANE_WIDTH;x++)for(let s=start;s<end;s++){
+   const z=sign>0?17-s:s-18,y=22+row*2,color=tones[[0,2,4,7,9][lane]][row],meta={roofPhase:phase,roofLane:lane,roofCourse:row,roofLaneWidth:ROOF_LANE_WIDTH};
    // The base overlaps the next course by a shared height, including across lanes.
    for(let h=y-1;h<=y;h++)if(cells.get(`${x},${h},${z}`)?.part!=='fascia')put('roof',x,h,z,color);
    put('tiles',x,y+1,z,color,meta);
-   if(s>start)put('tiles',x,y+2,z,color,meta);
+   put('tiles',x,y+2,z,color,meta);
   }
  }
- for(let x=-20;x<20;x++)for(let z=-1;z<=0;z++)for(let y=34;y<=35;y++)put('ridge',x,y,z,Math.floor((x+20)/4)%3===1?'slateMuted':'slateEdge');
+ for(let x=-20;x<20;x++)for(let z=-1;z<=0;z++)for(let y=34;y<=35;y++)put('ridge',x,y,z,Math.floor((x+20)/ROOF_LANE_WIDTH)%3===1?'slateMuted':'slateEdge');
  cells.finishUnits=(source.finishUnits||[]).filter(u=>!replaced.has(u.part)&&u.keys.every(k=>cells.get(k)?.finishUnit===u.id));
  return cells;
 }

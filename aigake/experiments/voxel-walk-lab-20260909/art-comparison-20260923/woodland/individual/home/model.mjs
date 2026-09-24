@@ -10,8 +10,9 @@ export function createHomeBlockoutCells(){
  return cells;
 }
 
-export function createHomeCells({stage='structure'}={}){
+export function createHomeCells({stage='roof-coarse'}={}){
  if(stage==='blockout')return createHomeBlockoutCells();
+ const broadRoof=stage==='roof-coarse',courseTop=depth=>33+Math.round(Math.floor(depth/3)*2.4);
  const cells=new Map();
  const put=(part,x,y,z,color,phase=2)=>cells.set(`${x},${y},${z}`,{x,y,z,part,color,phase});
  const box=(part,x,y,z,w,h,d,color,phase=2)=>{for(let a=x;a<x+w;a++)for(let b=y;b<y+h;b++)for(let c=z;c<z+d;c++)put(part,a,b,c,typeof color==='function'?color(a,b,c):color,phase);};
@@ -49,6 +50,15 @@ export function createHomeCells({stage='structure'}={}){
  box('porch',3,16,16,1,2,3,'woodLight',3);box('porch',14,16,16,1,2,3,'woodLight',3);
  // Closed 3-cell deck follows each slope. No dark empty seams between tile lanes.
  for(let x=-23;x<23;x++)for(let z=-20;z<20;z++){
+  if(broadRoof){
+   const depth=19-Math.floor(Math.abs(z+.5)),row=Math.floor(depth/3),lane=Math.min(4,Math.floor((x+23)/9));
+   const tones=['slate','slateLight','slate','slateCool','slate'];
+   let color=tones[(lane+row*2)%5];
+   if((lane===1&&row===4)||(lane===3&&row===2))color='slateRepair';
+   const top=courseTop(depth),bottom=Math.min(top-1,courseTop(Math.max(0,depth-1))+1);
+   box('roof',x,bottom,z,1,top+2-bottom,1,color,3);
+   continue;
+  }
   const depth=19-Math.floor(Math.abs(z+.5)),top=33+Math.floor(depth*.75),lane=Math.floor((x+23)/4),row=Math.floor(depth/2);
   let color='slate';
   if(stage!=='structure'){
@@ -59,7 +69,7 @@ export function createHomeCells({stage='structure'}={}){
   box('roof',x,top-1,z,1,surface-top+2,1,color,3);
  }
  // The side fascia is supported by the roof, and meets the gable wall.
- for(let z=-20;z<20;z++){const top=33+Math.floor((19.5-Math.abs(z+.5))*.75);box('roof',-23,top-1,z,2,1,1,'woodDark',3);box('roof',21,top-1,z,2,1,1,'wood',3);}
+ for(let z=-20;z<20;z++){const depth=19-Math.floor(Math.abs(z+.5)),top=broadRoof?courseTop(depth):33+Math.floor((19.5-Math.abs(z+.5))*.75);box('roof',-23,top-1,z,2,1,1,'woodDark',3);box('roof',21,top-1,z,2,1,1,'wood',3);}
  box('ridge',-23,48,-1,46,1,2,'slateLight',3);box('ridge',-23,47,-2,46,1,4,'slate',3);
  box('chimney',12,39,-10,5,14,5,(x,y,z)=>stage==='structure'?'brick':['brick','brickWarm','brickDark','brick'][((Math.floor((x+y%2)/3)+Math.floor(z/3)+Math.floor(y/2))%4+4)%4],3);
  box('chimney-cap',11,52,-11,7,2,7,'stoneLight',3);cut(13,44,-9,3,11,3);
