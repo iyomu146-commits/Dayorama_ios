@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
+import {Pixelation} from './pixelation.mjs?v=pixel1';
 import {createCafeCells,CELL} from './model.mjs?v=grid5';
 import {PALETTE,PART_NAMES} from './palette.mjs?v=roof16';
 import {buildCafeSurfaces,installSurfaceShader} from './surface-finish.mjs?v=material10';
@@ -9,6 +10,8 @@ import {createCoarseCafeCells,COARSE_CELL} from './coarse-model.mjs?v=coarse7';
 const $=id=>document.getElementById(id),cells=createCafeCells({stage:'detail'}),roofCells=createRoofDesignCells(cells),coarseCells=createCoarseCafeCells(cells),root=new THREE.Group();root.name='cafe';
 const scene=new THREE.Scene(),camera=new THREE.OrthographicCamera(-5,5,4,-4,.1,200),renderer=new THREE.WebGLRenderer({antialias:true,preserveDrawingBuffer:true,alpha:true});
 renderer.setSize(980,754,false);renderer.setPixelRatio(1);renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1;renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFShadowMap;$('view').append(renderer.domElement);scene.add(root);
+const pixelation=new Pixelation(renderer),requestedPixelation=new URLSearchParams(location.search).get('pixel');
+let pixelMode=['weak','medium'].includes(requestedPixelation)?requestedPixelation:'none';$('pixelation').value=pixelMode;
 const key=new THREE.DirectionalLight('#fff0d8',2.8),hemi=new THREE.HemisphereLight('#e9f2f5','#a59a7d',1.65),fill=new THREE.DirectionalLight('#d9e9ec',.6);key.position.set(-8,16,14);fill.position.set(10,10,-10);key.castShadow=true;key.shadow.mapSize.set(2048,2048);key.shadow.radius=2.5;Object.assign(key.shadow.camera,{left:-10,right:10,top:10,bottom:-10,near:.1,far:50});key.shadow.bias=-.0001;key.shadow.normalBias=.018;scene.add(key,hemi,fill);
 const floor=new THREE.Mesh(new THREE.PlaneGeometry(200,200),new THREE.ShadowMaterial({color:'#756956',opacity:.14}));floor.rotation.x=-Math.PI/2;floor.position.y=-.003;floor.receiveShadow=true;scene.add(floor);
 // Procedural environment: independent from cell albedo; no source-photo projection.
@@ -34,7 +37,7 @@ rebuild();
 
 const controls=new OrbitControls(camera,renderer.domElement);controls.enabled=false;controls.enableDamping=false;controls.enablePan=false;let interactive=false,masked=false,clay=false,exploded=false;
 const isMain=id=>!['terrace','table','chair-front','chair-back','cup'].includes(id)&&!id.startsWith('plant-');
-function draw(){renderer.render(scene,camera);if($('status'))$('status').textContent=`${activeCells().size.toLocaleString()}ボクセル · ${root.children.reduce((n,m)=>n+m.geometry.attributes.position.count/3,0).toLocaleString()}三角形 · ${root.children.length}部材`;}
+function draw(){pixelation.render(scene,camera,pixelMode);if($('status'))$('status').textContent=`${activeCells().size.toLocaleString()}ボクセル · ${root.children.reduce((n,m)=>n+m.geometry.attributes.position.count/3,0).toLocaleString()}三角形 · ${root.children.length}部材`;}
 function fit(name='match'){
  interactive=false;controls.enabled=false;$('orbit').setAttribute('aria-pressed','false');const v=({match:[13.5,11.5,30],front:[0,10,30],right:[30,10,0],back:[0,10,-30],left:[-30,10,0]})[name];camera.position.set(...v);camera.lookAt(0,0,0);camera.updateMatrixWorld();
  const right=new THREE.Vector3().setFromMatrixColumn(camera.matrixWorld,0),up=new THREE.Vector3().setFromMatrixColumn(camera.matrixWorld,1);let x0=Infinity,x1=-Infinity,y0=Infinity,y1=-Infinity;
@@ -48,6 +51,15 @@ function light(mode){$('light').value=mode;applyLighting(mode);draw();}
 function explode(on){exploded=on;const compiled=on?new Map(buildCafeSurfaces(activeCells(),activePalette(),{...finishOptions(),isolated:true}).map(m=>[m.part,m])):null;for(const mesh of root.children){mesh.position.set(0,0,0);mesh.userData.assembledGeometry??=mesh.geometry;if(on&&!mesh.userData.explodedGeometry)mesh.userData.explodedGeometry=geometry(compiled.get(mesh.name));mesh.geometry=on?mesh.userData.explodedGeometry:mesh.userData.assembledGeometry;}const center=new THREE.Box3().setFromObject(root).getCenter(new THREE.Vector3());for(const mesh of root.children)mesh.position.copy(boxes.get(mesh.name).getCenter(new THREE.Vector3()).sub(center).multiplyScalar(on?.2:0));fit($('angle').value);}
 function finish(mode){if(exploded)explode(false);finishMode=mode;rebuild();$('finish').value=mode;$('explode').setAttribute('aria-pressed','false');draw();}
 $('finish').onchange=()=>finish($('finish').value);
+$('pixelation').onchange=()=>{pixelMode=$('pixelation').value;draw();};
+$('compare-pixels').onclick=()=>{
+ const originalMode=pixelMode,panel=$('pixel-comparison');panel.replaceChildren();panel.hidden=false;
+ try{for(const [mode,label] of [['none','なし'],['weak','弱'],['medium','中']]){
+  pixelMode=mode;draw();const figure=document.createElement('figure'),img=document.createElement('img'),caption=document.createElement('figcaption');
+  img.src=renderer.domElement.toDataURL('image/png');img.alt='pixel-'+mode;img.style.imageRendering=mode==='none'?'auto':'pixelated';img.width=980;img.height=754;caption.textContent=label;figure.append(img,caption);panel.append(figure);
+ }}finally{pixelMode=originalMode;draw();}
+ panel.scrollIntoView({block:'nearest',behavior:'smooth'});
+};
 function download(name,url){const a=document.createElement('a');a.download=name;a.href=url;a.click();}
 $('angle').onchange=()=>fit($('angle').value);$('orbit').onclick=()=>{interactive=!interactive;controls.enabled=interactive;$('orbit').setAttribute('aria-pressed',String(interactive));};controls.addEventListener('change',draw);
 $('mask').onclick=()=>{masked=!masked;look();};$('clay').onclick=()=>{clay=!clay;$('clay').setAttribute('aria-pressed',String(clay));look();};$('light').onchange=()=>light($('light').value);$('explode').onclick=()=>{explode(!exploded);$('explode').setAttribute('aria-pressed',String(exploded));};
