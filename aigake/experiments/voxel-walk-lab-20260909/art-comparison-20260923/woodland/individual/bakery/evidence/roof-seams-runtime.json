@@ -1,0 +1,951 @@
+{
+  "model": "individual-bakery-v1",
+  "parts": [
+    {
+      "name": "plinth",
+      "mesh": "plinth-surface",
+      "kind": "part",
+      "triangles": 564
+    },
+    {
+      "name": "building",
+      "mesh": "building-surface",
+      "kind": "part",
+      "triangles": 1994
+    },
+    {
+      "name": "fascia",
+      "mesh": "fascia-surface",
+      "kind": "part",
+      "triangles": 584
+    },
+    {
+      "name": "wing-roof",
+      "mesh": "wing-roof-surface",
+      "kind": "part",
+      "triangles": 936
+    },
+    {
+      "name": "wing",
+      "mesh": "wing-surface",
+      "kind": "part",
+      "triangles": 854
+    },
+    {
+      "name": "roof",
+      "mesh": "roof-surface",
+      "kind": "part",
+      "triangles": 5828
+    },
+    {
+      "name": "gable",
+      "mesh": "gable-surface",
+      "kind": "part",
+      "triangles": 606
+    },
+    {
+      "name": "chimney",
+      "mesh": "chimney-surface",
+      "kind": "part",
+      "triangles": 276
+    },
+    {
+      "name": "ridge",
+      "mesh": "ridge-surface",
+      "kind": "part",
+      "triangles": 18
+    },
+    {
+      "name": "awning",
+      "mesh": "awning-surface",
+      "kind": "part",
+      "triangles": 888
+    },
+    {
+      "name": "shop-left",
+      "mesh": "shop-left-surface",
+      "kind": "part",
+      "triangles": 270
+    },
+    {
+      "name": "shop-right",
+      "mesh": "shop-right-surface",
+      "kind": "part",
+      "triangles": 194
+    },
+    {
+      "name": "door",
+      "mesh": "door-surface",
+      "kind": "part",
+      "triangles": 344
+    },
+    {
+      "name": "handle",
+      "mesh": "handle-surface",
+      "kind": "part",
+      "triangles": 8
+    },
+    {
+      "name": "wing-window",
+      "mesh": "wing-window-surface",
+      "kind": "part",
+      "triangles": 100
+    },
+    {
+      "name": "wing-door",
+      "mesh": "wing-door-surface",
+      "kind": "part",
+      "triangles": 268
+    },
+    {
+      "name": "side-handle",
+      "mesh": "side-handle-surface",
+      "kind": "part",
+      "triangles": 8
+    },
+    {
+      "name": "steps",
+      "mesh": "steps-surface",
+      "kind": "part",
+      "triangles": 64
+    },
+    {
+      "name": "chimney-rim",
+      "mesh": "chimney-rim-surface",
+      "kind": "part",
+      "triangles": 112
+    },
+    {
+      "name": "stall-left",
+      "mesh": "stall-left-surface",
+      "kind": "part",
+      "triangles": 310
+    },
+    {
+      "name": "stall-right",
+      "mesh": "stall-right-surface",
+      "kind": "part",
+      "triangles": 320
+    },
+    {
+      "name": "pot-left",
+      "mesh": "pot-left-surface",
+      "kind": "part",
+      "triangles": 92
+    },
+    {
+      "name": "herb-left",
+      "mesh": "herb-left-surface",
+      "kind": "part",
+      "triangles": 92
+    },
+    {
+      "name": "pot-right",
+      "mesh": "pot-right-surface",
+      "kind": "part",
+      "triangles": 142
+    },
+    {
+      "name": "herb-right",
+      "mesh": "herb-right-surface",
+      "kind": "part",
+      "triangles": 148
+    },
+    {
+      "name": "bread-left",
+      "mesh": "bread-left-surface",
+      "kind": "part",
+      "triangles": 372
+    },
+    {
+      "name": "bread-right",
+      "mesh": "bread-right-surface",
+      "kind": "part",
+      "triangles": 274
+    }
+  ],
+  "unnamedMeshes": 0,
+  "runtime": {
+    "parts": [
+      {
+        "id": "plinth",
+        "meshName": "plinth-surface",
+        "pivotNode": "plinth",
+        "pivot": [
+          0.75,
+          0,
+          0
+        ],
+        "collider": {
+          "shape": "box",
+          "center": [
+            0,
+            0.07500000298023224,
+            0
+          ],
+          "size": [
+            7.5,
+            0.15000000596046448,
+            4.199999809265137
+          ],
+          "intent": "component selection proxy; occupancy remains authoritative"
+        },
+        "constructionPhases": [
+          0
+        ],
+        "destructionGroup": "plinth"
+      },
+      {
+        "id": "building",
+        "meshName": "building-surface",
+        "pivotNode": "building",
+        "pivot": [
+          0,
+          0.15000000596046448,
+          0
+        ],
+        "collider": {
+          "shape": "box",
+          "center": [
+            0,
+            1.5749999731779099,
+            0
+          ],
+          "size": [
+            6,
+            3.1499999463558197,
+            4.199999809265137
+          ],
+          "intent": "component selection proxy; occupancy remains authoritative"
+        },
+        "constructionPhases": [
+          1
+        ],
+        "destructionGroup": "building"
+      },
+      {
+        "id": "fascia",
+        "meshName": "fascia-surface",
+        "pivotNode": "fascia",
+        "pivot": [
+          0,
+          3.1500000953674316,
+          0
+        ],
+        "collider": {
+          "shape": "box",
+          "center": [
+            0,
+            0.1499999761581421,
+            0
+          ],
+          "size": [
+            6.300000190734863,
+            0.2999999523162842,
+            4.5
+          ],
+          "intent": "component selection proxy; occupancy remains authoritative"
+        },
+        "constructionPhases": [
+          2
+        ],
+        "destructionGroup": "fascia"
+      },
+      {
+        "id": "wing-roof",
+        "meshName": "wing-roof-surface",
+        "pivotNode": "wing-roof",
+        "pivot": [
+          3.8999998569488525,
+          2.549999952316284,
+          0.1499999761581421
+        ],
+        "collider": {
+          "shape": "box",
+          "center": [
+            0,
+            0.4500000476837158,
+            0
+          ],
+          "size": [
+            2.0999999046325684,
+            0.9000000953674316,
+            3.8999998569488525
+          ],
+          "intent": "component selection proxy; occupancy remains authoritative"
+        },
+        "constructionPhases": [
+          2
+        ],
+        "destructionGroup": "wing-roof"
+      },
+      {
+        "id": "wing",
+        "meshName": "wing-surface",
+        "pivotNode": "wing",
+        "pivot": [
+          3.75,
+          0.15000000596046448,
+          0.1499999761581421
+        ],
+        "collider": {
+          "shape": "box",
+          "center": [
+            0,
+            1.4249999970197678,
+            0
+          ],
+          "size": [
+            1.5,
+            2.8499999940395355,
+            3.299999952316284
+          ],
+          "intent": "component selection proxy; occupancy remains authoritative"
+        },
+        "constructionPhases": [
+          1
+        ],
+        "destructionGroup": "wing"
+      },
+      {
+        "id": "roof",
+        "meshName": "roof-surface",
+        "pivotNode": "roof",
+        "pivot": [
+          0,
+          3.450000047683716,
+          0
+        ],
+        "collider": {
+          "shape": "box",
+          "center": [
+            0,
+            1.1249998807907104,
+            0
+          ],
+          "size": [
+            6.900000095367432,
+            2.249999761581421,
+            5.099999904632568
+          ],
+          "intent": "component selection proxy; occupancy remains authoritative"
+        },
+        "constructionPhases": [
+          2
+        ],
+        "destructionGroup": "roof"
+      },
+      {
+        "id": "gable",
+        "meshName": "gable-surface",
+        "pivotNode": "gable",
+        "pivot": [
+          0,
+          3.299999952316284,
+          0
+        ],
+        "collider": {
+          "shape": "box",
+          "center": [
+            0,
+            0.9750000238418579,
+            0
+          ],
+          "size": [
+            6,
+            1.9500000476837158,
+            4.199999809265137
+          ],
+          "intent": "component selection proxy; occupancy remains authoritative"
+        },
+        "constructionPhases": [
+          1,
+          2
+        ],
+        "destructionGroup": "gable"
+      },
+      {
+        "id": "chimney",
+        "meshName": "chimney-surface",
+        "pivotNode": "chimney",
+        "pivot": [
+          0.5249999910593033,
+          4.5,
+          -0.9750000238418579
+        ],
+        "collider": {
+          "shape": "box",
+          "center": [
+            0,
+            0.75,
+            0
+          ],
+          "size": [
+            0.7499999701976776,
+            1.5,
+            0.75
+          ],
+          "intent": "component selection proxy; occupancy remains authoritative"
+        },
+        "constructionPhases": [
+          2
+        ],
+        "destructionGroup": "chimney"
+      },
+      {
+        "id": "ridge",
+        "meshName": "ridge-surface",
+        "pivotNode": "ridge",
+        "pivot": [
+          0,
+          5.550000190734863,
+          0
+        ],
+        "collider": {
+          "shape": "box",
+          "center": [
+            0,
+            0.07499980926513672,
+            0
+          ],
+          "size": [
+            6.900000095367432,
+            0.14999961853027344,
+            0.30000001192092896
+          ],
+          "intent": "component selection proxy; occupancy remains authoritative"
+        },
+        "constructionPhases": [
+          2
+        ],
+        "destructionGroup": "ridge"
+      },
+      {
+        "id": "awning",
+        "meshName": "awning-surface",
+        "pivotNode": "awning",
+        "pivot": [
+          -0.2999999523162842,
+          2.549999952316284,
+          2.6999999284744263
+        ],
+        "collider": {
+          "shape": "box",
+          "center": [
+            0,
+            0.375,
+            0
+          ],
+          "size": [
+            4.5,
+            0.75,
+            1.2000000476837158
+          ],
+          "intent": "component selection proxy; occupancy remains authoritative"
+        },
+        "constructionPhases": [
+          3
+        ],
+        "destructionGroup": "awning"
+      },
+      {
+        "id": "shop-left",
+        "meshName": "shop-left-surface",
+        "pivotNode": "shop-left",
+        "pivot": [
+          -1.574999988079071,
+          0.6000000238418579,
+          1.9499999284744263
+        ],
+        "collider": {
+          "shape": "box",
+          "center": [
+            0,
+            1.050000011920929,
+            0
+          ],
+          "size": [
+            1.9499999284744263,
+            2.100000023841858,
+            0.2999999523162842
+          ],
+          "intent": "component selection proxy; occupancy remains authoritative"
+        },
+        "constructionPhases": [
+          3
+        ],
+        "destructionGroup": "shop-left"
+      },
+      {
+        "id": "shop-right",
+        "meshName": "shop-right-surface",
+        "pivotNode": "shop-right",
+        "pivot": [
+          1.875,
+          0.6000000238418579,
+          1.9499999284744263
+        ],
+        "collider": {
+          "shape": "box",
+          "center": [
+            0,
+            1.050000011920929,
+            0
+          ],
+          "size": [
+            1.3499999046325684,
+            2.100000023841858,
+            0.2999999523162842
+          ],
+          "intent": "component selection proxy; occupancy remains authoritative"
+        },
+        "constructionPhases": [
+          3
+        ],
+        "destructionGroup": "shop-right"
+      },
+      {
+        "id": "door",
+        "meshName": "door-surface",
+        "pivotNode": "door",
+        "pivot": [
+          -0.30000001192092896,
+          0.15000000596046448,
+          2.024999976158142
+        ],
+        "collider": {
+          "shape": "box",
+          "center": [
+            0.6749999821186066,
+            1.349999949336052,
+            0
+          ],
+          "size": [
+            1.3499999642372131,
+            2.699999898672104,
+            0.4500000476837158
+          ],
+          "intent": "component selection proxy; occupancy remains authoritative"
+        },
+        "constructionPhases": [
+          3
+        ],
+        "destructionGroup": "door"
+      },
+      {
+        "id": "handle",
+        "meshName": "handle-surface",
+        "pivotNode": "handle",
+        "pivot": [
+          0.824999988079071,
+          1.2000000476837158,
+          2.174999952316284
+        ],
+        "collider": {
+          "shape": "box",
+          "center": [
+            0,
+            0.07499998807907104,
+            0
+          ],
+          "size": [
+            0.1499999761581421,
+            0.1499999761581421,
+            0.15000009536743164
+          ],
+          "intent": "component selection proxy; occupancy remains authoritative"
+        },
+        "constructionPhases": [
+          3
+        ],
+        "destructionGroup": "handle"
+      },
+      {
+        "id": "wing-window",
+        "meshName": "wing-window-surface",
+        "pivotNode": "wing-window",
+        "pivot": [
+          3.8249999284744263,
+          0.8999999761581421,
+          1.649999976158142
+        ],
+        "collider": {
+          "shape": "box",
+          "center": [
+            0,
+            0.5999999642372131,
+            0
+          ],
+          "size": [
+            0.7499997615814209,
+            1.1999999284744263,
+            0.2999999523162842
+          ],
+          "intent": "component selection proxy; occupancy remains authoritative"
+        },
+        "constructionPhases": [
+          3
+        ],
+        "destructionGroup": "wing-window"
+      },
+      {
+        "id": "wing-door",
+        "meshName": "wing-door-surface",
+        "pivotNode": "wing-door",
+        "pivot": [
+          4.424999952316284,
+          0.15000000596046448,
+          -0.15000000596046448
+        ],
+        "collider": {
+          "shape": "box",
+          "center": [
+            0,
+            1.0499999970197678,
+            0
+          ],
+          "size": [
+            0.4500002861022949,
+            2.0999999940395355,
+            1.199999988079071
+          ],
+          "intent": "component selection proxy; occupancy remains authoritative"
+        },
+        "constructionPhases": [
+          3
+        ],
+        "destructionGroup": "wing-door"
+      },
+      {
+        "id": "side-handle",
+        "meshName": "side-handle-surface",
+        "pivotNode": "side-handle",
+        "pivot": [
+          4.575000047683716,
+          1.0499999523162842,
+          0.22500000894069672
+        ],
+        "collider": {
+          "shape": "box",
+          "center": [
+            0,
+            0.07500004768371582,
+            0
+          ],
+          "size": [
+            0.15000009536743164,
+            0.15000009536743164,
+            0.15000000596046448
+          ],
+          "intent": "component selection proxy; occupancy remains authoritative"
+        },
+        "constructionPhases": [
+          3
+        ],
+        "destructionGroup": "side-handle"
+      },
+      {
+        "id": "steps",
+        "meshName": "steps-surface",
+        "pivotNode": "steps",
+        "pivot": [
+          0.45000001788139343,
+          0,
+          2.549999952316284
+        ],
+        "collider": {
+          "shape": "box",
+          "center": [
+            0,
+            0.07500000298023224,
+            0
+          ],
+          "size": [
+            1.800000011920929,
+            0.15000000596046448,
+            0.9000000953674316
+          ],
+          "intent": "component selection proxy; occupancy remains authoritative"
+        },
+        "constructionPhases": [
+          0
+        ],
+        "destructionGroup": "steps"
+      },
+      {
+        "id": "chimney-rim",
+        "meshName": "chimney-rim-surface",
+        "pivotNode": "chimney-rim",
+        "pivot": [
+          0.5249999761581421,
+          6,
+          -0.9749999940395355
+        ],
+        "collider": {
+          "shape": "box",
+          "center": [
+            0,
+            0.15000009536743164,
+            0
+          ],
+          "size": [
+            1.0499999523162842,
+            0.3000001907348633,
+            1.050000011920929
+          ],
+          "intent": "component selection proxy; occupancy remains authoritative"
+        },
+        "constructionPhases": [
+          2
+        ],
+        "destructionGroup": "chimney-rim"
+      },
+      {
+        "id": "stall-left",
+        "meshName": "stall-left-surface",
+        "pivotNode": "stall-left",
+        "pivot": [
+          -1.6500000357627869,
+          0,
+          3.450000047683716
+        ],
+        "collider": {
+          "shape": "box",
+          "center": [
+            0,
+            0.44999998807907104,
+            0
+          ],
+          "size": [
+            2.100000023841858,
+            0.8999999761581421,
+            1.200000286102295
+          ],
+          "intent": "component selection proxy; occupancy remains authoritative"
+        },
+        "constructionPhases": [
+          4
+        ],
+        "destructionGroup": "stall-left"
+      },
+      {
+        "id": "stall-right",
+        "meshName": "stall-right-surface",
+        "pivotNode": "stall-right",
+        "pivot": [
+          2.174999952316284,
+          0,
+          3.450000047683716
+        ],
+        "collider": {
+          "shape": "box",
+          "center": [
+            0,
+            0.5249999761581421,
+            0
+          ],
+          "size": [
+            1.3499999046325684,
+            1.0499999523162842,
+            1.200000286102295
+          ],
+          "intent": "component selection proxy; occupancy remains authoritative"
+        },
+        "constructionPhases": [
+          4
+        ],
+        "destructionGroup": "stall-right"
+      },
+      {
+        "id": "pot-left",
+        "meshName": "pot-left-surface",
+        "pivotNode": "pot-left",
+        "pivot": [
+          -3.299999952316284,
+          0,
+          2.4749999046325684
+        ],
+        "collider": {
+          "shape": "box",
+          "center": [
+            0,
+            0.30000001192092896,
+            0
+          ],
+          "size": [
+            0.5999999046325684,
+            0.6000000238418579,
+            0.75
+          ],
+          "intent": "component selection proxy; occupancy remains authoritative"
+        },
+        "constructionPhases": [
+          4
+        ],
+        "destructionGroup": "pot-left"
+      },
+      {
+        "id": "herb-left",
+        "meshName": "herb-left-surface",
+        "pivotNode": "herb-left",
+        "pivot": [
+          -3.225000023841858,
+          0.44999998807907104,
+          2.475000023841858
+        ],
+        "collider": {
+          "shape": "box",
+          "center": [
+            0,
+            0.5250000059604645,
+            0
+          ],
+          "size": [
+            0.4500000476837158,
+            1.050000011920929,
+            0.4500000476837158
+          ],
+          "intent": "component selection proxy; occupancy remains authoritative"
+        },
+        "constructionPhases": [
+          4
+        ],
+        "destructionGroup": "herb-left"
+      },
+      {
+        "id": "pot-right",
+        "meshName": "pot-right-surface",
+        "pivotNode": "pot-right",
+        "pivot": [
+          3.899999976158142,
+          0,
+          3.0749999284744263
+        ],
+        "collider": {
+          "shape": "box",
+          "center": [
+            0,
+            0.30000001192092896,
+            0
+          ],
+          "size": [
+            1.2000000476837158,
+            0.6000000238418579,
+            1.0499999523162842
+          ],
+          "intent": "component selection proxy; occupancy remains authoritative"
+        },
+        "constructionPhases": [
+          4
+        ],
+        "destructionGroup": "pot-right"
+      },
+      {
+        "id": "herb-right",
+        "meshName": "herb-right-surface",
+        "pivotNode": "herb-right",
+        "pivot": [
+          3.8249999284744263,
+          0.44999998807907104,
+          3.0749999284744263
+        ],
+        "collider": {
+          "shape": "box",
+          "center": [
+            0,
+            0.5250000059604645,
+            0
+          ],
+          "size": [
+            0.7499997615814209,
+            1.050000011920929,
+            0.4500000476837158
+          ],
+          "intent": "component selection proxy; occupancy remains authoritative"
+        },
+        "constructionPhases": [
+          4
+        ],
+        "destructionGroup": "herb-right"
+      },
+      {
+        "id": "bread-left",
+        "meshName": "bread-left-surface",
+        "pivotNode": "bread-left",
+        "pivot": [
+          -1.649999976158142,
+          0.8999999761581421,
+          3.450000047683716
+        ],
+        "collider": {
+          "shape": "box",
+          "center": [
+            0,
+            0.2250000238418579,
+            0
+          ],
+          "size": [
+            1.7999999523162842,
+            0.4500000476837158,
+            0.9000000953674316
+          ],
+          "intent": "component selection proxy; occupancy remains authoritative"
+        },
+        "constructionPhases": [
+          4
+        ],
+        "destructionGroup": "bread-left"
+      },
+      {
+        "id": "bread-right",
+        "meshName": "bread-right-surface",
+        "pivotNode": "bread-right",
+        "pivot": [
+          2.175000011920929,
+          0.75,
+          3.450000047683716
+        ],
+        "collider": {
+          "shape": "box",
+          "center": [
+            0,
+            0.44999998807907104,
+            0
+          ],
+          "size": [
+            1.0500000715255737,
+            0.8999999761581421,
+            0.9000000953674316
+          ],
+          "intent": "component selection proxy; occupancy remains authoritative"
+        },
+        "constructionPhases": [
+          4
+        ],
+        "destructionGroup": "bread-right"
+      }
+    ],
+    "sockets": [
+      {
+        "id": "entrance",
+        "parent": "door",
+        "localPosition": [
+          0.7500000119209289,
+          -0.15000000596046448,
+          0.9750000238418579
+        ]
+      },
+      {
+        "id": "smoke",
+        "parent": "chimney-rim",
+        "localPosition": [
+          2.384185793236071e-8,
+          0.2999999999999998,
+          -5.960464455334602e-9
+        ]
+      }
+    ],
+    "stage": "individual-bakery-v1",
+    "construction": "integer 15cm cubes; not yet connected to walk progress"
+  }
+}

@@ -18,6 +18,7 @@ export function createBakeryBlockoutCells(){
 export function createBakeryCells({stage='optimization'}={}){
  if(stage==='blockout')return createBakeryBlockoutCells();
  const formed=stage!=='structure',finished=formed&&stage!=='form',roofTop=z=>23+(formed?Math.round(Math.floor((16.5-Math.abs(z+.5))/3)*2.4):Math.floor((16.5-Math.abs(z+.5))*.75));
+ const closedCourses=stage==='optimization'||stage==='roof-seams';
  const cells=new Map(),put=(part,color,x,y,z,phase=1)=>cells.set(`${x},${y},${z}`,{x,y,z,color,part,phase});
  const box=(part,color,x,y,z,w,h,d,phase=1)=>{for(let i=x;i<x+w;i++)for(let j=y;j<y+h;j++)for(let k=z;k<z+d;k++)put(part,color,i,j,k,phase);};
  const cut=(x,y,z,w,h,d)=>{for(let i=x;i<x+w;i++)for(let j=y;j<y+h;j++)for(let k=z;k<z+d;k++)cells.delete(`${i},${j},${k}`);};
@@ -67,13 +68,14 @@ export function createBakeryCells({stage='optimization'}={}){
  }
  planter('pot-left','herb-left',-24,14,4,5);planter('pot-right','herb-right',22,17,8,7);
  if(stage==='structure')return cells;
- // Five broad lanes: shallow raised clay runs on a closed backing, never gaps.
+ // Historical passes retain their raised lanes. The final roof fills those gutters:
+ // adjacent tile bands share a top level, including the row just below the ridge.
  for(let x=-23;x<23;x++)for(let z=-17;z<17;z++){
   const lane=(x+23)%9,top=roofTop(z);
-  if(lane>0&&lane<8&&Math.abs(z)>1){const y=top+(finished?2:3),key=`${x},${y},${z}`;if(!cells.has(key))put('roof','tile',x,y,z,2);}
+  if(closedCourses||(lane>0&&lane<8&&Math.abs(z)>1)){const y=top+(finished?2:3),key=`${x},${y},${z}`;if(!cells.has(key))put('roof','tile',x,y,z,2);}
  }
  // Distinct lean-to roof courses on the annex, with the same editable cell size.
- for(let x=20;x<32;x++)for(let z=-12;z<14;z++)if((x-20)%4<3&&(z+12)%7<6){const y=22-Math.floor((x-19)/4);if(!cells.has(`${x},${y},${z}`))put('wing-roof','tile',x,y,z,2);}
+ for(let x=closedCourses?19:20;x<(closedCourses?33:32);x++)for(let z=-12;z<14;z++)if(closedCourses||((x-20)%4<3&&(z+12)%7<6)){const y=22-Math.floor((x-19)/4);if(!cells.has(`${x},${y},${z}`))put('wing-roof','tile',x,y,z,2);}
  // Low timber front boards visually tie each bread bin to its four legs.
  box('stall-left','wood',-18,1,26,14,3,1,4);box('stall-right','wood',10,1,26,9,4,1,4);
  for(const [key,c] of cells)if(c.part.startsWith('bread-'))cells.delete(key);

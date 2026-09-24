@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
 import {meshChunk} from '../../../density-core.mjs';
-import {createBakeryCells,CELL,PALETTE} from './model.mjs?v=bakery1';
+import {createBakeryCells,CELL,PALETTE} from './model.mjs?v=bakery-roof2';
 import {bakeryChannels,installMaterialStudy} from './material.mjs';
 import {createVoxelDocument} from './voxel-document.mjs';
 const STAGE='optimization';

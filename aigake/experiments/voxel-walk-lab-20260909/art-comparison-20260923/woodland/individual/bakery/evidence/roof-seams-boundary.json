@@ -1,0 +1,10 @@
+{
+  "passed": true,
+  "stage": "roof-seams",
+  "cells": 17865,
+  "renderTriangles": 15666,
+  "expectedFaces": 19712,
+  "actualFaces": 19712,
+  "area": 19712,
+  "method": "Exhaustive signed axis-grid face equality and summed triangle area. Rendered surface equals occupancy boundary exactly; analysis tessellation preserves the same surface."
+}
