@@ -1,0 +1,780 @@
+{
+  "model": "individual-home-v1",
+  "parts": [
+    {
+      "name": "plinth",
+      "mesh": "plinth-surface",
+      "kind": "part",
+      "triangles": 274
+    },
+    {
+      "name": "lower-wall",
+      "mesh": "lower-wall-surface",
+      "kind": "part",
+      "triangles": 1096
+    },
+    {
+      "name": "front-low",
+      "mesh": "front-low-surface",
+      "kind": "part",
+      "triangles": 406
+    },
+    {
+      "name": "right-low",
+      "mesh": "right-low-surface",
+      "kind": "part",
+      "triangles": 406
+    },
+    {
+      "name": "floor-band",
+      "mesh": "floor-band-surface",
+      "kind": "part",
+      "triangles": 24
+    },
+    {
+      "name": "upper-wall",
+      "mesh": "upper-wall-surface",
+      "kind": "part",
+      "triangles": 954
+    },
+    {
+      "name": "porch",
+      "mesh": "porch-surface",
+      "kind": "part",
+      "triangles": 492
+    },
+    {
+      "name": "rail-left",
+      "mesh": "rail-left-surface",
+      "kind": "part",
+      "triangles": 158
+    },
+    {
+      "name": "front-upper-left",
+      "mesh": "front-upper-left-surface",
+      "kind": "part",
+      "triangles": 392
+    },
+    {
+      "name": "rail-right",
+      "mesh": "rail-right-surface",
+      "kind": "part",
+      "triangles": 176
+    },
+    {
+      "name": "front-upper-right",
+      "mesh": "front-upper-right-surface",
+      "kind": "part",
+      "triangles": 370
+    },
+    {
+      "name": "rail-side",
+      "mesh": "rail-side-surface",
+      "kind": "part",
+      "triangles": 150
+    },
+    {
+      "name": "right-upper",
+      "mesh": "right-upper-surface",
+      "kind": "part",
+      "triangles": 392
+    },
+    {
+      "name": "building",
+      "mesh": "building-surface",
+      "kind": "part",
+      "triangles": 500
+    },
+    {
+      "name": "gable",
+      "mesh": "gable-surface",
+      "kind": "part",
+      "triangles": 584
+    },
+    {
+      "name": "roof",
+      "mesh": "roof-surface",
+      "kind": "part",
+      "triangles": 7960
+    },
+    {
+      "name": "door",
+      "mesh": "door-surface",
+      "kind": "part",
+      "triangles": 174
+    },
+    {
+      "name": "door-handle",
+      "mesh": "door-handle-surface",
+      "kind": "part",
+      "triangles": 10
+    },
+    {
+      "name": "steps",
+      "mesh": "steps-surface",
+      "kind": "part",
+      "triangles": 120
+    },
+    {
+      "name": "ridge",
+      "mesh": "ridge-surface",
+      "kind": "part",
+      "triangles": 194
+    },
+    {
+      "name": "chimney",
+      "mesh": "chimney-surface",
+      "kind": "part",
+      "triangles": 412
+    },
+    {
+      "name": "chimney-cap",
+      "mesh": "chimney-cap-surface",
+      "kind": "part",
+      "triangles": 104
+    }
+  ],
+  "unnamedMeshes": 0,
+  "runtime": {
+    "parts": [
+      {
+        "id": "plinth",
+        "meshName": "plinth-surface",
+        "pivotNode": "plinth",
+        "pivot": [
+          0,
+          0,
+          0
+        ],
+        "collider": {
+          "shape": "box",
+          "center": [
+            0,
+            0.15000000596046448,
+            0
+          ],
+          "size": [
+            6,
+            0.30000001192092896,
+            4.800000190734863
+          ],
+          "intent": "component selection proxy; occupancy remains authoritative"
+        },
+        "constructionPhases": [
+          0
+        ],
+        "destructionGroup": "plinth"
+      },
+      {
+        "id": "lower-wall",
+        "meshName": "lower-wall-surface",
+        "pivotNode": "lower-wall",
+        "pivot": [
+          0,
+          0.30000001192092896,
+          0
+        ],
+        "collider": {
+          "shape": "box",
+          "center": [
+            0,
+            1.1249999701976776,
+            0
+          ],
+          "size": [
+            6,
+            2.2499999403953552,
+            4.800000190734863
+          ],
+          "intent": "component selection proxy; occupancy remains authoritative"
+        },
+        "constructionPhases": [
+          2
+        ],
+        "destructionGroup": "lower-wall"
+      },
+      {
+        "id": "front-low",
+        "meshName": "front-low-surface",
+        "pivotNode": "front-low",
+        "pivot": [
+          -1.5000000596046448,
+          0.6000000238418579,
+          2.399999976158142
+        ],
+        "collider": {
+          "shape": "box",
+          "center": [
+            0,
+            0.824999988079071,
+            0
+          ],
+          "size": [
+            1.8000000715255737,
+            1.649999976158142,
+            0.6000001430511475
+          ],
+          "intent": "component selection proxy; occupancy remains authoritative"
+        },
+        "constructionPhases": [
+          2
+        ],
+        "destructionGroup": "front-low"
+      },
+      {
+        "id": "right-low",
+        "meshName": "right-low-surface",
+        "pivotNode": "right-low",
+        "pivot": [
+          3,
+          0.6000000238418579,
+          0.1499999761581421
+        ],
+        "collider": {
+          "shape": "box",
+          "center": [
+            0,
+            0.824999988079071,
+            0
+          ],
+          "size": [
+            0.5999999046325684,
+            1.649999976158142,
+            1.7999999523162842
+          ],
+          "intent": "component selection proxy; occupancy remains authoritative"
+        },
+        "constructionPhases": [
+          2
+        ],
+        "destructionGroup": "right-low"
+      },
+      {
+        "id": "floor-band",
+        "meshName": "floor-band-surface",
+        "pivotNode": "floor-band",
+        "pivot": [
+          0,
+          2.549999952316284,
+          0
+        ],
+        "collider": {
+          "shape": "box",
+          "center": [
+            0,
+            0.07500004768371582,
+            0
+          ],
+          "size": [
+            6,
+            0.15000009536743164,
+            4.800000190734863
+          ],
+          "intent": "component selection proxy; occupancy remains authoritative"
+        },
+        "constructionPhases": [
+          2
+        ],
+        "destructionGroup": "floor-band"
+      },
+      {
+        "id": "upper-wall",
+        "meshName": "upper-wall-surface",
+        "pivotNode": "upper-wall",
+        "pivot": [
+          0,
+          2.700000047683716,
+          0
+        ],
+        "collider": {
+          "shape": "box",
+          "center": [
+            0,
+            1.1249998807907104,
+            0
+          ],
+          "size": [
+            6,
+            2.249999761581421,
+            4.800000190734863
+          ],
+          "intent": "component selection proxy; occupancy remains authoritative"
+        },
+        "constructionPhases": [
+          2
+        ],
+        "destructionGroup": "upper-wall"
+      },
+      {
+        "id": "porch",
+        "meshName": "porch-surface",
+        "pivotNode": "porch",
+        "pivot": [
+          1.3500000536441803,
+          2.4000000953674316,
+          2.9250000715255737
+        ],
+        "collider": {
+          "shape": "box",
+          "center": [
+            0,
+            0.375,
+            0
+          ],
+          "size": [
+            2.1000000834465027,
+            0.75,
+            1.0499999523162842
+          ],
+          "intent": "component selection proxy; occupancy remains authoritative"
+        },
+        "constructionPhases": [
+          3
+        ],
+        "destructionGroup": "porch"
+      },
+      {
+        "id": "rail-left",
+        "meshName": "rail-left-surface",
+        "pivotNode": "rail-left",
+        "pivot": [
+          -1.5000000596046448,
+          3.1500000953674316,
+          2.625
+        ],
+        "collider": {
+          "shape": "box",
+          "center": [
+            0,
+            0.2999999523162842,
+            0
+          ],
+          "size": [
+            1.8000000715255737,
+            0.5999999046325684,
+            0.4499998092651367
+          ],
+          "intent": "component selection proxy; occupancy remains authoritative"
+        },
+        "constructionPhases": [
+          4
+        ],
+        "destructionGroup": "rail-left"
+      },
+      {
+        "id": "front-upper-left",
+        "meshName": "front-upper-left-surface",
+        "pivotNode": "front-upper-left",
+        "pivot": [
+          -1.5,
+          3.1500000953674316,
+          2.399999976158142
+        ],
+        "collider": {
+          "shape": "box",
+          "center": [
+            0,
+            0.8250000476837158,
+            0
+          ],
+          "size": [
+            1.5,
+            1.6500000953674316,
+            0.6000001430511475
+          ],
+          "intent": "component selection proxy; occupancy remains authoritative"
+        },
+        "constructionPhases": [
+          2
+        ],
+        "destructionGroup": "front-upper-left"
+      },
+      {
+        "id": "rail-right",
+        "meshName": "rail-right-surface",
+        "pivotNode": "rail-right",
+        "pivot": [
+          1.3499999940395355,
+          3.1500000953674316,
+          2.625
+        ],
+        "collider": {
+          "shape": "box",
+          "center": [
+            0,
+            0.2999999523162842,
+            0
+          ],
+          "size": [
+            1.800000011920929,
+            0.5999999046325684,
+            0.4499998092651367
+          ],
+          "intent": "component selection proxy; occupancy remains authoritative"
+        },
+        "constructionPhases": [
+          4
+        ],
+        "destructionGroup": "rail-right"
+      },
+      {
+        "id": "front-upper-right",
+        "meshName": "front-upper-right-surface",
+        "pivotNode": "front-upper-right",
+        "pivot": [
+          1.3499999642372131,
+          3.299999952316284,
+          2.399999976158142
+        ],
+        "collider": {
+          "shape": "box",
+          "center": [
+            0,
+            0.7500001192092896,
+            0
+          ],
+          "size": [
+            1.4999998807907104,
+            1.500000238418579,
+            0.6000001430511475
+          ],
+          "intent": "component selection proxy; occupancy remains authoritative"
+        },
+        "constructionPhases": [
+          2
+        ],
+        "destructionGroup": "front-upper-right"
+      },
+      {
+        "id": "rail-side",
+        "meshName": "rail-side-surface",
+        "pivotNode": "rail-side",
+        "pivot": [
+          3.225000023841858,
+          3.1500000953674316,
+          0.1499999761581421
+        ],
+        "collider": {
+          "shape": "box",
+          "center": [
+            0,
+            0.2999999523162842,
+            0
+          ],
+          "size": [
+            0.4500000476837158,
+            0.5999999046325684,
+            1.7999999523162842
+          ],
+          "intent": "component selection proxy; occupancy remains authoritative"
+        },
+        "constructionPhases": [
+          4
+        ],
+        "destructionGroup": "rail-side"
+      },
+      {
+        "id": "right-upper",
+        "meshName": "right-upper-surface",
+        "pivotNode": "right-upper",
+        "pivot": [
+          3,
+          3.1500000953674316,
+          0.1499999761581421
+        ],
+        "collider": {
+          "shape": "box",
+          "center": [
+            0,
+            0.8250000476837158,
+            0
+          ],
+          "size": [
+            0.5999999046325684,
+            1.6500000953674316,
+            1.5
+          ],
+          "intent": "component selection proxy; occupancy remains authoritative"
+        },
+        "constructionPhases": [
+          2
+        ],
+        "destructionGroup": "right-upper"
+      },
+      {
+        "id": "building",
+        "meshName": "building-surface",
+        "pivotNode": "building",
+        "pivot": [
+          0,
+          2.549999952316284,
+          0
+        ],
+        "collider": {
+          "shape": "box",
+          "center": [
+            0,
+            0.07500004768371582,
+            0
+          ],
+          "size": [
+            5.400000095367432,
+            0.15000009536743164,
+            4.199999809265137
+          ],
+          "intent": "component selection proxy; occupancy remains authoritative"
+        },
+        "constructionPhases": [
+          1
+        ],
+        "destructionGroup": "building"
+      },
+      {
+        "id": "gable",
+        "meshName": "gable-surface",
+        "pivotNode": "gable",
+        "pivot": [
+          0,
+          4.949999809265137,
+          0
+        ],
+        "collider": {
+          "shape": "box",
+          "center": [
+            0,
+            0.9750001430511475,
+            0
+          ],
+          "size": [
+            6,
+            1.950000286102295,
+            4.800000190734863
+          ],
+          "intent": "component selection proxy; occupancy remains authoritative"
+        },
+        "constructionPhases": [
+          2
+        ],
+        "destructionGroup": "gable"
+      },
+      {
+        "id": "roof",
+        "meshName": "roof-surface",
+        "pivotNode": "roof",
+        "pivot": [
+          0,
+          4.800000190734863,
+          0
+        ],
+        "collider": {
+          "shape": "box",
+          "center": [
+            0,
+            1.2749998569488525,
+            0
+          ],
+          "size": [
+            6.900000095367432,
+            2.549999713897705,
+            6
+          ],
+          "intent": "component selection proxy; occupancy remains authoritative"
+        },
+        "constructionPhases": [
+          3
+        ],
+        "destructionGroup": "roof"
+      },
+      {
+        "id": "door",
+        "meshName": "door-surface",
+        "pivotNode": "door",
+        "pivot": [
+          0.6000000238418579,
+          0.30000001192092896,
+          2.3249999284744263
+        ],
+        "collider": {
+          "shape": "box",
+          "center": [
+            0.7499999403953552,
+            1.0500000417232513,
+            0
+          ],
+          "size": [
+            1.4999998807907104,
+            2.1000000834465027,
+            0.4500000476837158
+          ],
+          "intent": "component selection proxy; occupancy remains authoritative"
+        },
+        "constructionPhases": [
+          2
+        ],
+        "destructionGroup": "door"
+      },
+      {
+        "id": "door-handle",
+        "meshName": "door-handle-surface",
+        "pivotNode": "door-handle",
+        "pivot": [
+          1.875,
+          1.2000000476837158,
+          2.625
+        ],
+        "collider": {
+          "shape": "box",
+          "center": [
+            0,
+            0.07499998807907104,
+            0
+          ],
+          "size": [
+            0.15000009536743164,
+            0.1499999761581421,
+            0.15000009536743164
+          ],
+          "intent": "component selection proxy; occupancy remains authoritative"
+        },
+        "constructionPhases": [
+          4
+        ],
+        "destructionGroup": "door-handle"
+      },
+      {
+        "id": "steps",
+        "meshName": "steps-surface",
+        "pivotNode": "steps",
+        "pivot": [
+          1.3499999940395355,
+          0,
+          3.1500000953674316
+        ],
+        "collider": {
+          "shape": "box",
+          "center": [
+            0,
+            0.15000000596046448,
+            0
+          ],
+          "size": [
+            1.800000011920929,
+            0.30000001192092896,
+            1.5
+          ],
+          "intent": "component selection proxy; occupancy remains authoritative"
+        },
+        "constructionPhases": [
+          0
+        ],
+        "destructionGroup": "steps"
+      },
+      {
+        "id": "ridge",
+        "meshName": "ridge-surface",
+        "pivotNode": "ridge",
+        "pivot": [
+          0,
+          7.050000190734863,
+          0
+        ],
+        "collider": {
+          "shape": "box",
+          "center": [
+            0,
+            0.14999985694885254,
+            0
+          ],
+          "size": [
+            6.900000095367432,
+            0.2999997138977051,
+            0.6000000238418579
+          ],
+          "intent": "component selection proxy; occupancy remains authoritative"
+        },
+        "constructionPhases": [
+          3
+        ],
+        "destructionGroup": "ridge"
+      },
+      {
+        "id": "chimney",
+        "meshName": "chimney-surface",
+        "pivotNode": "chimney",
+        "pivot": [
+          2.174999952316284,
+          5.849999904632568,
+          -1.125
+        ],
+        "collider": {
+          "shape": "box",
+          "center": [
+            0,
+            0.9750001430511475,
+            0
+          ],
+          "size": [
+            0.75,
+            1.950000286102295,
+            0.75
+          ],
+          "intent": "component selection proxy; occupancy remains authoritative"
+        },
+        "constructionPhases": [
+          3
+        ],
+        "destructionGroup": "chimney"
+      },
+      {
+        "id": "chimney-cap",
+        "meshName": "chimney-cap-surface",
+        "pivotNode": "chimney-cap",
+        "pivot": [
+          2.175000011920929,
+          7.800000190734863,
+          -1.125
+        ],
+        "collider": {
+          "shape": "box",
+          "center": [
+            0,
+            0.15000009536743164,
+            0
+          ],
+          "size": [
+            1.0500000715255737,
+            0.3000001907348633,
+            1.0499999523162842
+          ],
+          "intent": "component selection proxy; occupancy remains authoritative"
+        },
+        "constructionPhases": [
+          3
+        ],
+        "destructionGroup": "chimney-cap"
+      }
+    ],
+    "sockets": [
+      {
+        "id": "entrance",
+        "parent": "door",
+        "localPosition": [
+          0.7499999761581422,
+          -0.30000001192092896,
+          1.2750000715255738
+        ]
+      },
+      {
+        "id": "smoke",
+        "parent": "chimney-cap",
+        "localPosition": [
+          -1.1920929132713809e-8,
+          0.29999980926513636,
+          0
+        ]
+      }
+    ],
+    "stage": "individual-home-v1",
+    "construction": "integer 15cm cubes; not yet connected to walk progress"
+  }
+}

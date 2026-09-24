@@ -1,10 +1,10 @@
 import * as THREE from 'three';
 import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
 import {meshChunk} from '../../../density-core.mjs';
-import {createBakeryCells,CELL,PALETTE} from './model.mjs?v=bakery-roof2';
+import {createBakeryCells,CELL,PALETTE} from './model.mjs?v=roof-pairs1';
 import {bakeryChannels,installMaterialStudy} from './material.mjs';
 import {createVoxelDocument} from './voxel-document.mjs';
-const STAGE='optimization';
+const STAGE='roof-pairs';
 const $=id=>document.getElementById(id),cells=createBakeryCells({stage:STAGE}),scene=new THREE.Scene(),root=new THREE.Group();root.name='bakery';scene.add(root);
 const renderer=new THREE.WebGLRenderer({antialias:true,alpha:true,preserveDrawingBuffer:true});renderer.setPixelRatio(1);renderer.setSize(770,666,false);renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1;renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFShadowMap;$('view').append(renderer.domElement);
 const camera=new THREE.OrthographicCamera(-5,5,5,-5,.1,200),key=new THREE.DirectionalLight('#fff2de',3.0),hemi=new THREE.HemisphereLight('#e5edf4','#aa9978',1.35),fill=new THREE.DirectionalLight('#e1e9ed',.68);key.position.set(-9,18,14);fill.position.set(14,10,8);key.castShadow=true;key.shadow.mapSize.set(2048,2048);Object.assign(key.shadow.camera,{left:-10,right:10,top:12,bottom:-10,near:.1,far:60});key.shadow.normalBias=.015;key.shadow.bias=-.0001;scene.add(key,hemi,fill);

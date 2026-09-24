@@ -1,0 +1,47 @@
+{
+  "stage": "roof-pairs",
+  "checks": [
+    "Uniform integer 15cm cells with defined palette",
+    "Every cell face-connected to ground",
+    "Five glass openings without centre mullions or wall behind",
+    "Door route clear and porch above door",
+    "Chimney aperture stays open through pale cap",
+    "Window guards connected by side returns, slots stay open",
+    "Broad roof courses have no recessed lanes and remain joined on both axes",
+    "Paired roof tones preserve geometry and leave all other building cells unchanged",
+    "Compiled surfaces equal exact voxel boundary"
+  ],
+  "cells": 19474,
+  "triangles": 15348,
+  "surfaceFaces": 22594,
+  "parts": [
+    "plinth",
+    "lower-wall",
+    "front-low",
+    "right-low",
+    "floor-band",
+    "upper-wall",
+    "porch",
+    "rail-left",
+    "front-upper-left",
+    "rail-right",
+    "front-upper-right",
+    "rail-side",
+    "right-upper",
+    "building",
+    "gable",
+    "roof",
+    "door",
+    "door-handle",
+    "steps",
+    "ridge",
+    "chimney",
+    "chimney-cap"
+  ],
+  "boundary": {
+    "expected": 22594,
+    "actual": 22594,
+    "area": 22594
+  },
+  "visualAcceptance": "Not measured by this script; no phone performance claim."
+}

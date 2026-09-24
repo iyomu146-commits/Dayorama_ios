@@ -15,10 +15,10 @@ export function createBakeryBlockoutCells(){
  return cells;
 }
 
-export function createBakeryCells({stage='optimization'}={}){
+export function createBakeryCells({stage='roof-pairs'}={}){
  if(stage==='blockout')return createBakeryBlockoutCells();
  const formed=stage!=='structure',finished=formed&&stage!=='form',roofTop=z=>23+(formed?Math.round(Math.floor((16.5-Math.abs(z+.5))/3)*2.4):Math.floor((16.5-Math.abs(z+.5))*.75));
- const closedCourses=stage==='optimization'||stage==='roof-seams';
+ const closedCourses=['optimization','roof-seams','roof-pairs'].includes(stage);
  const cells=new Map(),put=(part,color,x,y,z,phase=1)=>cells.set(`${x},${y},${z}`,{x,y,z,color,part,phase});
  const box=(part,color,x,y,z,w,h,d,phase=1)=>{for(let i=x;i<x+w;i++)for(let j=y;j<y+h;j++)for(let k=z;k<z+d;k++)put(part,color,i,j,k,phase);};
  const cut=(x,y,z,w,h,d)=>{for(let i=x;i<x+w;i++)for(let j=y;j<y+h;j++)for(let k=z;k<z+d;k++)cells.delete(`${i},${j},${k}`);};
@@ -116,5 +116,14 @@ export function createBakeryCells({stage='optimization'}={}){
   }else if(tone==='leaf')c.color=y>7?'leafLight':hash(x,y,z)<.3?'leafDark':'leaf';
   else if(tone==='stone')c.color=hash(Math.floor(x/4),y,Math.floor(z/3))<.3?'stoneDark':'stoneLight';
  }
+ if(stage==='roof-pairs')for(const c of cells.values()){
+  if(!['roof','wing-roof'].includes(c.part)||!c.color.startsWith('tile'))continue;
+  // The annex slopes along X, so its repeating columns run across Z.
+  const wing=c.part==='wing-roof',u=wing?c.z+12:c.x+23,lane=Math.floor(u/5),within=u%5;
+  const row=wing?Math.floor((c.x-19)/4):Math.floor((16.5-Math.abs(c.z+.5))/3);
+  const tone=['tile','tileLight','tileWarm'][(lane+row*2)%3],pair={tile:'tileLight',tileLight:'tile',tileWarm:'tileLight'};
+  c.color=within===4?'tileJoint':within<2?tone:pair[tone];
+ }
  return cells;
 }
+Object.assign(PALETTE,{tileJoint:'#9b5c43'});

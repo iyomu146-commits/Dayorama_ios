@@ -12,7 +12,7 @@ check('Side door approach stays clear',()=>{for(let x=31;x<36;x++)for(let y=1;y<
 check('Chimney has an open mouth and a sealed bottom',()=>{for(let x=2;x<5;x++)for(let z=-8;z<-5;z++){for(let y=36;y<43;y++)assert(!cells.has(`${x},${y},${z}`));assert(cells.has(`${x},35,${z}`));}});
 check('Roof fully covers the main shop and wing without open seams',()=>{for(let x=-20;x<20;x++)for(let z=-14;z<14;z++){let roof=false;for(let y=23;y<42;y++)if(['roof','ridge','chimney'].includes(cells.get(`${x},${y},${z}`)?.part))roof=true;assert(roof);}for(let x=20;x<30;x++)for(let z=-10;z<12;z++){let roof=false;for(let y=17;y<24;y++)if(cells.get(`${x},${y},${z}`)?.part==='wing-roof')roof=true;assert(roof);}});
 check('All bread is supported by bread or its own display bin',()=>{for(const c of cells.values())if(c.part.startsWith('bread-')){const below=cells.get(`${c.x},${c.y-1},${c.z}`);assert(below&&[c.part,c.part.replace('bread','stall')].includes(below.part));}});
-if(['optimization','roof-seams'].includes(stage)){
+if(['optimization','roof-seams','roof-pairs'].includes(stage)){
  check('Every main roof course is continuous across its full width, including below the ridge',()=>{
   for(let x=-23;x<23;x++)for(let z=-17;z<17;z++){
    const y=25+Math.round(Math.floor((16.5-Math.abs(z+.5))/3)*2.4);
@@ -26,4 +26,10 @@ if(['optimization','roof-seams'].includes(stage)){
   }
  });
 }
+if(stage==='roof-pairs')check('Paired main and annex tiles preserve geometry and all non-roof cells',()=>{
+ const previous=createBakeryCells({stage:'roof-seams'});assert.equal(cells.size,previous.size);
+ for(const [key,c] of cells){const old=previous.get(key);assert(old);assert.deepEqual({...c,color:old.color},old);if(!['roof','wing-roof'].includes(c.part))assert.equal(c.color,old.color);}
+ for(let row=0;row<5;row++)for(let x=-23;x+4<23;x+=5){const y=25+Math.round(row*2.4),z=16-row*3,a=[0,1,2,3,4].map(i=>cells.get(`${x+i},${y},${z}`));assert(a.every(Boolean));assert.equal(a[0].color,a[1].color);assert.equal(a[2].color,a[3].color);assert.notEqual(a[0].color,a[2].color);assert.equal(a[4].color,'tileJoint');}
+ for(let z=-12;z+4<14;z+=5){const a=[0,1,2,3,4].map(i=>cells.get(`31,19,${z+i}`));assert(a.every(Boolean));assert.equal(a[0].color,a[1].color);assert.equal(a[2].color,a[3].color);assert.notEqual(a[0].color,a[2].color);assert.equal(a[4].color,'tileJoint');}
+});
 const report={stage,passed:true,cells:cells.size,parts:[...new Set([...cells.values()].map(c=>c.part))],checks};fs.writeFileSync(`evidence/${stage}-structure.json`,JSON.stringify(report,null,2));console.log(JSON.stringify(report));

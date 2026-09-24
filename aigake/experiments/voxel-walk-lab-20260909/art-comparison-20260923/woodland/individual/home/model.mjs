@@ -10,9 +10,9 @@ export function createHomeBlockoutCells(){
  return cells;
 }
 
-export function createHomeCells({stage='roof-coarse'}={}){
+export function createHomeCells({stage='roof-pairs'}={}){
  if(stage==='blockout')return createHomeBlockoutCells();
- const broadRoof=stage==='roof-coarse',courseTop=depth=>33+Math.round(Math.floor(depth/3)*2.4);
+ const broadRoof=['roof-coarse','roof-pairs'].includes(stage),courseTop=depth=>33+Math.round(Math.floor(depth/3)*2.4);
  const cells=new Map();
  const put=(part,x,y,z,color,phase=2)=>cells.set(`${x},${y},${z}`,{x,y,z,part,color,phase});
  const box=(part,x,y,z,w,h,d,color,phase=2)=>{for(let a=x;a<x+w;a++)for(let b=y;b<y+h;b++)for(let c=z;c<z+d;c++)put(part,a,b,c,typeof color==='function'?color(a,b,c):color,phase);};
@@ -81,7 +81,17 @@ export function createHomeCells({stage='roof-coarse'}={}){
   b(0,21,0,1,1,3);b(11,21,0,1,1,3);b(0,24,0,1,1,3);b(11,24,0,1,1,3);
  }
  guard('rail-left',-16);guard('rail-right',3);guard('rail-side',-5,true);
+ if(stage==='roof-pairs')for(const c of cells.values()){
+  if(!['roof','porch'].includes(c.part)||!c.color.startsWith('slate'))continue;
+  const porch=c.part==='porch',u=c.x+(porch?-2:23),lane=Math.floor(u/5),within=u%5;
+  const row=porch?Math.floor((c.z-15)/3):Math.floor((19-Math.floor(Math.abs(c.z+.5)))/3);
+  let tone=['slate','slateLight','slateCool'][(lane+row*2)%3];
+  if(!porch&&((lane===2&&row===4)||(lane===6&&row===2)))tone='slateRepair';
+  const pair={slate:'slateLight',slateLight:'slate',slateCool:'slate',slateRepair:'slateRepairLight'};
+  c.color=within===4?'slateJoint':within<2?tone:pair[tone];
+ }
  return cells;
 }
 
 export const PALETTE={clay:'#b9b5a5',cream:'#e6d6b1',creamWarm:'#c7af80',creamLight:'#efdfbb',creamShade:'#d5c399',sage:'#91a078',sageLight:'#a7b18d',sageShade:'#7d9068',sageStone:'#b7b38b',stone:'#c6bb96',stoneLight:'#e0d3ad',ivory:'#e9dbb6',slate:'#426173',slateLight:'#526f80',slateCool:'#3a586c',slateRepair:'#8b938c',brick:'#ad6a43',brickWarm:'#be7b4d',brickDark:'#915536',wood:'#95703f',woodLight:'#b28c54',woodDark:'#755834',woodShade:'#80643e',rail:'#4e4b3e',glass:'#4a736d',glassLower:'#608277',metal:'#806333'};
+Object.assign(PALETTE,{slateJoint:'#455f70',slateRepairLight:'#969e94'});
