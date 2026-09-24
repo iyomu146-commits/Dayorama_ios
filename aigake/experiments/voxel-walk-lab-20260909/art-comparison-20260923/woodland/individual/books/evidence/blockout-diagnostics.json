@@ -1,0 +1,129 @@
+{
+  "passed": true,
+  "checks": {
+    "silhouetteIoU": 0.8668,
+    "aspectRatioDelta": 0.0237,
+    "scaleDelta": 0.0237,
+    "bilateralSymmetryError": 0.15,
+    "colorDelta": {
+      "checked": 27,
+      "maxDeltaE": 33.04,
+      "perComponent": [
+        {
+          "componentId": null,
+          "deltaE": 23.46
+        },
+        {
+          "componentId": null,
+          "deltaE": 25.95
+        },
+        {
+          "componentId": null,
+          "deltaE": 33.04
+        },
+        {
+          "componentId": null,
+          "deltaE": 7.52
+        },
+        {
+          "componentId": null,
+          "deltaE": 7.52
+        },
+        {
+          "componentId": null,
+          "deltaE": 7.52
+        },
+        {
+          "componentId": null,
+          "deltaE": 25.95
+        },
+        {
+          "componentId": null,
+          "deltaE": 33.04
+        },
+        {
+          "componentId": null,
+          "deltaE": 27.39
+        },
+        {
+          "componentId": null,
+          "deltaE": 7.52
+        },
+        {
+          "componentId": null,
+          "deltaE": 7.52
+        },
+        {
+          "componentId": null,
+          "deltaE": 19.38
+        },
+        {
+          "componentId": null,
+          "deltaE": 19.38
+        },
+        {
+          "componentId": null,
+          "deltaE": 33.04
+        },
+        {
+          "componentId": null,
+          "deltaE": 33.04
+        },
+        {
+          "componentId": null,
+          "deltaE": 33.04
+        },
+        {
+          "componentId": null,
+          "deltaE": 27.39
+        },
+        {
+          "componentId": null,
+          "deltaE": 7.52
+        },
+        {
+          "componentId": null,
+          "deltaE": 21.46
+        },
+        {
+          "componentId": null,
+          "deltaE": 27.39
+        },
+        {
+          "componentId": null,
+          "deltaE": 7.52
+        },
+        {
+          "componentId": null,
+          "deltaE": 32.04
+        },
+        {
+          "componentId": null,
+          "deltaE": 32.04
+        },
+        {
+          "componentId": null,
+          "deltaE": 32.19
+        },
+        {
+          "componentId": null,
+          "deltaE": 32.19
+        },
+        {
+          "componentId": null,
+          "deltaE": 33.04
+        },
+        {
+          "componentId": null,
+          "deltaE": 17.78
+        }
+      ],
+      "gated": false
+    }
+  },
+  "failures": [],
+  "maskWarnings": [],
+  "renderHash": "dbc05cdf401502fe",
+  "passId": "blockout",
+  "mapStrippedRender": "evidence\\books-blockout-match-mask.png"
+}

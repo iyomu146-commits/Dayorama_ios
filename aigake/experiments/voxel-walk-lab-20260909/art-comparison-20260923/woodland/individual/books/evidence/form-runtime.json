@@ -1,0 +1,950 @@
+{
+  "model": "individual-books-v1",
+  "parts": [
+    {
+      "name": "plinth",
+      "mesh": "plinth-surface",
+      "kind": "part",
+      "triangles": 260
+    },
+    {
+      "name": "building",
+      "mesh": "building-surface",
+      "kind": "part",
+      "triangles": 1884
+    },
+    {
+      "name": "fascia",
+      "mesh": "fascia-surface",
+      "kind": "part",
+      "triangles": 852
+    },
+    {
+      "name": "roof",
+      "mesh": "roof-surface",
+      "kind": "part",
+      "triangles": 4994
+    },
+    {
+      "name": "chimney",
+      "mesh": "chimney-surface",
+      "kind": "part",
+      "triangles": 242
+    },
+    {
+      "name": "chimney-rim",
+      "mesh": "chimney-rim-surface",
+      "kind": "part",
+      "triangles": 120
+    },
+    {
+      "name": "display-frame",
+      "mesh": "display-frame-surface",
+      "kind": "part",
+      "triangles": 306
+    },
+    {
+      "name": "display-glass",
+      "mesh": "display-glass-surface",
+      "kind": "part",
+      "triangles": 282
+    },
+    {
+      "name": "shelf",
+      "mesh": "shelf-surface",
+      "kind": "part",
+      "triangles": 88
+    },
+    {
+      "name": "display-sill",
+      "mesh": "display-sill-surface",
+      "kind": "part",
+      "triangles": 124
+    },
+    {
+      "name": "display-lintel",
+      "mesh": "display-lintel-surface",
+      "kind": "part",
+      "triangles": 106
+    },
+    {
+      "name": "books-lower",
+      "mesh": "books-lower-surface",
+      "kind": "part",
+      "triangles": 128
+    },
+    {
+      "name": "books-upper",
+      "mesh": "books-upper-surface",
+      "kind": "part",
+      "triangles": 148
+    },
+    {
+      "name": "door-frame",
+      "mesh": "door-frame-surface",
+      "kind": "part",
+      "triangles": 296
+    },
+    {
+      "name": "door",
+      "mesh": "door-surface",
+      "kind": "part",
+      "triangles": 140
+    },
+    {
+      "name": "door-glass",
+      "mesh": "door-glass-surface",
+      "kind": "part",
+      "triangles": 4
+    },
+    {
+      "name": "handle",
+      "mesh": "handle-surface",
+      "kind": "part",
+      "triangles": 10
+    },
+    {
+      "name": "door-lintel",
+      "mesh": "door-lintel-surface",
+      "kind": "part",
+      "triangles": 78
+    },
+    {
+      "name": "side-window",
+      "mesh": "side-window-surface",
+      "kind": "part",
+      "triangles": 388
+    },
+    {
+      "name": "steps",
+      "mesh": "steps-surface",
+      "kind": "part",
+      "triangles": 106
+    },
+    {
+      "name": "bench",
+      "mesh": "bench-surface",
+      "kind": "part",
+      "triangles": 208
+    },
+    {
+      "name": "pot-left",
+      "mesh": "pot-left-surface",
+      "kind": "part",
+      "triangles": 82
+    },
+    {
+      "name": "herb-left",
+      "mesh": "herb-left-surface",
+      "kind": "part",
+      "triangles": 130
+    },
+    {
+      "name": "pot-right",
+      "mesh": "pot-right-surface",
+      "kind": "part",
+      "triangles": 66
+    },
+    {
+      "name": "herb-right",
+      "mesh": "herb-right-surface",
+      "kind": "part",
+      "triangles": 130
+    },
+    {
+      "name": "lamp-post",
+      "mesh": "lamp-post-surface",
+      "kind": "part",
+      "triangles": 26
+    },
+    {
+      "name": "lamp-head",
+      "mesh": "lamp-head-surface",
+      "kind": "part",
+      "triangles": 106
+    }
+  ],
+  "unnamedMeshes": 0,
+  "runtime": {
+    "parts": [
+      {
+        "id": "plinth",
+        "meshName": "plinth-surface",
+        "pivotNode": "plinth",
+        "pivot": [
+          -0.4500000476837158,
+          0,
+          0
+        ],
+        "collider": {
+          "shape": "box",
+          "center": [
+            0,
+            0.15000000596046448,
+            0
+          ],
+          "size": [
+            6,
+            0.30000001192092896,
+            4.199999809265137
+          ],
+          "intent": "component selection proxy; occupancy remains authoritative"
+        },
+        "constructionPhases": [
+          0
+        ],
+        "destructionGroup": "plinth"
+      },
+      {
+        "id": "building",
+        "meshName": "building-surface",
+        "pivotNode": "building",
+        "pivot": [
+          -0.375,
+          0.30000001192092896,
+          0.07500004768371582
+        ],
+        "collider": {
+          "shape": "box",
+          "center": [
+            0,
+            1.8000000417232513,
+            0
+          ],
+          "size": [
+            6.150000095367432,
+            3.6000000834465027,
+            4.349999904632568
+          ],
+          "intent": "component selection proxy; occupancy remains authoritative"
+        },
+        "constructionPhases": [
+          1
+        ],
+        "destructionGroup": "building"
+      },
+      {
+        "id": "fascia",
+        "meshName": "fascia-surface",
+        "pivotNode": "fascia",
+        "pivot": [
+          -0.44999992847442627,
+          3.9000000953674316,
+          0
+        ],
+        "collider": {
+          "shape": "box",
+          "center": [
+            0,
+            0.14999985694885254,
+            0
+          ],
+          "size": [
+            6.299999952316284,
+            0.2999997138977051,
+            4.5
+          ],
+          "intent": "component selection proxy; occupancy remains authoritative"
+        },
+        "constructionPhases": [
+          2
+        ],
+        "destructionGroup": "fascia"
+      },
+      {
+        "id": "roof",
+        "meshName": "roof-surface",
+        "pivotNode": "roof",
+        "pivot": [
+          -0.4500000476837158,
+          4.199999809265137,
+          0
+        ],
+        "collider": {
+          "shape": "box",
+          "center": [
+            0,
+            1.3500001430511475,
+            0
+          ],
+          "size": [
+            6.900000095367432,
+            2.700000286102295,
+            5.099999904632568
+          ],
+          "intent": "component selection proxy; occupancy remains authoritative"
+        },
+        "constructionPhases": [
+          2
+        ],
+        "destructionGroup": "roof"
+      },
+      {
+        "id": "chimney",
+        "meshName": "chimney-surface",
+        "pivotNode": "chimney",
+        "pivot": [
+          0.9750000238418579,
+          5.550000190734863,
+          -1.125
+        ],
+        "collider": {
+          "shape": "box",
+          "center": [
+            0,
+            0.8999998569488525,
+            0
+          ],
+          "size": [
+            0.75,
+            1.799999713897705,
+            0.75
+          ],
+          "intent": "component selection proxy; occupancy remains authoritative"
+        },
+        "constructionPhases": [
+          2
+        ],
+        "destructionGroup": "chimney"
+      },
+      {
+        "id": "chimney-rim",
+        "meshName": "chimney-rim-surface",
+        "pivotNode": "chimney-rim",
+        "pivot": [
+          0.9749999940395355,
+          7.349999904632568,
+          -1.125
+        ],
+        "collider": {
+          "shape": "box",
+          "center": [
+            0,
+            0.22500014305114746,
+            0
+          ],
+          "size": [
+            1.050000011920929,
+            0.4500002861022949,
+            1.0499999523162842
+          ],
+          "intent": "component selection proxy; occupancy remains authoritative"
+        },
+        "constructionPhases": [
+          2
+        ],
+        "destructionGroup": "chimney-rim"
+      },
+      {
+        "id": "display-frame",
+        "meshName": "display-frame-surface",
+        "pivotNode": "display-frame",
+        "pivot": [
+          -1.4999999552965164,
+          0.8999999761581421,
+          2.100000023841858
+        ],
+        "collider": {
+          "shape": "box",
+          "center": [
+            0,
+            1.050000011920929,
+            0
+          ],
+          "size": [
+            2.699999898672104,
+            2.100000023841858,
+            0.2999999523162842
+          ],
+          "intent": "component selection proxy; occupancy remains authoritative"
+        },
+        "constructionPhases": [
+          3
+        ],
+        "destructionGroup": "display-frame"
+      },
+      {
+        "id": "display-glass",
+        "meshName": "display-glass-surface",
+        "pivotNode": "display-glass",
+        "pivot": [
+          -1.5000000298023224,
+          1.0499999523162842,
+          1.875
+        ],
+        "collider": {
+          "shape": "box",
+          "center": [
+            0,
+            0.8999999761581421,
+            0
+          ],
+          "size": [
+            2.400000035762787,
+            1.7999999523162842,
+            0.15000009536743164
+          ],
+          "intent": "component selection proxy; occupancy remains authoritative"
+        },
+        "constructionPhases": [
+          3
+        ],
+        "destructionGroup": "display-glass"
+      },
+      {
+        "id": "shelf",
+        "meshName": "shelf-surface",
+        "pivotNode": "shelf",
+        "pivot": [
+          -1.5000000298023224,
+          1.7999999523162842,
+          2.100000023841858
+        ],
+        "collider": {
+          "shape": "box",
+          "center": [
+            0,
+            0.07500004768371582,
+            0
+          ],
+          "size": [
+            2.400000035762787,
+            0.15000009536743164,
+            0.2999999523162842
+          ],
+          "intent": "component selection proxy; occupancy remains authoritative"
+        },
+        "constructionPhases": [
+          3
+        ],
+        "destructionGroup": "shelf"
+      },
+      {
+        "id": "display-sill",
+        "meshName": "display-sill-surface",
+        "pivotNode": "display-sill",
+        "pivot": [
+          -1.5,
+          0.44999998807907104,
+          2.3249999284744263
+        ],
+        "collider": {
+          "shape": "box",
+          "center": [
+            0,
+            0.22499999403953552,
+            0
+          ],
+          "size": [
+            3,
+            0.44999998807907104,
+            0.4500000476837158
+          ],
+          "intent": "component selection proxy; occupancy remains authoritative"
+        },
+        "constructionPhases": [
+          3
+        ],
+        "destructionGroup": "display-sill"
+      },
+      {
+        "id": "display-lintel",
+        "meshName": "display-lintel-surface",
+        "pivotNode": "display-lintel",
+        "pivot": [
+          -1.5,
+          3,
+          2.3249999284744263
+        ],
+        "collider": {
+          "shape": "box",
+          "center": [
+            0,
+            0.1499999761581421,
+            0
+          ],
+          "size": [
+            3,
+            0.2999999523162842,
+            0.4500000476837158
+          ],
+          "intent": "component selection proxy; occupancy remains authoritative"
+        },
+        "constructionPhases": [
+          3
+        ],
+        "destructionGroup": "display-lintel"
+      },
+      {
+        "id": "books-lower",
+        "meshName": "books-lower-surface",
+        "pivotNode": "books-lower",
+        "pivot": [
+          -1.5000000298023224,
+          1.0499999523162842,
+          2.024999976158142
+        ],
+        "collider": {
+          "shape": "box",
+          "center": [
+            0,
+            0.375,
+            0
+          ],
+          "size": [
+            2.400000035762787,
+            0.75,
+            0.14999985694885254
+          ],
+          "intent": "component selection proxy; occupancy remains authoritative"
+        },
+        "constructionPhases": [
+          4
+        ],
+        "destructionGroup": "books-lower"
+      },
+      {
+        "id": "books-upper",
+        "meshName": "books-upper-surface",
+        "pivotNode": "books-upper",
+        "pivot": [
+          -1.5000000298023224,
+          1.9500000476837158,
+          2.024999976158142
+        ],
+        "collider": {
+          "shape": "box",
+          "center": [
+            0,
+            0.44999992847442627,
+            0
+          ],
+          "size": [
+            2.400000035762787,
+            0.8999998569488525,
+            0.14999985694885254
+          ],
+          "intent": "component selection proxy; occupancy remains authoritative"
+        },
+        "constructionPhases": [
+          4
+        ],
+        "destructionGroup": "books-upper"
+      },
+      {
+        "id": "door-frame",
+        "meshName": "door-frame-surface",
+        "pivotNode": "door-frame",
+        "pivot": [
+          1.2000000178813934,
+          0.30000001192092896,
+          2.100000023841858
+        ],
+        "collider": {
+          "shape": "box",
+          "center": [
+            0,
+            1.4999999701976776,
+            0
+          ],
+          "size": [
+            1.5000000596046448,
+            2.9999999403953552,
+            0.2999999523162842
+          ],
+          "intent": "component selection proxy; occupancy remains authoritative"
+        },
+        "constructionPhases": [
+          3
+        ],
+        "destructionGroup": "door-frame"
+      },
+      {
+        "id": "door",
+        "meshName": "door-surface",
+        "pivotNode": "door",
+        "pivot": [
+          0.6000000238418579,
+          0.30000001192092896,
+          2.024999976158142
+        ],
+        "collider": {
+          "shape": "box",
+          "center": [
+            0.5999999642372131,
+            1.4250000417232513,
+            0
+          ],
+          "size": [
+            1.1999999284744263,
+            2.8500000834465027,
+            0.14999985694885254
+          ],
+          "intent": "component selection proxy; occupancy remains authoritative"
+        },
+        "constructionPhases": [
+          3
+        ],
+        "destructionGroup": "door"
+      },
+      {
+        "id": "door-glass",
+        "meshName": "door-glass-surface",
+        "pivotNode": "door-glass",
+        "pivot": [
+          1.199999988079071,
+          1.7999999523162842,
+          2.024999976158142
+        ],
+        "collider": {
+          "shape": "box",
+          "center": [
+            0,
+            0.5249999761581421,
+            0
+          ],
+          "size": [
+            0.8999999761581421,
+            1.0499999523162842,
+            0.14999985694885254
+          ],
+          "intent": "component selection proxy; occupancy remains authoritative"
+        },
+        "constructionPhases": [
+          3
+        ],
+        "destructionGroup": "door-glass"
+      },
+      {
+        "id": "handle",
+        "meshName": "handle-surface",
+        "pivotNode": "handle",
+        "pivot": [
+          1.574999988079071,
+          1.5,
+          2.174999952316284
+        ],
+        "collider": {
+          "shape": "box",
+          "center": [
+            0,
+            0.07499998807907104,
+            0
+          ],
+          "size": [
+            0.1499999761581421,
+            0.1499999761581421,
+            0.15000009536743164
+          ],
+          "intent": "component selection proxy; occupancy remains authoritative"
+        },
+        "constructionPhases": [
+          3
+        ],
+        "destructionGroup": "handle"
+      },
+      {
+        "id": "door-lintel",
+        "meshName": "door-lintel-surface",
+        "pivotNode": "door-lintel",
+        "pivot": [
+          1.1999999582767487,
+          3.299999952316284,
+          2.3249999284744263
+        ],
+        "collider": {
+          "shape": "box",
+          "center": [
+            0,
+            0.2250000238418579,
+            0
+          ],
+          "size": [
+            1.7999998927116394,
+            0.4500000476837158,
+            0.4500000476837158
+          ],
+          "intent": "component selection proxy; occupancy remains authoritative"
+        },
+        "constructionPhases": [
+          3
+        ],
+        "destructionGroup": "door-lintel"
+      },
+      {
+        "id": "side-window",
+        "meshName": "side-window-surface",
+        "pivotNode": "side-window",
+        "pivot": [
+          2.625,
+          0.8999999761581421,
+          0
+        ],
+        "collider": {
+          "shape": "box",
+          "center": [
+            0,
+            1.425000011920929,
+            0
+          ],
+          "size": [
+            0.4499998092651367,
+            2.850000023841858,
+            1.2000000476837158
+          ],
+          "intent": "component selection proxy; occupancy remains authoritative"
+        },
+        "constructionPhases": [
+          3
+        ],
+        "destructionGroup": "side-window"
+      },
+      {
+        "id": "steps",
+        "meshName": "steps-surface",
+        "pivotNode": "steps",
+        "pivot": [
+          1.1999999582767487,
+          0,
+          2.6999999284744263
+        ],
+        "collider": {
+          "shape": "box",
+          "center": [
+            0,
+            0.15000000596046448,
+            0
+          ],
+          "size": [
+            1.7999998927116394,
+            0.30000001192092896,
+            1.2000000476837158
+          ],
+          "intent": "component selection proxy; occupancy remains authoritative"
+        },
+        "constructionPhases": [
+          0
+        ],
+        "destructionGroup": "steps"
+      },
+      {
+        "id": "bench",
+        "meshName": "bench-surface",
+        "pivotNode": "bench",
+        "pivot": [
+          3.975000023841858,
+          0,
+          0.824999988079071
+        ],
+        "collider": {
+          "shape": "box",
+          "center": [
+            0,
+            0.8999999761581421,
+            0
+          ],
+          "size": [
+            1.0499999523162842,
+            1.7999999523162842,
+            2.850000023841858
+          ],
+          "intent": "component selection proxy; occupancy remains authoritative"
+        },
+        "constructionPhases": [
+          4
+        ],
+        "destructionGroup": "bench"
+      },
+      {
+        "id": "pot-left",
+        "meshName": "pot-left-surface",
+        "pivotNode": "pot-left",
+        "pivot": [
+          -3.375,
+          0,
+          2.7750000953674316
+        ],
+        "collider": {
+          "shape": "box",
+          "center": [
+            0,
+            0.30000001192092896,
+            0
+          ],
+          "size": [
+            0.75,
+            0.6000000238418579,
+            0.75
+          ],
+          "intent": "component selection proxy; occupancy remains authoritative"
+        },
+        "constructionPhases": [
+          4
+        ],
+        "destructionGroup": "pot-left"
+      },
+      {
+        "id": "herb-left",
+        "meshName": "herb-left-surface",
+        "pivotNode": "herb-left",
+        "pivot": [
+          -3.450000047683716,
+          0.44999998807907104,
+          2.774999976158142
+        ],
+        "collider": {
+          "shape": "box",
+          "center": [
+            0,
+            0.45000001788139343,
+            0
+          ],
+          "size": [
+            0.5999999046325684,
+            0.9000000357627869,
+            0.4500000476837158
+          ],
+          "intent": "component selection proxy; occupancy remains authoritative"
+        },
+        "constructionPhases": [
+          4
+        ],
+        "destructionGroup": "herb-left"
+      },
+      {
+        "id": "pot-right",
+        "meshName": "pot-right-surface",
+        "pivotNode": "pot-right",
+        "pivot": [
+          3.075000047683716,
+          0,
+          3.075000047683716
+        ],
+        "collider": {
+          "shape": "box",
+          "center": [
+            0,
+            0.30000001192092896,
+            0
+          ],
+          "size": [
+            0.75,
+            0.6000000238418579,
+            0.75
+          ],
+          "intent": "component selection proxy; occupancy remains authoritative"
+        },
+        "constructionPhases": [
+          4
+        ],
+        "destructionGroup": "pot-right"
+      },
+      {
+        "id": "herb-right",
+        "meshName": "herb-right-surface",
+        "pivotNode": "herb-right",
+        "pivot": [
+          3,
+          0.44999998807907104,
+          3.0749999284744263
+        ],
+        "collider": {
+          "shape": "box",
+          "center": [
+            0,
+            0.45000001788139343,
+            0
+          ],
+          "size": [
+            0.5999999046325684,
+            0.9000000357627869,
+            0.4500000476837158
+          ],
+          "intent": "component selection proxy; occupancy remains authoritative"
+        },
+        "constructionPhases": [
+          4
+        ],
+        "destructionGroup": "herb-right"
+      },
+      {
+        "id": "lamp-post",
+        "meshName": "lamp-post-surface",
+        "pivotNode": "lamp-post",
+        "pivot": [
+          4.950000047683716,
+          0,
+          1.199999988079071
+        ],
+        "collider": {
+          "shape": "box",
+          "center": [
+            0,
+            0.675000011920929,
+            0
+          ],
+          "size": [
+            0.2999997138977051,
+            1.350000023841858,
+            0.30000007152557373
+          ],
+          "intent": "component selection proxy; occupancy remains authoritative"
+        },
+        "constructionPhases": [
+          4
+        ],
+        "destructionGroup": "lamp-post"
+      },
+      {
+        "id": "lamp-head",
+        "meshName": "lamp-head-surface",
+        "pivotNode": "lamp-head",
+        "pivot": [
+          4.950000047683716,
+          1.350000023841858,
+          1.199999988079071
+        ],
+        "collider": {
+          "shape": "box",
+          "center": [
+            0,
+            0.5999999642372131,
+            0
+          ],
+          "size": [
+            0.5999999046325684,
+            1.1999999284744263,
+            0.6000000238418579
+          ],
+          "intent": "component selection proxy; occupancy remains authoritative"
+        },
+        "constructionPhases": [
+          4
+        ],
+        "destructionGroup": "lamp-head"
+      }
+    ],
+    "sockets": [
+      {
+        "id": "entrance",
+        "parent": "door",
+        "localPosition": [
+          1.049999976158142,
+          -0.30000001192092896,
+          1.425000023841858
+        ]
+      },
+      {
+        "id": "smoke",
+        "parent": "chimney-rim",
+        "localPosition": [
+          0.4500000059604645,
+          -0.449999904632568,
+          0
+        ]
+      }
+    ],
+    "stage": "individual-books-v1",
+    "construction": "integer 15cm cubes; not yet connected to walk progress"
+  }
+}

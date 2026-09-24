@@ -1,0 +1,14 @@
+import assert from 'node:assert/strict';
+import test from 'node:test';
+import fs from 'node:fs';
+import {createBooksCells,CELL,PALETTE,Y} from './model.mjs';
+import {createVoxelDocument,readVoxelDocument} from './voxel-document.mjs';
+import {meshChunk,groundedCells} from '../../../density-core.mjs';
+import {booksChannels,booksSubstance} from './material.mjs';
+const stage=process.env.BOOKS_STAGE||'optimization',cells=createBooksCells({stage}),palette=Object.fromEntries(Object.keys(PALETTE).map(k=>[k,[.5,.5,.5]]));
+test('Editable JSON preserves cells, palette and phases and rejects malformed documents',()=>{const doc=JSON.parse(JSON.stringify(createVoxelDocument(cells))),read=readVoxelDocument(doc);assert.deepEqual(read.cells,cells);assert.deepEqual(read.palette,PALETTE);const bad=structuredClone(doc);bad.cells.push({...bad.cells[0]});assert.throws(()=>readVoxelDocument(bad),/Duplicate/);bad.cells.pop();bad.cellSize=.3;assert.throws(()=>readVoxelDocument(bad),/Unsupported/);});
+test('Exploded parts recover hidden faces and material channels from their own cells',()=>{for(const part of new Set([...cells.values()].map(c=>c.part))){const list=[...cells.values()].filter(c=>c.part===part),own=new Map(list.map(c=>[[c.x,c.y,c.z].join(','),c])),data=meshChunk(list,own,CELL,{palette}),channels=booksChannels(data,own,CELL);let faces=0;for(const c of list)for(let d=0;d<3;d++)for(const sign of [-1,1]){const p=[c.x,c.y,c.z];p[d]+=sign;if(!own.has(p.join(',')))faces++;}assert.equal(data.surfaceFaces,faces,part);assert.equal(channels.length,data.positions.length/3*2);for(let i=0;i<channels.length;i+=2)assert([0,1,2,3,4,5,6,7,8,9,12].includes(channels[i]));}assert.equal(booksSubstance('masonryBlue'),12);assert.equal(booksSubstance('potDeep'),6);assert.equal(booksSubstance('tileWarm'),1);});
+test('Every cumulative construction phase remains grounded',()=>{for(let phase=0;phase<=4;phase++){const state=new Map([...cells].filter(([,c])=>c.phase<=phase));assert.equal(groundedCells(state).size,state.size,'phase '+phase);}});
+test('Actual browser hierarchy contains 27 selectable parts and correctly placed sockets',()=>{const m=JSON.parse(fs.readFileSync(new URL(`./evidence/${stage}-runtime.json`,import.meta.url))),ids=[...new Set([...cells.values()].map(c=>c.part))].sort();assert.equal(ids.length,27);assert.deepEqual(m.parts.map(p=>p.name).sort(),ids);assert.equal(m.unnamedMeshes,0);for(const p of m.runtime.parts){assert.equal(p.pivotNode,p.id);assert(p.collider.size.every(n=>n>0));assert(p.pivot.every(Number.isFinite));}
+ for(const [id,expected] of [['smoke',[.975,Y(46)*CELL,-1.125]],['entrance',[1.2,Y(2)*CELL,3.45]]]){const s=m.runtime.sockets.find(s=>s.id===id),p=m.runtime.parts.find(p=>p.id===s.parent);assert(s);s.localPosition.forEach((v,i)=>assert(Math.abs(v+p.pivot[i]-expected[i])<1e-7));}
+});

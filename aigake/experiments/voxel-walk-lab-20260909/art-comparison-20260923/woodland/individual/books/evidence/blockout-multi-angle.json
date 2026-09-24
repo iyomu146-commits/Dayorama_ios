@@ -1,0 +1,20 @@
+{
+  "referenceAreaFraction": 0.5749034462269756,
+  "angles": [
+    {
+      "path": "evidence\\books-blockout-front-mask.png",
+      "areaFraction": 0.4248939934100362,
+      "ratio": 0.7390701798685779,
+      "degenerate": false
+    },
+    {
+      "path": "evidence\\books-blockout-right-mask.png",
+      "areaFraction": 0.3380732458272565,
+      "ratio": 0.5880522164999912,
+      "degenerate": false
+    }
+  ],
+  "degenerate": false,
+  "collapseRatio": 0.15,
+  "note": "deterministic; zero token; a flat-plane-faking-a-volume collapses in silhouette area when orbited"
+}

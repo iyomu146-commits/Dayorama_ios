@@ -1,0 +1,376 @@
+{
+  "passed": true,
+  "checks": {
+    "silhouetteIoU": 0.855,
+    "aspectRatioDelta": 0.0237,
+    "scaleDelta": 0.0237,
+    "bilateralSymmetryError": 0.1576,
+    "colorDelta": {
+      "gated": true,
+      "method": "palette measured only within each component visible footprint, not overall image clusters",
+      "threshold": 20.0,
+      "perComponent": [
+        {
+          "id": "building",
+          "pixels": 56663,
+          "bbox": [
+            81,
+            335,
+            652,
+            686
+          ],
+          "deltaE": 2.19,
+          "maskSha256": "925ebf254931fbea0ff358d5c715e9d9026c55d05cae73a498254e2b1b4d2c59",
+          "crop": "evidence\\material-visible-materials\\building.png"
+        },
+        {
+          "id": "roof",
+          "pixels": 114621,
+          "bbox": [
+            39,
+            101,
+            699,
+            406
+          ],
+          "deltaE": 4.33,
+          "maskSha256": "5b3f8eb4e6f4c7e84d41a61b07d651bd7b5af8ce2d66db685b9ee1a594e6939e",
+          "crop": "evidence\\material-visible-materials\\roof.png"
+        },
+        {
+          "id": "bench",
+          "pixels": 15143,
+          "bbox": [
+            586,
+            525,
+            749,
+            731
+          ],
+          "deltaE": 2.75,
+          "maskSha256": "c30248bb9b65cc0e679421c9e15c65a64184ba117c6027381afa3776e2c510e4",
+          "crop": "evidence\\material-visible-materials\\bench.png"
+        },
+        {
+          "id": "plinth",
+          "pixels": 6031,
+          "bbox": [
+            109,
+            638,
+            585,
+            707
+          ],
+          "deltaE": 3.67,
+          "maskSha256": "0e31f63af91cda80086869c9af01f1cd5764c2e82ac309effa45433a06e7d5b2",
+          "crop": "evidence\\material-visible-materials\\plinth.png"
+        },
+        {
+          "id": "fascia",
+          "pixels": 7210,
+          "bbox": [
+            70,
+            319,
+            668,
+            419
+          ],
+          "deltaE": 12.3,
+          "maskSha256": "d33763dc49ff4780e5ac0924eb10f9d249363dffc0ae137f879f62ec45d44492",
+          "crop": "evidence\\material-visible-materials\\fascia.png"
+        },
+        {
+          "id": "chimney",
+          "pixels": 8305,
+          "bbox": [
+            469,
+            76,
+            546,
+            217
+          ],
+          "deltaE": 4.21,
+          "maskSha256": "69eeac1005994e3a291968c8b55d3c244ef63533b113abcef4ebdef2c241c9e4",
+          "crop": "evidence\\material-visible-materials\\chimney.png"
+        },
+        {
+          "id": "chimney-rim",
+          "pixels": 5672,
+          "bbox": [
+            453,
+            20,
+            562,
+            86
+          ],
+          "deltaE": 4.04,
+          "maskSha256": "7972466803f3e8aa89393bd47ffdcad0574768c404d270f41cea99618b671ee2",
+          "crop": "evidence\\material-visible-materials\\chimney-rim.png"
+        },
+        {
+          "id": "display-frame",
+          "pixels": 7602,
+          "bbox": [
+            125,
+            446,
+            326,
+            621
+          ],
+          "deltaE": 4.59,
+          "maskSha256": "3fb53ba41fae9f8412a3bd81dcf7bca85d5ed7a3da2df74f52bfd7ce2a29235a",
+          "crop": "evidence\\material-visible-materials\\display-frame.png"
+        },
+        {
+          "id": "display-glass",
+          "pixels": 6153,
+          "bbox": [
+            145,
+            453,
+            311,
+            596
+          ],
+          "deltaE": 6.53,
+          "maskSha256": "94350eb22794eed314b39d000d26e07506f42125da561301ce9b54d527937817",
+          "crop": "evidence\\material-visible-materials\\display-glass.png"
+        },
+        {
+          "id": "display-sill",
+          "pixels": 9470,
+          "bbox": [
+            105,
+            593,
+            337,
+            663
+          ],
+          "deltaE": 4.15,
+          "maskSha256": "ad439838779d65a5d7a2fe2950382afc7f46c6f8d4fd4c7993e296b75f23f4c9",
+          "crop": "evidence\\material-visible-materials\\display-sill.png"
+        },
+        {
+          "id": "display-lintel",
+          "pixels": 7592,
+          "bbox": [
+            105,
+            411,
+            337,
+            470
+          ],
+          "deltaE": 4.39,
+          "maskSha256": "8c8142c7797857368c7c93d2f0557e4218d89911155c54ca2c7b56a6a3955f54",
+          "crop": "evidence\\material-visible-materials\\display-lintel.png"
+        },
+        {
+          "id": "books-lower",
+          "pixels": 5511,
+          "bbox": [
+            141,
+            540,
+            311,
+            605
+          ],
+          "deltaE": 8.6,
+          "maskSha256": "5045f7a7e41537ef1bbd02615888e66db687eeb4a99f1c83c9da0ce54ba50dc8",
+          "crop": "evidence\\material-visible-materials\\books-lower.png"
+        },
+        {
+          "id": "books-upper",
+          "pixels": 7005,
+          "bbox": [
+            141,
+            460,
+            311,
+            536
+          ],
+          "deltaE": 7.19,
+          "maskSha256": "7e76e14fa41eca7ae2196830f41ae184dc8dbe2fa9f8004e55ec42f50997b3cb",
+          "crop": "evidence\\material-visible-materials\\books-upper.png"
+        },
+        {
+          "id": "shelf",
+          "pixels": 2680,
+          "bbox": [
+            136,
+            516,
+            311,
+            552
+          ],
+          "deltaE": 9.02,
+          "maskSha256": "768c680b251c555d23fe4eb68146e90f4643b824c13827d6971de253ab0bdfef",
+          "crop": "evidence\\material-visible-materials\\shelf.png"
+        },
+        {
+          "id": "door",
+          "pixels": 11930,
+          "bbox": [
+            382,
+            459,
+            465,
+            680
+          ],
+          "deltaE": 2.51,
+          "maskSha256": "4e64c436c20d294d413f7ff2890f5c010427b7b32935f4bb85893ac53d327150",
+          "crop": "evidence\\material-visible-materials\\door.png"
+        },
+        {
+          "id": "door-frame",
+          "pixels": 6597,
+          "bbox": [
+            367,
+            453,
+            480,
+            686
+          ],
+          "deltaE": 3.95,
+          "maskSha256": "dd391be58e9dff87b3aa7577c12df867211e22b3c4c5aa31d189a6f8c1549c4f",
+          "crop": "evidence\\material-visible-materials\\door-frame.png"
+        },
+        {
+          "id": "door-glass",
+          "pixels": 5122,
+          "bbox": [
+            393,
+            479,
+            458,
+            566
+          ],
+          "deltaE": 7.16,
+          "maskSha256": "25e3189d33d162cb619377c156dec96c537a27265dd41c644bed1d69dee50b98",
+          "crop": "evidence\\material-visible-materials\\door-glass.png"
+        },
+        {
+          "id": "door-lintel",
+          "pixels": 6331,
+          "bbox": [
+            346,
+            407,
+            491,
+            466
+          ],
+          "deltaE": 4.29,
+          "maskSha256": "c8a982c22fd9231677decf002f23808a64c1156e195bbd79f70642283bca9515",
+          "crop": "evidence\\material-visible-materials\\door-lintel.png"
+        },
+        {
+          "id": "handle",
+          "pixels": 200,
+          "bbox": [
+            443,
+            577,
+            458,
+            592
+          ],
+          "deltaE": 1.99,
+          "maskSha256": "f48a343e8c3cf477b210cc1be2f2e70387c4cb93bbda66d50d82a8b883e3231a",
+          "crop": "evidence\\material-visible-materials\\handle.png"
+        },
+        {
+          "id": "side-window",
+          "pixels": 8945,
+          "bbox": [
+            571,
+            369,
+            628,
+            612
+          ],
+          "deltaE": 12.34,
+          "maskSha256": "25a56c9c42f0f5db47912c1c08e2d65703f3b8b84f539fae1ff1a3d102ceb38a",
+          "crop": "evidence\\material-visible-materials\\side-window.png"
+        },
+        {
+          "id": "steps",
+          "pixels": 7355,
+          "bbox": [
+            324,
+            668,
+            491,
+            732
+          ],
+          "deltaE": 3.84,
+          "maskSha256": "ecf472daa355f1a8614022abf1f1ec08411371965809655606756d771cd9a9b6",
+          "crop": "evidence\\material-visible-materials\\steps.png"
+        },
+        {
+          "id": "pot-left",
+          "pixels": 3818,
+          "bbox": [
+            32,
+            620,
+            109,
+            683
+          ],
+          "deltaE": 5.03,
+          "maskSha256": "2ffcf1acac76eb402160126693a21a8bd66930134dde2f53ed8197fafbc14130",
+          "crop": "evidence\\material-visible-materials\\pot-left.png"
+        },
+        {
+          "id": "pot-right",
+          "pixels": 3894,
+          "bbox": [
+            495,
+            684,
+            572,
+            748
+          ],
+          "deltaE": 4.97,
+          "maskSha256": "a02e1c9ab7bf3d2e279669ce299b495fe0061f9db171f1896783ff8ce61635b5",
+          "crop": "evidence\\material-visible-materials\\pot-right.png"
+        },
+        {
+          "id": "herb-left",
+          "pixels": 2369,
+          "bbox": [
+            45,
+            569,
+            89,
+            633
+          ],
+          "deltaE": 5.33,
+          "maskSha256": "1f678ab9dc15a78256dd686a4a7d41f7e068b18ba9230a7afe9fb63c570e881a",
+          "crop": "evidence\\material-visible-materials\\herb-left.png"
+        },
+        {
+          "id": "herb-right",
+          "pixels": 2373,
+          "bbox": [
+            508,
+            634,
+            552,
+            698
+          ],
+          "deltaE": 4.73,
+          "maskSha256": "6e525be0393c1e95d03367e86a603e82fb8c18aabbef26672116ade78c2aca47",
+          "crop": "evidence\\material-visible-materials\\herb-right.png"
+        },
+        {
+          "id": "lamp-post",
+          "pixels": 3001,
+          "bbox": [
+            712,
+            617,
+            743,
+            717
+          ],
+          "deltaE": 7.12,
+          "maskSha256": "b36b3410faa33be474dc2c2f84d2a6e1928de1075057ff634a77c2fbad200c09",
+          "crop": "evidence\\material-visible-materials\\lamp-post.png"
+        },
+        {
+          "id": "lamp-head",
+          "pixels": 5674,
+          "bbox": [
+            697,
+            516,
+            758,
+            619
+          ],
+          "deltaE": 10.13,
+          "maskSha256": "7397be9c5ebbb60b8807b985c002b38049a293efee78d770a27ea5a87e4ec57a",
+          "crop": "evidence\\material-visible-materials\\lamp-head.png"
+        }
+      ],
+      "occludedNotMeasured": [],
+      "unresolved": []
+    }
+  },
+  "failures": [],
+  "maskWarnings": [],
+  "renderHash": "af7e6d85d74c69be",
+  "passId": "material-pass",
+  "originalDiagnostic": "evidence/material-diagnostics.json",
+  "originalPassed": false,
+  "scopeNote": "Original global-palette result retained, not overwritten. Rendered occlusion masks select actual visible pixels. No claim for hidden material or reference PBR recovery."
+}

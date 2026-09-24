@@ -1,0 +1,11 @@
+{
+  "ok": true,
+  "errors": [],
+  "warnings": [],
+  "summary": {
+    "targetName": "Woodland bookshop",
+    "suitability": "conditional",
+    "components": 27,
+    "materials": 10
+  }
+}

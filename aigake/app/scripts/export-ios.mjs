@@ -60,6 +60,19 @@ async function copyBakeryStudy(relative=''){
  }
 }
 await copyBakeryStudy();
+// Independent bookshop study. Keep source and real review evidence outside the app bundle.
+const booksStudy=artStudy+'woodland/individual/books/';
+async function copyBooksStudy(relative=''){
+ for(const e of await readdir(path.join(source,booksStudy,relative),{withFileTypes:true})){
+  if(e.name==='__pycache__'||/-unit-surface\.json$/.test(e.name))continue;
+  if(e.isSymbolicLink())throw Error('Unexpected books-study symlink');
+  const next=path.join(relative,e.name);
+  if(e.isDirectory()){if(!['evidence','.img2threejs'].includes(next)&&!next.startsWith('evidence'+path.sep))throw Error('Unexpected books-study directory: '+next);await copyBooksStudy(next);}
+  else if(/\.(mjs|py|html|md|json|png)$/.test(e.name)||/-gate\.txt$/.test(e.name))await copySource(booksStudy+next.replaceAll('\\','/'));
+  else throw Error('Unexpected books-study file: '+next);
+ }
+}
+await copyBooksStudy();
 for(const name of ['detail-observations.md'])await copySource(artStudy+'woodland/individual/cafe/evidence/'+name);
 for(const name of ['roof4-match.png','roof4-right.png'])await copySource(artStudy+'woodland/individual/cafe/evidence/'+name);
 for(const view of ['match','front','right','back','left','grid','bevel','texture','neutral','grazing','comparison'])await copySource(artStudy+'woodland/individual/cafe/evidence/grid5-'+view+'.png');

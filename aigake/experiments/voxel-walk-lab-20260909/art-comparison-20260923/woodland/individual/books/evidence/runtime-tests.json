@@ -1,0 +1,7 @@
+{
+  "passed": true,
+  "command": "node --test runtime.test.mjs",
+  "stdout": "\u2714 Editable JSON preserves cells, palette and phases and rejects malformed documents (38.9171ms)\n\u2714 Exploded parts recover hidden faces and material channels from their own cells (101.5913ms)\n\u2714 Every cumulative construction phase remains grounded (52.6142ms)\n\u2714 Actual browser hierarchy contains 27 selectable parts and correctly placed sockets (1.1087ms)\n\u2139 tests 4\n\u2139 suites 0\n\u2139 pass 4\n\u2139 fail 0\n\u2139 cancelled 0\n\u2139 skipped 0\n\u2139 todo 0\n\u2139 duration_ms 271.9812\n",
+  "stderr": "",
+  "source": "actual node test execution; browser hierarchy from optimization-runtime.json"
+}

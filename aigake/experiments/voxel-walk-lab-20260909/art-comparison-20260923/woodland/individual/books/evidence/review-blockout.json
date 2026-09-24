@@ -1,0 +1,7 @@
+{
+  "pass":"blockout","action":"continue","overall":0.78,
+  "render":"evidence/books-blockout-match.png","comparison":"evidence/blockout-comparison.png",
+  "layers":{"silhouetteProportion":0.81,"componentStructure":0.74,"formDetail":0.70,"materialSurface":0.70,"localFeatures":0.73,"lightingCamera":0.79},
+  "features":[{"id":"mass","score":0.80,"notes":"Inspected source plus five clay views: squat one-storey body and right-hand frontage placement read consistently. Solid placeholders do not yet establish openings or supports."},{"id":"roof","score":0.78,"notes":"Four-sided stepped hip, short plateau and rear chimney reproduce the dominant silhouette. Thin outer ledges will be joined by a continuous backing in the structural pass."}],
+  "notes":"Agent visual review of blockout-comparison.png after height, hip inset, mass placement and lamp-scale corrections. Overall silhouette is close enough to proceed; the reference's handmade tile surface, display, bench legs and leaf forms are intentionally absent at this stage. Diagnostics passed independently. No claim of photometric or hidden-side reference accuracy."
+}
