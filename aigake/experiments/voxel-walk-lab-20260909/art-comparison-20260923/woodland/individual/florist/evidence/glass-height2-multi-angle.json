@@ -1,0 +1,20 @@
+{
+  "referenceAreaFraction": 0.6558196254361603,
+  "angles": [
+    {
+      "path": "evidence\\florist-glass-height2-front-mask.png",
+      "areaFraction": 0.5406127608060955,
+      "ratio": 0.8243314774951342,
+      "degenerate": false
+    },
+    {
+      "path": "evidence\\florist-glass-height2-left-mask.png",
+      "areaFraction": 0.2945631275368511,
+      "ratio": 0.44915265739561927,
+      "degenerate": false
+    }
+  ],
+  "degenerate": false,
+  "collapseRatio": 0.15,
+  "note": "deterministic; zero token; a flat-plane-faking-a-volume collapses in silhouette area when orbited"
+}

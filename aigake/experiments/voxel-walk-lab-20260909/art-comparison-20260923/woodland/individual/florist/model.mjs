@@ -3,7 +3,7 @@ export const Y=y=>y;
 export const PALETTE={clay:'#b9b5a5',plaster:'#cb9a58',tile:'#707343',wood:'#94683b',glass:'#567c75',stone:'#d4c49c',pot:'#a76d46',leaf:'#5c7d3f',flower:'#d5939c',metal:'#746444'};
 Object.assign(PALETTE,{plasterLight:'#d7ae71',plasterDeep:'#b8894e',plasterWarm:'#c49759',tileLight:'#83854e',tileWarm:'#969457',tileDeep:'#646a40',tileJoint:'#686e43',woodLight:'#aa7e4a',woodDeep:'#7b5734',glassLight:'#79968a',glassDeep:'#486c65',stoneLight:'#e1d2af',stoneDeep:'#beb293',potLight:'#b98050',potDeep:'#93603e',leafLight:'#78934d',leafDeep:'#496a37',flowerPink:'#d5939c',flowerYellow:'#dcb84f',flowerWhite:'#e7d9b4',flowerPurple:'#a391bb',flowerOrange:'#d69c54',centerGold:'#c19b39',centerCream:'#eee0a5'});
 export const containers=[['planter-left','flowers-left',-34,0,19,16,4,6],['pot-pink','flowers-pink',-17,0,22,5,5,5],['planter-yellow','flowers-yellow',-9,0,23,11,4,6],['pot-purple','flowers-purple',17,0,23,5,5,5],['pot-white','flowers-white',24,0,22,5,5,5],...['front','middle','back'].map((s,i)=>['planter-side-'+s,'flowers-side-'+s,23,0,10-i*9,8,5,6])];
-export function createFloristCells({stage='optimization'}={}){
+export function createFloristCells({stage='glass-height2'}={}){
  if(stage!=='blockout')return detailed(stage);
  const cells=new Map(),box=(part,x,y,z,w,h,d)=>{for(let a=x;a<x+w;a++)for(let b=y;b<y+h;b++)for(let c=z;c<z+d;c++)cells.set(`${a},${b},${c}`,{x:a,y:b,z:c,color:'clay',part,phase:0});};
  box('building',-16,0,-13,34,25,28);
@@ -14,7 +14,8 @@ export function createFloristCells({stage='optimization'}={}){
  return cells;
 }
 function detailed(stage){
- if(!['structure','form','material','surface','lighting','interaction','optimization'].includes(stage))throw Error('This pass is not built yet.');
+ if(!['structure','form','material','surface','lighting','interaction','optimization','glass-height2'].includes(stage))throw Error('This pass is not built yet.');
+ const greenhouseTop=z=>stage==='glass-height2'?18-Math.floor((z-1)/6):16-Math.floor((z-1)/3);
  const cells=new Map();
  const box=(part,color,x,y,z,w,h,d,phase=3)=>{for(let a=x;a<x+w;a++)for(let b=y;b<y+h;b++)for(let c=z;c<z+d;c++)cells.set(`${a},${b},${c}`,{x:a,y:b,z:c,color,part,phase});};
  const cut=(x,y,z,w,h,d)=>{for(let a=x;a<x+w;a++)for(let b=y;b<y+h;b++)for(let c=z;c<z+d;c++)cells.delete(`${a},${b},${c}`);};
@@ -34,7 +35,7 @@ function detailed(stage){
  // Glazed lean-to: perimeter frame only, no vertical bars across the panes.
  box('greenhouse-frame','stone',-32,0,1,16,2,17,1);
  for(let z=1;z<18;z++){
-  const top=16-Math.floor((z-1)/3);
+  const top=greenhouseTop(z);
   box('greenhouse-frame','stone',-32,top,z,16,2,1,2);
   if(z>1&&z<17)box('greenhouse-glass','glass',-31,top,z,14,2,1,3);
   for(const x of [-32,-17]){
@@ -42,7 +43,7 @@ function detailed(stage){
    if(z>1&&z<17)box('greenhouse-glass','glass',x,2,z,1,top-2,1,3);
   }
  }
- for(const [z,top]of [[1,16],[17,11]]){box('greenhouse-frame','stone',-32,2,z,16,top-2,1,1);box('greenhouse-glass','glass',-31,2,z,14,top-2,1,3);}
+ for(const z of [1,17]){const top=greenhouseTop(z);box('greenhouse-frame','stone',-32,2,z,16,top-2,1,1);box('greenhouse-glass','glass',-31,2,z,14,top-2,1,3);}
  function flower(part,x,z,base,head){
   if(stage==='structure'){box(part,'leaf',x,base,z,1,head-base,1,4);box(part,'flower',x-1,head,z-1,3,1,3,4);return;}
   const bloom=part+':'+x+':'+z;

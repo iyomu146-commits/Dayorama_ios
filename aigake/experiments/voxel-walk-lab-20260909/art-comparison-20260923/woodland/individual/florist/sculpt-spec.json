@@ -4089,7 +4089,7 @@
           ],
           "size": [
             16,
-            18,
+            20,
             17
           ]
         }
@@ -4097,17 +4097,17 @@
       "parent": null,
       "attachment": null,
       "dimensions": {
-        "width": 2.4,
-        "height": 2.6999999999999997,
-        "depth": 2.55,
+        "width": 2.4000000953674316,
+        "height": 3,
+        "depth": 2.5500000417232513,
         "units": "metres",
         "confidence": 0.7
       },
       "transform": {
         "position": [
-          -4.8,
-          0,
-          0.15
+          -4.800000190734863,
+          0.0,
+          0.15000000596046448
         ],
         "rotation": [
           0,
@@ -4248,14 +4248,14 @@
         "normalStrategy": "flat axes with lighting-only microrelief",
         "parameters": {
           "pos": [
-            -31,
+            -32,
             2,
-            2
+            1
           ],
           "size": [
-            14,
-            15,
-            15
+            16,
+            18,
+            17
           ]
         }
       },
@@ -4279,17 +4279,17 @@
         "notes": "Support and rooted connectivity measured from actual cells."
       },
       "dimensions": {
-        "width": 2.1,
-        "height": 2.25,
-        "depth": 2.25,
+        "width": 2.4000000953674316,
+        "height": 2.699999988079071,
+        "depth": 2.5500000417232513,
         "units": "metres",
         "confidence": 0.7
       },
       "transform": {
         "position": [
-          -4.6499999999999995,
-          0.3,
-          0.3
+          -4.800000190734863,
+          0.30000001192092896,
+          0.15000000596046448
         ],
         "rotation": [
           0,
@@ -13434,10 +13434,10 @@
     "flowers": "21 rooted blooms; pink, yellow, white, lilac and orange petals, contrasting gold/cream center; low-confidence exact hue inference from supplied image."
   },
   "implementedVoxelStudy": {
-    "version": "florist1",
+    "version": "florist2",
     "cellSizeMeters": 0.15,
-    "cellCount": 15761,
-    "modelTriangles": 15642,
+    "cellCount": 15975,
+    "modelTriangles": 15322,
     "partCount": 35,
     "blooms": 21,
     "roofPattern": "2 + 2 + 1 filled joint; subdued olive color",
@@ -13448,10 +13448,50 @@
       453,
       310
     ],
-    "actualBoundsSource": "evidence/optimization-runtime.json",
+    "actualBoundsSource": "evidence/glass-height2-runtime.json",
     "userAccepted": false,
     "fullTownIntegrated": false,
     "pixelation": "off; reconsider weak after whole-town scene",
-    "geometryScope": "validation-scope.md"
-  }
+    "geometryScope": "validation-scope.md",
+    "revision": "glass-height2"
+  },
+  "postReviewRevisions": [
+    {
+      "id": "glass-height2",
+      "reason": "User reported the left sunroom-like extension is too short. Raise front by five 15cm courses and rear by two; reduce roof slope while keeping footprint.",
+      "frontLiftCells": 5,
+      "rearLiftCells": 2,
+      "frontRoofTopMeters": 2.7,
+      "rearRoofTopMeters": 3.0,
+      "evidence": "evidence/glass-height2-comparison.png",
+      "priorParameters": {
+        "greenhouse-frame": {
+          "pos": [
+            -32,
+            0,
+            1
+          ],
+          "size": [
+            16,
+            18,
+            17
+          ]
+        },
+        "greenhouse-glass": {
+          "pos": [
+            -31,
+            2,
+            2
+          ],
+          "size": [
+            14,
+            15,
+            15
+          ]
+        }
+      },
+      "initialAttempt": "evidence/glass-height2-initial-comparison.png; uniform five-course lift made rear too tall",
+      "scope": "Only greenhouse-frame and greenhouse-glass change; all shop/flower cells are equal to optimization baseline. Prior eight-pass review history remains unchanged."
+    }
+  ]
 }
