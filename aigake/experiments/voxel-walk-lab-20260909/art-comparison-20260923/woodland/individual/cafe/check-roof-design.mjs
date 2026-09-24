@@ -19,6 +19,13 @@ check('Only roof, tiles and ridge cells change; walls, windows, furniture and ch
  assert.deepEqual(bounds(cells),bounds(source));
 });
 check('All cells remain connected to the ground',()=>assert.equal(groundedCells(cells).size,cells.size));
+check('Every front course repeats two tone cells, two contrasting cells and one filled dark joint',()=>{
+ for(let row=0;row<6;row++)for(let x=-20;x<20;x+=5){
+  const top=[0,1,2,3,4].map(i=>cells.get(`${x+i},${24+2*row},${17-3*row}`));
+  assert(top.every(Boolean));assert.equal(top[0].color,top[1].color);assert.equal(top[2].color,top[3].color);
+  assert.notEqual(top[0].color,top[2].color);assert.equal(top[4].color,'slateJoint');
+ }
+});
 const deck=new Map();
 check('All 1440 roof columns have a closed three-cell support layer',()=>{
  for(let x=-20;x<20;x++)for(let z=-18;z<18;z++){
@@ -63,4 +70,4 @@ check('Rendered boundary exactly covers exposed integer-cell faces',()=>{
  assert.equal(area,expected.size);assert.deepEqual(actual,expected);
 });
 const report={cells:cells.size,previousCells:source.size,triangles:meshes.reduce((n,m)=>n+m.triangles,0),meshes:meshes.length,cellSize:CELL,checks,scope:'Structure and boundary checks; no visual-quality score or device performance claim.'};
-await writeFile(new URL('./evidence/roof14-structure.json',import.meta.url),JSON.stringify(report,null,2)+'\n');console.log(JSON.stringify(report,null,2));
+await writeFile(new URL('./evidence/roof15-structure.json',import.meta.url),JSON.stringify(report,null,2)+'\n');console.log(JSON.stringify(report,null,2));
