@@ -1,0 +1,7 @@
+{
+  "passed": true,
+  "command": "node --test runtime.test.mjs",
+  "stdout": "\u2714 JSON preserves cells, flower identities, color and phases; malformed cells rejected (41.3607ms)\n\u2714 Exploding restores each part boundary and preserves material channels (105.0557ms)\n\u2714 All construction phases are grounded without later flowers propping up glass (49.353ms)\n\u2714 Each bloom has one petal color and contrasting centers, spanning five hues (0.6458ms)\n\u2714 Real browser hierarchy exposes all 35 parts, pivots, colliders and a clear entrance (0.9598ms)\n\u2139 tests 5\n\u2139 suites 0\n\u2139 pass 5\n\u2139 fail 0\n\u2139 cancelled 0\n\u2139 skipped 0\n\u2139 todo 0\n\u2139 duration_ms 270.3576\n",
+  "stderr": "",
+  "source": "actual Node execution with captured optimization-runtime.json"
+}

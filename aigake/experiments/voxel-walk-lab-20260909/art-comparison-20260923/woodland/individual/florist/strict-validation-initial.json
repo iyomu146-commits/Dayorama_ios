@@ -1,0 +1,15 @@
+{
+  "ok": false,
+  "errors": [
+    "strict quality failure: lighting-pass needs concrete key/fill/rim or environment light entries"
+  ],
+  "warnings": [
+    "quality: lighting-pass needs concrete key/fill/rim or environment light entries"
+  ],
+  "summary": {
+    "targetName": "Woodland florist",
+    "suitability": "conditional",
+    "components": 35,
+    "materials": 9
+  }
+}

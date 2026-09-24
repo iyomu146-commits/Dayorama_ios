@@ -73,6 +73,19 @@ async function copyBooksStudy(relative=''){
  }
 }
 await copyBooksStudy();
+// Florist is independently authored from its exact town crop, with review evidence.
+const floristStudy=artStudy+'woodland/individual/florist/';
+async function copyFloristStudy(relative=''){
+ for(const e of await readdir(path.join(source,floristStudy,relative),{withFileTypes:true})){
+  if(e.name==='__pycache__'||/-unit-surface\.json$/.test(e.name))continue;
+  if(e.isSymbolicLink())throw Error('Unexpected florist-study symlink');
+  const next=path.join(relative,e.name);
+  if(e.isDirectory()){if(!['evidence','.img2threejs'].includes(next)&&!next.startsWith('evidence'+path.sep))throw Error('Unexpected florist-study directory: '+next);await copyFloristStudy(next);}
+  else if(/\.(mjs|py|html|md|json|png)$/.test(e.name)||/-gate\.txt$/.test(e.name))await copySource(floristStudy+next.replaceAll('\\','/'));
+  else throw Error('Unexpected florist-study file: '+next);
+ }
+}
+await copyFloristStudy();
 for(const name of ['detail-observations.md'])await copySource(artStudy+'woodland/individual/cafe/evidence/'+name);
 for(const name of ['roof4-match.png','roof4-right.png'])await copySource(artStudy+'woodland/individual/cafe/evidence/'+name);
 for(const view of ['match','front','right','back','left','grid','bevel','texture','neutral','grazing','comparison'])await copySource(artStudy+'woodland/individual/cafe/evidence/grid5-'+view+'.png');

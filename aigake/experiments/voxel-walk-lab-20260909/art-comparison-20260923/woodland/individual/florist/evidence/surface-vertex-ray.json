@@ -1,0 +1,95 @@
+{
+  "selfIntersecting": true,
+  "meshCount": 1,
+  "insideVertexCount": 612,
+  "undecidedVertexCount": 0,
+  "sampledVertexCount": 3911,
+  "totalVertexCount": 46926,
+  "meshes": [
+    {
+      "name": "florist-assembled-surface",
+      "analyzed": true,
+      "error": null,
+      "selfIntersecting": true,
+      "insideVertexCount": 612,
+      "undecidedVertexCount": 0,
+      "outsideVertexCount": 3299,
+      "sampledVertexCount": 3911,
+      "totalVertexCount": 46926,
+      "samplingStride": 12,
+      "triangleCount": 15642,
+      "degenerateTriangleCount": 0,
+      "worstRegions": [
+        {
+          "vertexIndex": 12,
+          "position": [
+            -2.0999999046325684,
+            0.15000000596046448,
+            -1.649999976158142
+          ]
+        },
+        {
+          "vertexIndex": 4164,
+          "position": [
+            2.4000000953674316,
+            0.15000000596046448,
+            -0.75
+          ]
+        },
+        {
+          "vertexIndex": 10464,
+          "position": [
+            -1.649999976158142,
+            4.199999809265137,
+            -1.649999976158142
+          ]
+        },
+        {
+          "vertexIndex": 12360,
+          "position": [
+            -2.700000047683716,
+            4.800000190734863,
+            -0.75
+          ]
+        },
+        {
+          "vertexIndex": 13764,
+          "position": [
+            2.8499999046325684,
+            5.099999904632568,
+            -0.30000001192092896
+          ]
+        },
+        {
+          "vertexIndex": 28440,
+          "position": [
+            -0.8999999761581421,
+            0.75,
+            2.25
+          ]
+        },
+        {
+          "vertexIndex": 31296,
+          "position": [
+            2.700000047683716,
+            1.649999976158142,
+            0.75
+          ]
+        },
+        {
+          "vertexIndex": 36300,
+          "position": [
+            -4.650000095367432,
+            0.30000001192092896,
+            0.30000001192092896
+          ]
+        }
+      ],
+      "normalSource": "vertexNormals",
+      "normalFallbackCount": 0,
+      "epsilon": 0.013157317273123066,
+      "rayDirectionCount": 3
+    }
+  ],
+  "errors": []
+}

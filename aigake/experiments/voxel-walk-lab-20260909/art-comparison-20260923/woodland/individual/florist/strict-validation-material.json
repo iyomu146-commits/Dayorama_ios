@@ -1,0 +1,25 @@
+{
+  "ok": false,
+  "errors": [
+    "strict quality failure: component 'display-flowers' colorMaterialRecipe.dominantAlbedo must be an 'rgba(r, g, b, a)' string",
+    "strict quality failure: component 'flowers-yellow' colorMaterialRecipe.dominantAlbedo must be an 'rgba(r, g, b, a)' string",
+    "strict quality failure: component 'flowers-purple' colorMaterialRecipe.dominantAlbedo must be an 'rgba(r, g, b, a)' string",
+    "strict quality failure: component 'flowers-white' colorMaterialRecipe.dominantAlbedo must be an 'rgba(r, g, b, a)' string",
+    "strict quality failure: component 'flowers-side-front' colorMaterialRecipe.dominantAlbedo must be an 'rgba(r, g, b, a)' string",
+    "strict quality failure: component 'flowers-side-middle' colorMaterialRecipe.dominantAlbedo must be an 'rgba(r, g, b, a)' string"
+  ],
+  "warnings": [
+    "quality: component 'display-flowers' colorMaterialRecipe.dominantAlbedo must be an 'rgba(r, g, b, a)' string",
+    "quality: component 'flowers-yellow' colorMaterialRecipe.dominantAlbedo must be an 'rgba(r, g, b, a)' string",
+    "quality: component 'flowers-purple' colorMaterialRecipe.dominantAlbedo must be an 'rgba(r, g, b, a)' string",
+    "quality: component 'flowers-white' colorMaterialRecipe.dominantAlbedo must be an 'rgba(r, g, b, a)' string",
+    "quality: component 'flowers-side-front' colorMaterialRecipe.dominantAlbedo must be an 'rgba(r, g, b, a)' string",
+    "quality: component 'flowers-side-middle' colorMaterialRecipe.dominantAlbedo must be an 'rgba(r, g, b, a)' string"
+  ],
+  "summary": {
+    "targetName": "Woodland florist",
+    "suitability": "conditional",
+    "components": 35,
+    "materials": 9
+  }
+}

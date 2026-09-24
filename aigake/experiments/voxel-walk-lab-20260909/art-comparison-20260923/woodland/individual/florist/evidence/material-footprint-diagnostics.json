@@ -1,0 +1,480 @@
+{
+  "passed": true,
+  "checks": {
+    "silhouetteIoU": 0.8527,
+    "aspectRatioDelta": 0.0046,
+    "scaleDelta": 0.0046,
+    "bilateralSymmetryError": 0.1745,
+    "colorDelta": {
+      "gated": true,
+      "method": "palette measured only within each component visible footprint, not overall image clusters",
+      "threshold": 20.0,
+      "perComponent": [
+        {
+          "id": "building",
+          "pixels": 49854,
+          "bbox": [
+            251,
+            180,
+            766,
+            550
+          ],
+          "deltaE": 2.37,
+          "maskSha256": "9ab530cf403bc01920a0cc0accb612a36f0938b53274e56c2257a53afcfc8675",
+          "crop": "evidence\\material-visible-materials\\building.png"
+        },
+        {
+          "id": "roof",
+          "pixels": 112559,
+          "bbox": [
+            203,
+            12,
+            814,
+            286
+          ],
+          "deltaE": 3.81,
+          "maskSha256": "661224ace12529b6409d84972826acc50552ff209dda13f30ddadd7e66c0fc5c",
+          "crop": "evidence\\material-visible-materials\\roof.png"
+        },
+        {
+          "id": "gable",
+          "pixels": 2378,
+          "bbox": [
+            688,
+            147,
+            766,
+            233
+          ],
+          "deltaE": 9.55,
+          "maskSha256": "4aaa92ee0b256926227a773fd804a4e5d7ca024ba1310fedce1f1db0adf2a52b",
+          "crop": "evidence\\material-visible-materials\\gable.png"
+        },
+        {
+          "id": "plinth",
+          "pixels": 1236,
+          "bbox": [
+            258,
+            507,
+            673,
+            561
+          ],
+          "deltaE": 5.88,
+          "maskSha256": "cad7958f4cb2ddcefa4923f733549ef417608f7d6b81e09d9a99be20a3ac737d",
+          "crop": "evidence\\material-visible-materials\\plinth.png"
+        },
+        {
+          "id": "fascia",
+          "pixels": 1490,
+          "bbox": [
+            235,
+            175,
+            782,
+            288
+          ],
+          "deltaE": 5.0,
+          "maskSha256": "7656a19fe45cae421bb590804e92df63af57411ecda8fd7a0f2d38eed9b8954e",
+          "crop": "evidence\\material-visible-materials\\fascia.png"
+        },
+        {
+          "id": "awning",
+          "pixels": 9977,
+          "bbox": [
+            255,
+            251,
+            465,
+            322
+          ],
+          "deltaE": 4.0,
+          "maskSha256": "b316401f2ad8e2d74f1565f932ddc409ef8c4cbd0b8c5e99a750ea8ed4cf53eb",
+          "crop": "evidence\\material-visible-materials\\awning.png"
+        },
+        {
+          "id": "display-frame",
+          "pixels": 8882,
+          "bbox": [
+            280,
+            303,
+            454,
+            486
+          ],
+          "deltaE": 4.76,
+          "maskSha256": "7ba67cc0386a2755305143f08441f4b64ed5b1b71a17b527bc9887555f2706bf",
+          "crop": "evidence\\material-visible-materials\\display-frame.png"
+        },
+        {
+          "id": "display-glass",
+          "pixels": 12310,
+          "bbox": [
+            301,
+            317,
+            438,
+            466
+          ],
+          "deltaE": 6.47,
+          "maskSha256": "20ab3973a37f6656bc623f9915a454fc79c8ffc697f1d5d6932b3037af74c625",
+          "crop": "evidence\\material-visible-materials\\display-glass.png"
+        },
+        {
+          "id": "display-flowers",
+          "pixels": 5553,
+          "bbox": [
+            303,
+            368,
+            431,
+            471
+          ],
+          "deltaE": 10.31,
+          "maskSha256": "dc71dd2716ab67961c1a1e42fdf677fa65b80b79e416288c7f351ef953310f46",
+          "crop": "evidence\\material-visible-materials\\display-flowers.png"
+        },
+        {
+          "id": "door",
+          "pixels": 12662,
+          "bbox": [
+            500,
+            330,
+            584,
+            544
+          ],
+          "deltaE": 8.59,
+          "maskSha256": "19f0b825864f4ab365c669f371d9dec08855d6affb03474a03248bc862c3b0cd",
+          "crop": "evidence\\material-visible-materials\\door.png"
+        },
+        {
+          "id": "door-frame",
+          "pixels": 7096,
+          "bbox": [
+            484,
+            313,
+            600,
+            539
+          ],
+          "deltaE": 3.51,
+          "maskSha256": "3e8886dbfb3e104628badfe4b44262b3ac5b836d09eff18367c86c7e6d64dad6",
+          "crop": "evidence\\material-visible-materials\\door-frame.png"
+        },
+        {
+          "id": "door-glass",
+          "pixels": 3866,
+          "bbox": [
+            511,
+            351,
+            578,
+            416
+          ],
+          "deltaE": 6.3,
+          "maskSha256": "6faf333691ca59be9a5a39a375a6fe464eae007eed3eef005f45e7b833ba35ac",
+          "crop": "evidence\\material-visible-materials\\door-glass.png"
+        },
+        {
+          "id": "handle",
+          "pixels": 207,
+          "bbox": [
+            563,
+            428,
+            578,
+            443
+          ],
+          "deltaE": 3.96,
+          "maskSha256": "22958f2ac8f575ed3520805541a9e16a37fa146df4ebd0ca3af54fe39018d8bb",
+          "crop": "evidence\\material-visible-materials\\handle.png"
+        },
+        {
+          "id": "side-frame",
+          "pixels": 8441,
+          "bbox": [
+            677,
+            226,
+            762,
+            453
+          ],
+          "deltaE": 2.97,
+          "maskSha256": "56e92a88a9bd9d8998709d171bf5c95ea749d44c388a4d4f9e6aa7b27dc4b035",
+          "crop": "evidence\\material-visible-materials\\side-frame.png"
+        },
+        {
+          "id": "side-glass",
+          "pixels": 1181,
+          "bbox": [
+            698,
+            277,
+            724,
+            414
+          ],
+          "deltaE": 8.55,
+          "maskSha256": "1802a1587ba14109e2a9e180bd6c64d955ea9f475df0b0734bcbc090d95cb0d4",
+          "crop": "evidence\\material-visible-materials\\side-glass.png"
+        },
+        {
+          "id": "side-flowers",
+          "pixels": 3299,
+          "bbox": [
+            698,
+            322,
+            748,
+            421
+          ],
+          "deltaE": 12.86,
+          "maskSha256": "e34316b907bf78518d1ca13edfe1bca996f68fc42a88c15e0564e3237085f5c4",
+          "crop": "evidence\\material-visible-materials\\side-flowers.png"
+        },
+        {
+          "id": "greenhouse-frame",
+          "pixels": 8888,
+          "bbox": [
+            56,
+            238,
+            250,
+            484
+          ],
+          "deltaE": 5.53,
+          "maskSha256": "86c2064340a015e2d01f8c196f126a454acca6ed643e1a15b557f99c58a4eaf8",
+          "crop": "evidence\\material-visible-materials\\greenhouse-frame.png"
+        },
+        {
+          "id": "greenhouse-glass",
+          "pixels": 25168,
+          "bbox": [
+            67,
+            243,
+            250,
+            485
+          ],
+          "deltaE": 5.84,
+          "maskSha256": "737d0cc6abd23fa19b2f47b81144bce62a489d71124800e6a5a796e6708678ee",
+          "crop": "evidence\\material-visible-materials\\greenhouse-glass.png"
+        },
+        {
+          "id": "planter-left",
+          "pixels": 11189,
+          "bbox": [
+            0,
+            462,
+            200,
+            547
+          ],
+          "deltaE": 5.05,
+          "maskSha256": "ab43b16b55339d4a6ae18a7bf19a3bdc1c0e9924c2298bc000a52ed5380d95d4",
+          "crop": "evidence\\material-visible-materials\\planter-left.png"
+        },
+        {
+          "id": "flowers-left",
+          "pixels": 6601,
+          "bbox": [
+            21,
+            407,
+            195,
+            496
+          ],
+          "deltaE": 18.26,
+          "maskSha256": "90263500fea11b1915f6ae09c28462bb35c7b0c1888fa878c4a29997b3ab381a",
+          "crop": "evidence\\material-visible-materials\\flowers-left.png"
+        },
+        {
+          "id": "pot-pink",
+          "pixels": 4646,
+          "bbox": [
+            188,
+            483,
+            258,
+            561
+          ],
+          "deltaE": 3.96,
+          "maskSha256": "064e852e8a0896f9ccd53282cc0f21848d44925ef74e4cecababf3520538e236",
+          "crop": "evidence\\material-visible-materials\\pot-pink.png"
+        },
+        {
+          "id": "flowers-pink",
+          "pixels": 1561,
+          "bbox": [
+            199,
+            435,
+            237,
+            501
+          ],
+          "deltaE": 10.89,
+          "maskSha256": "91e8d43a29d579e099bdc228a97dd32e4617870faf2bae296fb1ce2ca1670c7e",
+          "crop": "evidence\\material-visible-materials\\flowers-pink.png"
+        },
+        {
+          "id": "planter-yellow",
+          "pixels": 8752,
+          "bbox": [
+            264,
+            510,
+            416,
+            588
+          ],
+          "deltaE": 5.55,
+          "maskSha256": "de7fcb4857202f8314f84ce7b7300cacc55a656eff5d597f2cc686b953099572",
+          "crop": "evidence\\material-visible-materials\\planter-yellow.png"
+        },
+        {
+          "id": "flowers-yellow",
+          "pixels": 4858,
+          "bbox": [
+            285,
+            455,
+            402,
+            537
+          ],
+          "deltaE": 10.11,
+          "maskSha256": "c96dc02612e5f7c572f5c3b613937adb83d7f83117ff30abd66462674557a10a",
+          "crop": "evidence\\material-visible-materials\\flowers-yellow.png"
+        },
+        {
+          "id": "pot-purple",
+          "pixels": 4636,
+          "bbox": [
+            567,
+            534,
+            637,
+            611
+          ],
+          "deltaE": 3.93,
+          "maskSha256": "eb7205d6ff5491a5dcd34219682245277badf37979e1b3ce86085d7a4e70e3a5",
+          "crop": "evidence\\material-visible-materials\\pot-purple.png"
+        },
+        {
+          "id": "flowers-purple",
+          "pixels": 1522,
+          "bbox": [
+            579,
+            486,
+            616,
+            551
+          ],
+          "deltaE": 11.83,
+          "maskSha256": "bdd559ba665b7ed7bb9f43ff8c64423ca5123cc7d230554837d9401fec49f9df",
+          "crop": "evidence\\material-visible-materials\\flowers-purple.png"
+        },
+        {
+          "id": "pot-white",
+          "pixels": 4733,
+          "bbox": [
+            651,
+            540,
+            721,
+            618
+          ],
+          "deltaE": 3.97,
+          "maskSha256": "1d8da85b887a3346d30f5eb0b6082a96adfdb4b578b654a73cb804bf72f4aeca",
+          "crop": "evidence\\material-visible-materials\\pot-white.png"
+        },
+        {
+          "id": "flowers-white",
+          "pixels": 1869,
+          "bbox": [
+            662,
+            469,
+            700,
+            555
+          ],
+          "deltaE": 8.28,
+          "maskSha256": "b6bc23c1475ab995370aefe76ce19e94c805b6f273a4d83a11e34d228967c391",
+          "crop": "evidence\\material-visible-materials\\flowers-white.png"
+        },
+        {
+          "id": "planter-side-front",
+          "pixels": 6909,
+          "bbox": [
+            690,
+            499,
+            805,
+            585
+          ],
+          "deltaE": 6.87,
+          "maskSha256": "2cc1fc4239d6a94a5201d6f3e3470d46b50e8e573cbf6af9b0af9818f5f5a610",
+          "crop": "evidence\\material-visible-materials\\planter-side-front.png"
+        },
+        {
+          "id": "flowers-side-front",
+          "pixels": 3253,
+          "bbox": [
+            708,
+            445,
+            791,
+            522
+          ],
+          "deltaE": 10.18,
+          "maskSha256": "dbca1eedc8423821a1a35b58e1cf42c440cbe6f1ec983224be01755210f46e65",
+          "crop": "evidence\\material-visible-materials\\flowers-side-front.png"
+        },
+        {
+          "id": "planter-side-middle",
+          "pixels": 4025,
+          "bbox": [
+            735,
+            470,
+            847,
+            555
+          ],
+          "deltaE": 6.51,
+          "maskSha256": "f114f36f877c099c01cd986e0b4ef79e8bf054b1f9525ea0828e47bd4166d132",
+          "crop": "evidence\\material-visible-materials\\planter-side-middle.png"
+        },
+        {
+          "id": "flowers-side-middle",
+          "pixels": 2508,
+          "bbox": [
+            750,
+            415,
+            833,
+            492
+          ],
+          "deltaE": 10.21,
+          "maskSha256": "a30edb2ba793c3cde1b6ed953d5867d93994bcd610736f867333c9932147ed7c",
+          "crop": "evidence\\material-visible-materials\\flowers-side-middle.png"
+        },
+        {
+          "id": "planter-side-back",
+          "pixels": 3880,
+          "bbox": [
+            780,
+            440,
+            890,
+            525
+          ],
+          "deltaE": 3.43,
+          "maskSha256": "2262d542137f58745f299a341992147fd88498a01cb1d37524402d89767d6dc2",
+          "crop": "evidence\\material-visible-materials\\planter-side-back.png"
+        },
+        {
+          "id": "flowers-side-back",
+          "pixels": 2465,
+          "bbox": [
+            792,
+            385,
+            875,
+            462
+          ],
+          "deltaE": 9.7,
+          "maskSha256": "ef53edecb6de121191b145145baf42089b0e48e309dfc11fa4dbfba9a5ad5b7b",
+          "crop": "evidence\\material-visible-materials\\flowers-side-back.png"
+        },
+        {
+          "id": "steps",
+          "pixels": 3305,
+          "bbox": [
+            460,
+            536,
+            567,
+            579
+          ],
+          "deltaE": 5.47,
+          "maskSha256": "3c5cd7ad977fd8a6402a883fb965fe47c5767c0db51b6dd1bcae703145ada94f",
+          "crop": "evidence\\material-visible-materials\\steps.png"
+        }
+      ],
+      "occludedNotMeasured": [],
+      "unresolved": []
+    }
+  },
+  "failures": [],
+  "maskWarnings": [],
+  "renderHash": "e266ea3597cab1cc",
+  "passId": "material-pass",
+  "originalDiagnostic": "evidence/material-diagnostics.json",
+  "originalPassed": false,
+  "scopeNote": "Original global-palette result retained, not overwritten. Rendered occlusion masks select actual visible pixels. No claim for hidden material or reference PBR recovery."
+}

@@ -1,0 +1,1214 @@
+{
+  "model": "individual-florist-v1",
+  "parts": [
+    {
+      "name": "plinth",
+      "mesh": "plinth-surface",
+      "kind": "part",
+      "triangles": 310
+    },
+    {
+      "name": "building",
+      "mesh": "building-surface",
+      "kind": "part",
+      "triangles": 2346
+    },
+    {
+      "name": "awning",
+      "mesh": "awning-surface",
+      "kind": "part",
+      "triangles": 300
+    },
+    {
+      "name": "roof",
+      "mesh": "roof-surface",
+      "kind": "part",
+      "triangles": 5520
+    },
+    {
+      "name": "gable",
+      "mesh": "gable-surface",
+      "kind": "part",
+      "triangles": 508
+    },
+    {
+      "name": "fascia",
+      "mesh": "fascia-surface",
+      "kind": "part",
+      "triangles": 376
+    },
+    {
+      "name": "display-frame",
+      "mesh": "display-frame-surface",
+      "kind": "part",
+      "triangles": 300
+    },
+    {
+      "name": "display-glass",
+      "mesh": "display-glass-surface",
+      "kind": "part",
+      "triangles": 172
+    },
+    {
+      "name": "door-frame",
+      "mesh": "door-frame-surface",
+      "kind": "part",
+      "triangles": 288
+    },
+    {
+      "name": "door",
+      "mesh": "door-surface",
+      "kind": "part",
+      "triangles": 156
+    },
+    {
+      "name": "door-glass",
+      "mesh": "door-glass-surface",
+      "kind": "part",
+      "triangles": 16
+    },
+    {
+      "name": "handle",
+      "mesh": "handle-surface",
+      "kind": "part",
+      "triangles": 10
+    },
+    {
+      "name": "side-frame",
+      "mesh": "side-frame-surface",
+      "kind": "part",
+      "triangles": 394
+    },
+    {
+      "name": "side-glass",
+      "mesh": "side-glass-surface",
+      "kind": "part",
+      "triangles": 126
+    },
+    {
+      "name": "steps",
+      "mesh": "steps-surface",
+      "kind": "part",
+      "triangles": 54
+    },
+    {
+      "name": "greenhouse-frame",
+      "mesh": "greenhouse-frame-surface",
+      "kind": "part",
+      "triangles": 340
+    },
+    {
+      "name": "greenhouse-glass",
+      "mesh": "greenhouse-glass-surface",
+      "kind": "part",
+      "triangles": 1178
+    },
+    {
+      "name": "planter-left",
+      "mesh": "planter-left-surface",
+      "kind": "part",
+      "triangles": 216
+    },
+    {
+      "name": "flowers-left",
+      "mesh": "flowers-left-surface",
+      "kind": "part",
+      "triangles": 386
+    },
+    {
+      "name": "pot-pink",
+      "mesh": "pot-pink-surface",
+      "kind": "part",
+      "triangles": 158
+    },
+    {
+      "name": "flowers-pink",
+      "mesh": "flowers-pink-surface",
+      "kind": "part",
+      "triangles": 92
+    },
+    {
+      "name": "planter-yellow",
+      "mesh": "planter-yellow-surface",
+      "kind": "part",
+      "triangles": 158
+    },
+    {
+      "name": "flowers-yellow",
+      "mesh": "flowers-yellow-surface",
+      "kind": "part",
+      "triangles": 288
+    },
+    {
+      "name": "pot-purple",
+      "mesh": "pot-purple-surface",
+      "kind": "part",
+      "triangles": 158
+    },
+    {
+      "name": "flowers-purple",
+      "mesh": "flowers-purple-surface",
+      "kind": "part",
+      "triangles": 92
+    },
+    {
+      "name": "pot-white",
+      "mesh": "pot-white-surface",
+      "kind": "part",
+      "triangles": 160
+    },
+    {
+      "name": "flowers-white",
+      "mesh": "flowers-white-surface",
+      "kind": "part",
+      "triangles": 102
+    },
+    {
+      "name": "planter-side-front",
+      "mesh": "planter-side-front-surface",
+      "kind": "part",
+      "triangles": 128
+    },
+    {
+      "name": "flowers-side-front",
+      "mesh": "flowers-side-front-surface",
+      "kind": "part",
+      "triangles": 194
+    },
+    {
+      "name": "planter-side-middle",
+      "mesh": "planter-side-middle-surface",
+      "kind": "part",
+      "triangles": 126
+    },
+    {
+      "name": "flowers-side-middle",
+      "mesh": "flowers-side-middle-surface",
+      "kind": "part",
+      "triangles": 194
+    },
+    {
+      "name": "planter-side-back",
+      "mesh": "planter-side-back-surface",
+      "kind": "part",
+      "triangles": 128
+    },
+    {
+      "name": "flowers-side-back",
+      "mesh": "flowers-side-back-surface",
+      "kind": "part",
+      "triangles": 194
+    },
+    {
+      "name": "display-flowers",
+      "mesh": "display-flowers-surface",
+      "kind": "part",
+      "triangles": 284
+    },
+    {
+      "name": "side-flowers",
+      "mesh": "side-flowers-surface",
+      "kind": "part",
+      "triangles": 190
+    }
+  ],
+  "unnamedMeshes": 0,
+  "runtime": {
+    "parts": [
+      {
+        "id": "plinth",
+        "meshName": "plinth-surface",
+        "pivotNode": "plinth",
+        "pivot": [
+          0.1499999761581421,
+          0,
+          0.1499999761581421
+        ],
+        "collider": {
+          "shape": "box",
+          "center": [
+            0,
+            0.07500000298023224,
+            0
+          ],
+          "size": [
+            5.1000001430511475,
+            0.15000000596046448,
+            4.200000047683716
+          ],
+          "intent": "component selection proxy; occupancy remains authoritative"
+        },
+        "constructionPhases": [
+          0
+        ],
+        "destructionGroup": "plinth"
+      },
+      {
+        "id": "building",
+        "meshName": "building-surface",
+        "pivotNode": "building",
+        "pivot": [
+          0.1499999761581421,
+          0.15000000596046448,
+          0.1499999761581421
+        ],
+        "collider": {
+          "shape": "box",
+          "center": [
+            0,
+            1.7999999970197678,
+            0
+          ],
+          "size": [
+            5.1000001430511475,
+            3.5999999940395355,
+            4.200000047683716
+          ],
+          "intent": "component selection proxy; occupancy remains authoritative"
+        },
+        "constructionPhases": [
+          1
+        ],
+        "destructionGroup": "building"
+      },
+      {
+        "id": "awning",
+        "meshName": "awning-surface",
+        "pivotNode": "awning",
+        "pivot": [
+          -0.8249999582767487,
+          3,
+          2.549999952316284
+        ],
+        "collider": {
+          "shape": "box",
+          "center": [
+            0,
+            0.2250000238418579,
+            0
+          ],
+          "size": [
+            2.5499998927116394,
+            0.4500000476837158,
+            0.5999999046325684
+          ],
+          "intent": "component selection proxy; occupancy remains authoritative"
+        },
+        "constructionPhases": [
+          3
+        ],
+        "destructionGroup": "awning"
+      },
+      {
+        "id": "roof",
+        "meshName": "roof-surface",
+        "pivotNode": "roof",
+        "pivot": [
+          0.15000009536743164,
+          3.75,
+          0.1499999761581421
+        ],
+        "collider": {
+          "shape": "box",
+          "center": [
+            0,
+            0.9749999046325684,
+            0
+          ],
+          "size": [
+            6,
+            1.9499998092651367,
+            5.1000001430511475
+          ],
+          "intent": "component selection proxy; occupancy remains authoritative"
+        },
+        "constructionPhases": [
+          2
+        ],
+        "destructionGroup": "roof"
+      },
+      {
+        "id": "gable",
+        "meshName": "gable-surface",
+        "pivotNode": "gable",
+        "pivot": [
+          0.1499999761581421,
+          3.75,
+          0.07499992847442627
+        ],
+        "collider": {
+          "shape": "box",
+          "center": [
+            0,
+            0.6749999523162842,
+            0
+          ],
+          "size": [
+            5.1000001430511475,
+            1.3499999046325684,
+            4.049999952316284
+          ],
+          "intent": "component selection proxy; occupancy remains authoritative"
+        },
+        "constructionPhases": [
+          1
+        ],
+        "destructionGroup": "gable"
+      },
+      {
+        "id": "fascia",
+        "meshName": "fascia-surface",
+        "pivotNode": "fascia",
+        "pivot": [
+          0.1499999761581421,
+          3.5999999046325684,
+          0.15000009536743164
+        ],
+        "collider": {
+          "shape": "box",
+          "center": [
+            0,
+            0.07500004768371582,
+            0
+          ],
+          "size": [
+            5.3999998569488525,
+            0.15000009536743164,
+            4.5
+          ],
+          "intent": "component selection proxy; occupancy remains authoritative"
+        },
+        "constructionPhases": [
+          2
+        ],
+        "destructionGroup": "fascia"
+      },
+      {
+        "id": "display-frame",
+        "meshName": "display-frame-surface",
+        "pivotNode": "display-frame",
+        "pivot": [
+          -0.8250000178813934,
+          0.75,
+          2.1750000715255737
+        ],
+        "collider": {
+          "shape": "box",
+          "center": [
+            0,
+            1.0499999523162842,
+            0
+          ],
+          "size": [
+            2.2500000596046448,
+            2.0999999046325684,
+            0.4500000476837158
+          ],
+          "intent": "component selection proxy; occupancy remains authoritative"
+        },
+        "constructionPhases": [
+          3
+        ],
+        "destructionGroup": "display-frame"
+      },
+      {
+        "id": "display-glass",
+        "meshName": "display-glass-surface",
+        "pivotNode": "display-glass",
+        "pivot": [
+          -0.8249999731779099,
+          0.8999999761581421,
+          2.024999976158142
+        ],
+        "collider": {
+          "shape": "box",
+          "center": [
+            0,
+            0.9000000357627869,
+            0
+          ],
+          "size": [
+            1.9499999582767487,
+            1.8000000715255737,
+            0.14999985694885254
+          ],
+          "intent": "component selection proxy; occupancy remains authoritative"
+        },
+        "constructionPhases": [
+          3
+        ],
+        "destructionGroup": "display-glass"
+      },
+      {
+        "id": "door-frame",
+        "meshName": "door-frame-surface",
+        "pivotNode": "door-frame",
+        "pivot": [
+          1.5,
+          0.15000000596046448,
+          2.25
+        ],
+        "collider": {
+          "shape": "box",
+          "center": [
+            0,
+            1.4249999970197678,
+            0
+          ],
+          "size": [
+            1.5,
+            2.8499999940395355,
+            0.3000001907348633
+          ],
+          "intent": "component selection proxy; occupancy remains authoritative"
+        },
+        "constructionPhases": [
+          3
+        ],
+        "destructionGroup": "door-frame"
+      },
+      {
+        "id": "door",
+        "meshName": "door-surface",
+        "pivotNode": "door",
+        "pivot": [
+          0.8999999761581421,
+          0.15000000596046448,
+          2.174999952316284
+        ],
+        "collider": {
+          "shape": "box",
+          "center": [
+            0.5999999642372131,
+            1.349999949336052,
+            0
+          ],
+          "size": [
+            1.1999999284744263,
+            2.699999898672104,
+            0.15000009536743164
+          ],
+          "intent": "component selection proxy; occupancy remains authoritative"
+        },
+        "constructionPhases": [
+          3
+        ],
+        "destructionGroup": "door"
+      },
+      {
+        "id": "door-glass",
+        "meshName": "door-glass-surface",
+        "pivotNode": "door-glass",
+        "pivot": [
+          1.5,
+          1.7999999523162842,
+          2.174999952316284
+        ],
+        "collider": {
+          "shape": "box",
+          "center": [
+            0,
+            0.375,
+            0
+          ],
+          "size": [
+            0.9000000953674316,
+            0.75,
+            0.15000009536743164
+          ],
+          "intent": "component selection proxy; occupancy remains authoritative"
+        },
+        "constructionPhases": [
+          3
+        ],
+        "destructionGroup": "door-glass"
+      },
+      {
+        "id": "handle",
+        "meshName": "handle-surface",
+        "pivotNode": "handle",
+        "pivot": [
+          1.875,
+          1.5,
+          2.325000047683716
+        ],
+        "collider": {
+          "shape": "box",
+          "center": [
+            0,
+            0.07499998807907104,
+            0
+          ],
+          "size": [
+            0.15000009536743164,
+            0.1499999761581421,
+            0.15000009536743164
+          ],
+          "intent": "component selection proxy; occupancy remains authoritative"
+        },
+        "constructionPhases": [
+          3
+        ],
+        "destructionGroup": "handle"
+      },
+      {
+        "id": "side-frame",
+        "meshName": "side-frame-surface",
+        "pivotNode": "side-frame",
+        "pivot": [
+          2.850000023841858,
+          1.0499999523162842,
+          0
+        ],
+        "collider": {
+          "shape": "box",
+          "center": [
+            0,
+            1.2000000476837158,
+            0
+          ],
+          "size": [
+            0.6000001430511475,
+            2.4000000953674316,
+            1.7999999523162842
+          ],
+          "intent": "component selection proxy; occupancy remains authoritative"
+        },
+        "constructionPhases": [
+          3
+        ],
+        "destructionGroup": "side-frame"
+      },
+      {
+        "id": "side-glass",
+        "meshName": "side-glass-surface",
+        "pivotNode": "side-glass",
+        "pivot": [
+          2.625,
+          1.350000023841858,
+          0
+        ],
+        "collider": {
+          "shape": "box",
+          "center": [
+            0,
+            0.824999988079071,
+            0
+          ],
+          "size": [
+            0.15000009536743164,
+            1.649999976158142,
+            1.2000000476837158
+          ],
+          "intent": "component selection proxy; occupancy remains authoritative"
+        },
+        "constructionPhases": [
+          3
+        ],
+        "destructionGroup": "side-glass"
+      },
+      {
+        "id": "steps",
+        "meshName": "steps-surface",
+        "pivotNode": "steps",
+        "pivot": [
+          1.5,
+          0,
+          2.700000047683716
+        ],
+        "collider": {
+          "shape": "box",
+          "center": [
+            0,
+            0.07500000298023224,
+            0
+          ],
+          "size": [
+            1.5,
+            0.15000000596046448,
+            0.9000000953674316
+          ],
+          "intent": "component selection proxy; occupancy remains authoritative"
+        },
+        "constructionPhases": [
+          0
+        ],
+        "destructionGroup": "steps"
+      },
+      {
+        "id": "greenhouse-frame",
+        "meshName": "greenhouse-frame-surface",
+        "pivotNode": "greenhouse-frame",
+        "pivot": [
+          -3.6000001430511475,
+          0,
+          1.4250000268220901
+        ],
+        "collider": {
+          "shape": "box",
+          "center": [
+            0,
+            1.350000023841858,
+            0
+          ],
+          "size": [
+            2.4000000953674316,
+            2.700000047683716,
+            2.5500000417232513
+          ],
+          "intent": "component selection proxy; occupancy remains authoritative"
+        },
+        "constructionPhases": [
+          1,
+          2
+        ],
+        "destructionGroup": "greenhouse-frame"
+      },
+      {
+        "id": "greenhouse-glass",
+        "meshName": "greenhouse-glass-surface",
+        "pivotNode": "greenhouse-glass",
+        "pivot": [
+          -3.6000001430511475,
+          0.30000001192092896,
+          1.4250000268220901
+        ],
+        "collider": {
+          "shape": "box",
+          "center": [
+            0,
+            1.2000000178813934,
+            0
+          ],
+          "size": [
+            2.4000000953674316,
+            2.400000035762787,
+            2.5500000417232513
+          ],
+          "intent": "component selection proxy; occupancy remains authoritative"
+        },
+        "constructionPhases": [
+          3
+        ],
+        "destructionGroup": "greenhouse-glass"
+      },
+      {
+        "id": "planter-left",
+        "meshName": "planter-left-surface",
+        "pivotNode": "planter-left",
+        "pivot": [
+          -3.899999976158142,
+          0,
+          3.299999952316284
+        ],
+        "collider": {
+          "shape": "box",
+          "center": [
+            0,
+            0.30000001192092896,
+            0
+          ],
+          "size": [
+            2.3999998569488525,
+            0.6000000238418579,
+            0.9000000953674316
+          ],
+          "intent": "component selection proxy; occupancy remains authoritative"
+        },
+        "constructionPhases": [
+          4
+        ],
+        "destructionGroup": "planter-left"
+      },
+      {
+        "id": "flowers-left",
+        "meshName": "flowers-left-surface",
+        "pivotNode": "flowers-left",
+        "pivot": [
+          -3.8249999284744263,
+          0.44999998807907104,
+          3.375
+        ],
+        "collider": {
+          "shape": "box",
+          "center": [
+            0,
+            0.5250000059604645,
+            0
+          ],
+          "size": [
+            2.249999761581421,
+            1.050000011920929,
+            0.4499998092651367
+          ],
+          "intent": "component selection proxy; occupancy remains authoritative"
+        },
+        "constructionPhases": [
+          4
+        ],
+        "destructionGroup": "flowers-left"
+      },
+      {
+        "id": "pot-pink",
+        "meshName": "pot-pink-surface",
+        "pivotNode": "pot-pink",
+        "pivot": [
+          -2.174999952316284,
+          0,
+          3.6750000715255737
+        ],
+        "collider": {
+          "shape": "box",
+          "center": [
+            0,
+            0.375,
+            0
+          ],
+          "size": [
+            0.75,
+            0.75,
+            0.7500002384185791
+          ],
+          "intent": "component selection proxy; occupancy remains authoritative"
+        },
+        "constructionPhases": [
+          4
+        ],
+        "destructionGroup": "pot-pink"
+      },
+      {
+        "id": "flowers-pink",
+        "meshName": "flowers-pink-surface",
+        "pivotNode": "flowers-pink",
+        "pivot": [
+          -2.1750000715255737,
+          0.6000000238418579,
+          3.825000047683716
+        ],
+        "collider": {
+          "shape": "box",
+          "center": [
+            0,
+            0.44999998807907104,
+            0
+          ],
+          "size": [
+            0.4500000476837158,
+            0.8999999761581421,
+            0.4500002861022949
+          ],
+          "intent": "component selection proxy; occupancy remains authoritative"
+        },
+        "constructionPhases": [
+          4
+        ],
+        "destructionGroup": "flowers-pink"
+      },
+      {
+        "id": "planter-yellow",
+        "meshName": "planter-yellow-surface",
+        "pivotNode": "planter-yellow",
+        "pivot": [
+          -0.5250000059604645,
+          0,
+          3.899999976158142
+        ],
+        "collider": {
+          "shape": "box",
+          "center": [
+            0,
+            0.30000001192092896,
+            0
+          ],
+          "size": [
+            1.6500000357627869,
+            0.6000000238418579,
+            0.8999998569488525
+          ],
+          "intent": "component selection proxy; occupancy remains authoritative"
+        },
+        "constructionPhases": [
+          4
+        ],
+        "destructionGroup": "planter-yellow"
+      },
+      {
+        "id": "flowers-yellow",
+        "meshName": "flowers-yellow-surface",
+        "pivotNode": "flowers-yellow",
+        "pivot": [
+          -0.45000001788139343,
+          0.44999998807907104,
+          3.9749999046325684
+        ],
+        "collider": {
+          "shape": "box",
+          "center": [
+            0,
+            0.5250000059604645,
+            0
+          ],
+          "size": [
+            1.5000000596046448,
+            1.050000011920929,
+            0.4499998092651367
+          ],
+          "intent": "component selection proxy; occupancy remains authoritative"
+        },
+        "constructionPhases": [
+          4
+        ],
+        "destructionGroup": "flowers-yellow"
+      },
+      {
+        "id": "pot-purple",
+        "meshName": "pot-purple-surface",
+        "pivotNode": "pot-purple",
+        "pivot": [
+          2.924999952316284,
+          0,
+          3.8249999284744263
+        ],
+        "collider": {
+          "shape": "box",
+          "center": [
+            0,
+            0.375,
+            0
+          ],
+          "size": [
+            0.75,
+            0.75,
+            0.7499997615814209
+          ],
+          "intent": "component selection proxy; occupancy remains authoritative"
+        },
+        "constructionPhases": [
+          4
+        ],
+        "destructionGroup": "pot-purple"
+      },
+      {
+        "id": "flowers-purple",
+        "meshName": "flowers-purple-surface",
+        "pivotNode": "flowers-purple",
+        "pivot": [
+          2.9250000715255737,
+          0.6000000238418579,
+          3.9749999046325684
+        ],
+        "collider": {
+          "shape": "box",
+          "center": [
+            0,
+            0.44999998807907104,
+            0
+          ],
+          "size": [
+            0.4500000476837158,
+            0.8999999761581421,
+            0.4499998092651367
+          ],
+          "intent": "component selection proxy; occupancy remains authoritative"
+        },
+        "constructionPhases": [
+          4
+        ],
+        "destructionGroup": "flowers-purple"
+      },
+      {
+        "id": "pot-white",
+        "meshName": "pot-white-surface",
+        "pivotNode": "pot-white",
+        "pivot": [
+          3.9749999046325684,
+          0,
+          3.6750000715255737
+        ],
+        "collider": {
+          "shape": "box",
+          "center": [
+            0,
+            0.375,
+            0
+          ],
+          "size": [
+            0.75,
+            0.75,
+            0.7500002384185791
+          ],
+          "intent": "component selection proxy; occupancy remains authoritative"
+        },
+        "constructionPhases": [
+          4
+        ],
+        "destructionGroup": "pot-white"
+      },
+      {
+        "id": "flowers-white",
+        "meshName": "flowers-white-surface",
+        "pivotNode": "flowers-white",
+        "pivot": [
+          3.9749999046325684,
+          0.6000000238418579,
+          3.825000047683716
+        ],
+        "collider": {
+          "shape": "box",
+          "center": [
+            0,
+            0.5999999642372131,
+            0
+          ],
+          "size": [
+            0.4499998092651367,
+            1.1999999284744263,
+            0.4500002861022949
+          ],
+          "intent": "component selection proxy; occupancy remains authoritative"
+        },
+        "constructionPhases": [
+          4
+        ],
+        "destructionGroup": "flowers-white"
+      },
+      {
+        "id": "planter-side-front",
+        "meshName": "planter-side-front-surface",
+        "pivotNode": "planter-side-front",
+        "pivot": [
+          4.050000071525574,
+          0,
+          1.9500000476837158
+        ],
+        "collider": {
+          "shape": "box",
+          "center": [
+            0,
+            0.375,
+            0
+          ],
+          "size": [
+            1.2000000476837158,
+            0.75,
+            0.9000000953674316
+          ],
+          "intent": "component selection proxy; occupancy remains authoritative"
+        },
+        "constructionPhases": [
+          4
+        ],
+        "destructionGroup": "planter-side-front"
+      },
+      {
+        "id": "flowers-side-front",
+        "meshName": "flowers-side-front-surface",
+        "pivotNode": "flowers-side-front",
+        "pivot": [
+          4.125,
+          0.6000000238418579,
+          2.024999976158142
+        ],
+        "collider": {
+          "shape": "box",
+          "center": [
+            0,
+            0.5249999761581421,
+            0
+          ],
+          "size": [
+            1.0500001907348633,
+            1.0499999523162842,
+            0.4500000476837158
+          ],
+          "intent": "component selection proxy; occupancy remains authoritative"
+        },
+        "constructionPhases": [
+          4
+        ],
+        "destructionGroup": "flowers-side-front"
+      },
+      {
+        "id": "planter-side-middle",
+        "meshName": "planter-side-middle-surface",
+        "pivotNode": "planter-side-middle",
+        "pivot": [
+          4.050000071525574,
+          0,
+          0.5999999791383743
+        ],
+        "collider": {
+          "shape": "box",
+          "center": [
+            0,
+            0.375,
+            0
+          ],
+          "size": [
+            1.2000000476837158,
+            0.75,
+            0.8999999463558197
+          ],
+          "intent": "component selection proxy; occupancy remains authoritative"
+        },
+        "constructionPhases": [
+          4
+        ],
+        "destructionGroup": "planter-side-middle"
+      },
+      {
+        "id": "flowers-side-middle",
+        "meshName": "flowers-side-middle-surface",
+        "pivotNode": "flowers-side-middle",
+        "pivot": [
+          4.125,
+          0.6000000238418579,
+          0.6749999821186066
+        ],
+        "collider": {
+          "shape": "box",
+          "center": [
+            0,
+            0.5249999761581421,
+            0
+          ],
+          "size": [
+            1.0500001907348633,
+            1.0499999523162842,
+            0.44999998807907104
+          ],
+          "intent": "component selection proxy; occupancy remains authoritative"
+        },
+        "constructionPhases": [
+          4
+        ],
+        "destructionGroup": "flowers-side-middle"
+      },
+      {
+        "id": "planter-side-back",
+        "meshName": "planter-side-back-surface",
+        "pivotNode": "planter-side-back",
+        "pivot": [
+          4.050000071525574,
+          0,
+          -0.7500000298023224
+        ],
+        "collider": {
+          "shape": "box",
+          "center": [
+            0,
+            0.375,
+            0
+          ],
+          "size": [
+            1.2000000476837158,
+            0.75,
+            0.9000000357627869
+          ],
+          "intent": "component selection proxy; occupancy remains authoritative"
+        },
+        "constructionPhases": [
+          4
+        ],
+        "destructionGroup": "planter-side-back"
+      },
+      {
+        "id": "flowers-side-back",
+        "meshName": "flowers-side-back-surface",
+        "pivotNode": "flowers-side-back",
+        "pivot": [
+          4.125,
+          0.6000000238418579,
+          -0.6749999821186066
+        ],
+        "collider": {
+          "shape": "box",
+          "center": [
+            0,
+            0.5249999761581421,
+            0
+          ],
+          "size": [
+            1.0500001907348633,
+            1.0499999523162842,
+            0.44999998807907104
+          ],
+          "intent": "component selection proxy; occupancy remains authoritative"
+        },
+        "constructionPhases": [
+          4
+        ],
+        "destructionGroup": "flowers-side-back"
+      },
+      {
+        "id": "display-flowers",
+        "meshName": "display-flowers-surface",
+        "pivotNode": "display-flowers",
+        "pivot": [
+          -0.824999988079071,
+          0.8999999761581421,
+          2.3249999284744263
+        ],
+        "collider": {
+          "shape": "box",
+          "center": [
+            0,
+            0.5999999642372131,
+            0
+          ],
+          "size": [
+            1.649999976158142,
+            1.1999999284744263,
+            0.4500000476837158
+          ],
+          "intent": "component selection proxy; occupancy remains authoritative"
+        },
+        "constructionPhases": [
+          4
+        ],
+        "destructionGroup": "display-flowers"
+      },
+      {
+        "id": "side-flowers",
+        "meshName": "side-flowers-surface",
+        "pivotNode": "side-flowers",
+        "pivot": [
+          2.9250000715255737,
+          1.350000023841858,
+          0.07500001788139343
+        ],
+        "collider": {
+          "shape": "box",
+          "center": [
+            0,
+            0.5999999642372131,
+            0
+          ],
+          "size": [
+            0.4500000476837158,
+            1.1999999284744263,
+            1.050000011920929
+          ],
+          "intent": "component selection proxy; occupancy remains authoritative"
+        },
+        "constructionPhases": [
+          4
+        ],
+        "destructionGroup": "side-flowers"
+      }
+    ],
+    "sockets": [
+      {
+        "id": "entrance",
+        "parent": "door",
+        "localPosition": [
+          0.30000002384185787,
+          0.1499999940395355,
+          1.275000047683716
+        ]
+      }
+    ],
+    "stage": "individual-florist-v1",
+    "construction": "integer 15cm cubes; not yet connected to walk progress"
+  }
+}

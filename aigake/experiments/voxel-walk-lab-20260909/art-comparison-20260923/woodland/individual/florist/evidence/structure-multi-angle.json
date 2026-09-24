@@ -1,0 +1,20 @@
+{
+  "referenceAreaFraction": 0.6445684682760094,
+  "angles": [
+    {
+      "path": "evidence\\florist-structure-front-mask.png",
+      "areaFraction": 0.5345474613686534,
+      "ratio": 0.8293105972099085,
+      "degenerate": false
+    },
+    {
+      "path": "evidence\\florist-structure-right-mask.png",
+      "areaFraction": 0.3092501602221748,
+      "ratio": 0.4797786045124245,
+      "degenerate": false
+    }
+  ],
+  "degenerate": false,
+  "collapseRatio": 0.15,
+  "note": "deterministic; zero token; a flat-plane-faking-a-volume collapses in silhouette area when orbited"
+}

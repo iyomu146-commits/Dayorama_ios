@@ -1,0 +1,24 @@
+{
+  "cellCount": 40944,
+  "modelTriangles": 3836,
+  "assembledPartCount": 13,
+  "afterWarmupRender": {
+    "frame": 87,
+    "calls": 14,
+    "triangles": 3838,
+    "points": 0,
+    "lines": 0
+  },
+  "memory": {
+    "geometries": 27,
+    "textures": 4
+  },
+  "renderPolicy": "on input; no animation loop",
+  "shadowPolicy": "update on light or assembly changes",
+  "viewport": [
+    906,
+    620
+  ],
+  "dpr": 1,
+  "phonePerformance": "not measured"
+}

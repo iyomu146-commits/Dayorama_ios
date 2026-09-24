@@ -1,7 +1,8 @@
 export const CELL=.15;
 export const PALETTE={clay:'#b9b5a5',masonry:'#627985',tile:'#6d626c',stone:'#d8ceb1',wood:'#936637',glass:'#426b63',paper:'#c4ab7a',leaf:'#708b47',pot:'#a77046',metal:'#8b794d',lamp:'#e6d9a9'};
 Object.assign(PALETTE,{masonryLight:'#75838b',masonryBlue:'#587185',masonryDeep:'#4e6577',masonryWarm:'#8c8e83',tileLight:'#80717a',tileWarm:'#8e7e80',tileDeep:'#625963',tileJoint:'#665e68',stoneLight:'#e2d5b4',stoneDeep:'#b9b29b',woodLight:'#a67b48',woodDeep:'#765233',glassLight:'#597c71',glassDeep:'#345e58',paperCream:'#d1bd89',paperGreen:'#709080',paperRed:'#a8694e',paperBlue:'#668284',paperOchre:'#bc964f',leafLight:'#8f9f55',leafDeep:'#59773e',potDeep:'#925e3e'});
-export function createBooksCells({stage='optimization'}={}){
+export function createBooksCells({stage='no-lamp'}={}){
+ if(stage==='no-lamp')return new Map([...createDetailedCells('optimization')].filter(([,c])=>!c.part.startsWith('lamp-')));
  if(stage!=='blockout')return createDetailedCells(stage);
  const cells=new Map(),box=(part,x,y,z,w,h,d)=>{for(let a=x;a<x+w;a++)for(let b=Math.round(y*1.12);b<Math.round((y+h)*1.12);b++)for(let c=z;c<z+d;c++)cells.set(`${a},${b},${c}`,{x:a,y:b,z:c,color:'clay',part,phase:0});};
  box('building',-20,0,-14,40,25,28);

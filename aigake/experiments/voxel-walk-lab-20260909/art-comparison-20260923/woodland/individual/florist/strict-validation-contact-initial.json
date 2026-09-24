@@ -1,0 +1,15 @@
+{
+  "ok": false,
+  "errors": [
+    "strict quality failure: lighting-pass needs contact shadow or ground shadow behavior"
+  ],
+  "warnings": [
+    "quality: lighting-pass needs contact shadow or ground shadow behavior"
+  ],
+  "summary": {
+    "targetName": "Woodland florist",
+    "suitability": "conditional",
+    "components": 35,
+    "materials": 9
+  }
+}

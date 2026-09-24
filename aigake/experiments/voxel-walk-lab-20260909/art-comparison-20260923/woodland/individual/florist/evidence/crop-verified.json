@@ -1,0 +1,12 @@
+{
+  "passed": true,
+  "rect": [
+    267,
+    410,
+    453,
+    310
+  ],
+  "sourceSha256": "263e2d864a796cbfc8732acbdd61b8397142d284d269a413983f036297f4b856",
+  "cropSha256": "e54041b375c9edd4c8463253572867205bad167afbe91f5719ca4d3426cde5f2",
+  "method": "Pixel-for-pixel RGB equality to an integer crop of the original full town; no regeneration."
+}

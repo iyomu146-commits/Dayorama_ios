@@ -1,0 +1,18 @@
+{
+  "stage": "interaction",
+  "passed": true,
+  "cellCount": 15761,
+  "checks": [
+    "Unique 15cm integer cells with known colors",
+    "Every cell face-connected to ground",
+    "Every construction phase is grounded",
+    "Main roof fully covers walls without gaps",
+    "Front entry corridor is unobstructed",
+    "Glazed lean-to roof exposes its glass instead of a solid covering",
+    "Front, side, door and greenhouse panes have no vertical bars",
+    "Each flower group is rooted in its own container or window sill",
+    "All 35 individually specified parts are present",
+    "Saving retains coordinates, materials, parts and construction phases",
+    "21 blooms each have a raised center, four petals and rooted stems"
+  ]
+}

@@ -1,0 +1,160 @@
+{
+  "passed": true,
+  "checks": {
+    "silhouetteIoU": 0.8568,
+    "aspectRatioDelta": 0.0136,
+    "scaleDelta": 0.0045,
+    "bilateralSymmetryError": 0.173,
+    "colorDelta": {
+      "checked": 35,
+      "maxDeltaE": 34.5,
+      "perComponent": [
+        {
+          "componentId": null,
+          "deltaE": 34.5
+        },
+        {
+          "componentId": null,
+          "deltaE": 23.49
+        },
+        {
+          "componentId": null,
+          "deltaE": 34.5
+        },
+        {
+          "componentId": null,
+          "deltaE": 12.54
+        },
+        {
+          "componentId": null,
+          "deltaE": 30.48
+        },
+        {
+          "componentId": null,
+          "deltaE": 23.49
+        },
+        {
+          "componentId": null,
+          "deltaE": 30.48
+        },
+        {
+          "componentId": null,
+          "deltaE": 21.04
+        },
+        {
+          "componentId": null,
+          "deltaE": 28.5
+        },
+        {
+          "componentId": null,
+          "deltaE": 30.48
+        },
+        {
+          "componentId": null,
+          "deltaE": 30.48
+        },
+        {
+          "componentId": null,
+          "deltaE": 21.04
+        },
+        {
+          "componentId": null,
+          "deltaE": 22.28
+        },
+        {
+          "componentId": null,
+          "deltaE": 30.48
+        },
+        {
+          "componentId": null,
+          "deltaE": 21.04
+        },
+        {
+          "componentId": null,
+          "deltaE": 28.5
+        },
+        {
+          "componentId": null,
+          "deltaE": 12.54
+        },
+        {
+          "componentId": null,
+          "deltaE": 21.04
+        },
+        {
+          "componentId": null,
+          "deltaE": 30.48
+        },
+        {
+          "componentId": null,
+          "deltaE": 28.5
+        },
+        {
+          "componentId": null,
+          "deltaE": 31.89
+        },
+        {
+          "componentId": null,
+          "deltaE": 28.5
+        },
+        {
+          "componentId": null,
+          "deltaE": 30.48
+        },
+        {
+          "componentId": null,
+          "deltaE": 28.5
+        },
+        {
+          "componentId": null,
+          "deltaE": 31.89
+        },
+        {
+          "componentId": null,
+          "deltaE": 28.5
+        },
+        {
+          "componentId": null,
+          "deltaE": 31.89
+        },
+        {
+          "componentId": null,
+          "deltaE": 28.5
+        },
+        {
+          "componentId": null,
+          "deltaE": 30.48
+        },
+        {
+          "componentId": null,
+          "deltaE": 28.5
+        },
+        {
+          "componentId": null,
+          "deltaE": 30.48
+        },
+        {
+          "componentId": null,
+          "deltaE": 28.5
+        },
+        {
+          "componentId": null,
+          "deltaE": 30.48
+        },
+        {
+          "componentId": null,
+          "deltaE": 28.5
+        },
+        {
+          "componentId": null,
+          "deltaE": 12.54
+        }
+      ],
+      "gated": false
+    }
+  },
+  "failures": [],
+  "maskWarnings": [],
+  "renderHash": "df5ccd86415e5c46",
+  "passId": "structural-pass"
+}
