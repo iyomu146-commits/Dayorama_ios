@@ -19,6 +19,12 @@ var boot: int=Time.get_ticks_usec()
 var qa_mode: bool=false
 var fixed_buffer:=Vector2i.ZERO
 var buffer_popup: ConfirmationDialog
+var story: StoryPlayer
+var story_bar: HBoxContainer
+var base_bar: HBoxContainer
+var story_position: HSlider
+var story_play: Button
+var story_clock: float=0.0
 
 func _ready() -> void:
 	if '--release-smoke' in OS.get_cmdline_user_args():
@@ -65,12 +71,26 @@ func _ready() -> void:
 	add_child(viewport); stage.texture=viewport.get_texture()
 	var footer:=VBoxContainer.new(); footer.custom_minimum_size.y=82; box.add_child(footer)
 	var bar:=HBoxContainer.new(); footer.add_child(bar)
+	base_bar=bar
 	button(bar,'FPS 3 x 30s',func(): bench.fps())
 	button(bar,'Edit 10 + 10',func(): bench.edit_test())
 	button(bar,'Idle 10 min',func(): bench.idle())
 	button(bar,'Save JSON',func(): bench.save(); set_status('Saved: user://bench-report.json'))
 	button(bar,'Stop',func(): bench.cancelled=true)
 	button(bar,'Buffer',buffer_dialog)
+	button(bar,'Story',open_story)
+	story_bar=HBoxContainer.new();footer.add_child(story_bar);story_bar.hide()
+	story_play=Button.new();story_play.text='Pause';story_play.pressed.connect(func():
+		if story.playing: story.pause();story_play.text='Play'
+		else: story.resume();story_play.text='Pause')
+	story_bar.add_child(story_play)
+	button(story_bar,'Replay',func(): story.start();story_play.text='Pause')
+	story_position=HSlider.new();story_position.min_value=0;story_position.max_value=32;story_position.step=.02;story_position.size_flags_horizontal=Control.SIZE_EXPAND_FILL;story_position.custom_minimum_size.x=160
+	story_position.value_changed.connect(func(value):
+		if story and story.active: story.pause();story.seek(value);story_play.text='Play')
+	story_bar.add_child(story_position)
+	button(story_bar,'Sound',func(): story.muted=not story.muted;story.silence();set_status('Muted' if story.muted else 'Sound on'))
+	button(story_bar,'Back',func(): story.leave();story_bar.hide();base_bar.show())
 	status=Label.new(); status.text='Loading canonical tile002…'; footer.add_child(status)
 	await get_tree().process_frame
 	world=VoxelWorld.new()
@@ -91,6 +111,35 @@ func _ready() -> void:
 	bench.report.startup={'readyFromScriptMs':float(Time.get_ticks_usec()-boot)/1000.0,'scope':'from main script construction to first submitted scene; adb launch separately','initialMemory':NativeMetrics.snapshot()}
 	bench.save()
 	if qa_mode: run_qa()
+	if '--story-run-qa' in OS.get_cmdline_user_args():
+		await open_story()
+		if not story: get_tree().quit(33);return
+		var elapsed: int=0
+		while story.time<32.0 and elapsed<45:
+			await get_tree().create_timer(1).timeout
+			elapsed+=1
+		var result: Dictionary=bench.report.get('story',{})
+		result.desktopOnly=true
+		FileAccess.open('res://reports/story-run-qa.json',FileAccess.WRITE).store_string(JSON.stringify(result,'  '))
+		print('STORY_RUN_QA '+JSON.stringify({'complete':result.get('continuousPlayback',false),'frames':story.frames.size(),'time':story.time}))
+		get_tree().quit(0 if result.get('continuousPlayback',false) else 34)
+	if '--story-qa' in OS.get_cmdline_user_args():
+		await open_story()
+		if not story: get_tree().quit(31);return
+		story.pause()
+		continuous=true;viewport.render_target_update_mode=SubViewport.UPDATE_ALWAYS;OS.low_processor_usage_mode=false
+		var states: Array=[]
+		for t in [0.0,8.0,16.0,20.5,22.8,26.5,28.0,32.0]:
+			story.seek(t)
+			await get_tree().create_timer(.15).timeout
+			if DisplayServer.get_name()!='headless': get_viewport().get_texture().get_image().save_png('res://reports/story-%04d.png' % int(t*10))
+			states.append(StoryPlayer.state(story.spec,t))
+		var data: Dictionary={'states':states,'prepareMs':story.prepare_ms,'sourceGridPreserved':world.grid_hash()==story.spec.sourceGridSha256,'instances':story.spec.instances.size()}
+		story.leave()
+		data.restored=world.grid_hash()==story.spec.sourceGridSha256
+		FileAccess.open('res://reports/story-qa.json',FileAccess.WRITE).store_string(JSON.stringify(data,'  '))
+		print('STORY_QA '+JSON.stringify({'passed':data.restored,'instances':data.instances}))
+		get_tree().quit(0 if data.restored else 32)
 	if '--bench-fps-edits' in OS.get_cmdline_user_args():
 		await get_tree().create_timer(3).timeout
 		await bench.fps()
@@ -102,6 +151,17 @@ func button(parent: Node,label: String,action: Callable) -> void:
 		if not town or (bench and bench.active and label!='Stop'): return
 		action.call())
 	parent.add_child(b)
+
+func open_story() -> void:
+	fixed_buffer=Vector2i(1280,720);stage.stretch_mode=TextureRect.STRETCH_KEEP_ASPECT_CENTERED;resize_stage()
+	if not story:
+		set_status('Preparing story...');await get_tree().process_frame
+		story=StoryPlayer.new(self)
+		if not story.prepare(): story=null;set_status('Story load failed');return
+	base_bar.hide();story_bar.show();story_play.text='Pause';story.start()
+
+func _process(_delta: float) -> void:
+	if story: story.tick()
 
 func buffer_dialog() -> void:
 	if bench.active: return
@@ -144,7 +204,7 @@ func post_draw() -> void:
 		draw_requested=false
 
 func stage_input(event: InputEvent) -> void:
-	if not town or qa_mode or (bench and bench.active): return
+	if not town or qa_mode or (bench and bench.active) or (story and story.active): return
 	# Scene touches are handled once in _input; keep emulation for native UI.
 	if event is InputEventMouse and event.device==-1: return
 	if event is InputEventMouseButton:
@@ -160,7 +220,7 @@ func stage_input(event: InputEvent) -> void:
 func _input(event: InputEvent) -> void:
 	# Control.gui_input is not a reliable multi-touch route. Capture scene touches
 	# at the root, while leaving toolbar touches for Godot's native Controls.
-	if not town or qa_mode or (bench and bench.active): return
+	if not town or qa_mode or (bench and bench.active) or (story and story.active): return
 	# Embedded modal windows cover the stage. Do not steal their touch events.
 	if (is_instance_valid(buffer_popup) and buffer_popup.visible) or palette_select.get_popup().visible:
 		pointers.clear()
@@ -227,6 +287,7 @@ func _notification(what: int) -> void:
 	if what==NOTIFICATION_APPLICATION_PAUSED or what==NOTIFICATION_WM_WINDOW_FOCUS_OUT:
 		pointers.clear()
 		if bench and bench.active: bench.cancelled=true
+		if story and story.playing: story.pause();story_play.text='Play'
 
 func run_qa() -> void:
 	await get_tree().create_timer(1.0).timeout

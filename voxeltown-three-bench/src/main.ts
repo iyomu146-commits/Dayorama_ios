@@ -1,13 +1,17 @@
 import './style.css';import {loadBundle,resolveBundle} from './world';import {TownScene} from './scene';import {Benchmark} from './bench';import {Bench,native,platform,snapshot} from './native';
+import {StoryPlayer} from './story';
 if(platform==='ios')document.documentElement.dataset.benchBuffer='1280x720';
 const app=document.querySelector<HTMLDivElement>('#app')!;
 app.innerHTML=`<header><strong>tile002</strong><span id="tag">Three.js / 15 cm</span><span id="stats"></span></header><main id="stage"><div id="town"></div><figure id="reference" hidden><img src="/reference/seihon2.png" alt="正本画像"><figcaption>正本画像</figcaption></figure></main><footer><div id="tools"><button data-mode="view" aria-pressed="true">見る</button><button data-mode="add">置く</button><button data-mode="remove">消す</button><button id="reset">初期視点</button><button id="compare">正本と並置</button><button id="panel">計測</button></div><output id="status">データを読込中</output></footer><dialog id="metrics"><div class="dialog-title"><strong>実機ベンチ</strong><button id="close">閉じる</button></div><p id="platform"></p><div class="actions"><button id="fps">描画 30秒 × 3</button><button id="edits">置く・消す 各10回</button><button id="idle">静止・電池 10分</button><button id="cancel">中止</button><button id="save">結果を保存</button></div><pre id="results">未計測</pre></dialog>`;
 const $=<T extends HTMLElement=HTMLElement>(s:string)=>document.querySelector<T>(s)!;
 let town:TownScene|undefined,bench:Benchmark|undefined,queued=0,dirty=true,mode='view';
+let story:StoryPlayer|undefined;
+const storyButton=document.createElement('button');storyButton.id='story';storyButton.textContent='建築と暮らし';$('#tools').append(storyButton);
+const storyBar=document.createElement('div');storyBar.id='storyBar';storyBar.hidden=true;storyBar.innerHTML='<button id="storyPlay">一時停止</button><button id="storyReplay">最初から</button><input id="storySeek" aria-label="再生位置" type="range" min="0" max="32" step="0.02" value="0"><button id="storyMute">音あり</button><button id="storyExit">戻る</button>';document.querySelector('footer')!.append(storyBar);
 const pageStart=performance.now();
 function status(s:string){$('#status').textContent=s;}
 function request(){dirty=true;if(!queued&&!document.hidden)queued=requestAnimationFrame(frame);}
-function frame(t:number){queued=0;if(document.hidden)return;bench?.frame?.(t);if(town&&(dirty||bench?.frame)){dirty=false;town.render();updateStats();}if(bench?.frame)queued=requestAnimationFrame(frame);}
+function frame(t:number){queued=0;if(document.hidden)return;bench?.frame?.(t);story?.tick(t);if(town&&(dirty||bench?.frame||story?.active)){dirty=false;town.render();updateStats();}if(bench?.frame||story?.playing)queued=requestAnimationFrame(frame);}
 function updateStats(){if(!town)return;const s=town.stats();$('#stats').textContent=`${s.resolvedChunks} chunks · ${(s.triangles/1000).toFixed(0)}k tris · ${s.drawCalls} calls`;}
 function showResult(){$('#results').textContent=JSON.stringify(bench?.report,(_k,v)=>Array.isArray(v)&&v.length>30?`[${v.length} samples]`:v,2);}
 function modeSet(value:string){mode=value;document.querySelectorAll<HTMLButtonElement>('[data-mode]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.mode===mode)));}
@@ -33,6 +37,7 @@ async function start(){
   canvas.addEventListener('webglcontextlost',e=>{e.preventDefault();bench!.abort();status('描画コンテキストを失いました。アプリを再起動して再計測してください。');});
   new ResizeObserver(()=>town?.resize()).observe($('#town'));
   (window as any).__bench={town,bench,request,status,ready:true};
+  (window as any).__story={open:openStory,get player(){return story;},seek:(t:number)=>{if(story){story.playing=false;story.seek(t);request();}}};
   if(native)await Bench.save({json:bench.json()});
   if(bench.report.device?.launchArguments?.includes('--bench-fps-edits')){
     await new Promise(r=>setTimeout(r,3000));await run(async()=>{await bench!.fps();await bench!.edits();});
@@ -45,6 +50,22 @@ const dialog=$<HTMLDialogElement>('#metrics');$('#panel').onclick=()=>{if(bench?
 function prepare(){dialog.close();$('#reference').hidden=true;$('#stage').classList.remove('pair');modeSet('view');town?.resize();}
 $('#fps').onclick=()=>{prepare();run(()=>bench!.fps());};$('#edits').onclick=()=>{prepare();run(()=>bench!.edits());};$('#idle').onclick=()=>{prepare();run(()=>bench!.idle());};$('#cancel').onclick=()=>{bench?.abort();dialog.close();};
 $('#save').onclick=()=>run(async()=>{if(!bench)return;const json=bench.json();if(native){status('保存: '+(await Bench.save({json})).path);}else{const u=URL.createObjectURL(new Blob([json],{type:'application/json'})),a=document.createElement('a');a.href=u;a.download='bench-report.json';a.click();setTimeout(()=>URL.revokeObjectURL(u),1000);}});
-document.addEventListener('visibilitychange',()=>{if(document.hidden){bench?.abort();if(queued)cancelAnimationFrame(queued);queued=0;}else request();});
+async function openStory(){
+ if(!town||!bench||bench.active)return;prepare();status('演出を準備中');storyButton.disabled=true;
+ document.documentElement.dataset.benchBuffer='1280x720';town.resize();
+ try{
+  if(!story){story=new StoryPlayer(town,s=>{status(`${s.phase} · ${s.n.toLocaleString()} / 40,540`);$<HTMLInputElement>('#storySeek').value=String(story!.time);},r=>{(bench!.report as any).story=r;$<HTMLButtonElement>('#storyPlay').textContent='再生';if(native)void Bench.save({json:bench!.json()});});const audioReady=story.unlockAudio().catch(()=>{});await story.load();await audioReady;}
+  try{await story.unlockAudio();}catch(e){console.warn('Audio unavailable',e);}
+  $('#tools').hidden=true;storyBar.hidden=false;story.start();if(native)await Bench.awake({enabled:true});request();
+ }catch(e){status('演出の準備に失敗: '+String(e));}finally{storyButton.disabled=false;}
+}
+storyButton.onclick=()=>void openStory();
+$('#storyPlay').onclick=()=>{if(!story)return;story.interrupted=true;story.playing=!story.playing;story.last=0;$('#storyPlay').textContent=story.playing?'一時停止':'再生';if(story.playing&&story.time>=story.spec.duration)story.start();if(!story.playing)story.silence();else void story.unlockAudio();request();};
+$('#storyReplay').onclick=()=>{story?.start();$('#storyPlay').textContent='一時停止';request();};
+$('#storySeek').oninput=()=>{if(story){story.playing=false;story.seek(Number($<HTMLInputElement>('#storySeek').value));$('#storyPlay').textContent='再生';request();}};
+$('#storyMute').onclick=()=>{if(story){story.muted=!story.muted;story.silence();$('#storyMute').textContent=story.muted?'消音':'音あり';}};
+$('#storyExit').onclick=()=>{story?.exit();storyBar.hidden=true;$('#tools').hidden=false;if(native)void Bench.awake({enabled:false});status('ドラッグで回転 · ピンチでズーム');request();};
+document.addEventListener('visibilitychange',()=>{if(document.hidden){bench?.abort();if(story){story.interrupted=true;story.playing=false;story.last=0;story.silence();$('#storyPlay').textContent='再生';}if(queued)cancelAnimationFrame(queued);queued=0;}else request();});
 window.addEventListener('error',e=>status(e.message));
 start().catch(e=>{status('起動失敗: '+String(e));console.error(e);});
+

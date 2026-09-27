@@ -22,6 +22,15 @@ static func run() -> int:
 	var add: Dictionary=w.edit(cell,value)
 	var remove: Dictionary=w.edit(cell,0)
 	passed=passed and w.grid_hash()==before and add.chunks.size()==1 and remove.chunks.size()==1
+	var s: Dictionary=VoxelWorld.json_file('res://story/story.json')
+	if not s.has_all(['cells','sourceGridSha256','contextPatch']): return 14
+	var context:=VoxelWorld.new();context.grid=w.grid.duplicate()
+	for row in s.contextPatch: context.grid[int(row[0])]=int(row[1])
+	passed=passed and context.grid_hash()==s.contextGridSha256
+	for row in s.cells: context.grid[w.index(int(row[0]),int(row[1]),int(row[2]))]=int(row[3])
+	passed=passed and context.grid_hash()==before and int(StoryPlayer.state(s,32.0).n)==40540
+	for file in ['place.wav','complete.wav','step.wav','timeline.tres']:
+		if not ResourceLoader.exists('res://story/'+file) or load('res://story/'+file)==null: return 15
 	var report: Dictionary={'releaseBuild':not OS.is_debug_build(),'passed':passed,'gridSha256':hash,'occupied':occupied,'pieces':w.pieces.size(),'chunks':w.occupied_chunks().size(),'editRestoresGrid':w.grid_hash()==before}
 	print('RELEASE_SMOKE '+JSON.stringify(report))
 	return 0 if passed else 13

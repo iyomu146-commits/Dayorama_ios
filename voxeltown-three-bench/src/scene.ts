@@ -9,6 +9,7 @@ export class TownScene {
   meshes=new Map<string,THREE.Mesh>();material:THREE.MeshLambertMaterial;
   paint:ReturnType<typeof palettePaint>;sun:THREE.DirectionalLight;
   renderCount=0;lastCalls=0;lastTriangles=0;
+  storyLight={value:1};
   constructor(public world:World,public host:HTMLElement,public invalidate:()=>void) {
     THREE.Object3D.DEFAULT_UP.set(0,0,1);
     this.renderer=new THREE.WebGLRenderer({antialias:true,alpha:true,powerPreference:'high-performance',preserveDrawingBuffer:false});
@@ -37,10 +38,11 @@ export class TownScene {
     const mat=new THREE.MeshLambertMaterial({vertexColors:true});
     const g=this.world.bundle.look.grade;
     mat.onBeforeCompile=shader=>{
-      shader.vertexShader='attribute vec3 benchEmission; attribute float benchHero; varying vec3 vBenchEmission; varying float vBenchHero;\n'+shader.vertexShader;
-      shader.vertexShader=shader.vertexShader.replace('#include <begin_vertex>','#include <begin_vertex>\nvBenchEmission=benchEmission;vBenchHero=benchHero;');
-      shader.fragmentShader='varying vec3 vBenchEmission;varying float vBenchHero;\nvec3 hable(vec3 x){return ((x*(.22*x+.03)+.004)/(x*(.22*x+.30)+.06))-.033333333333;}\n'+shader.fragmentShader;
-      shader.fragmentShader=shader.fragmentShader.replace('#include <emissivemap_fragment>','#include <emissivemap_fragment>\ntotalEmissiveRadiance += vBenchEmission;');
+      shader.uniforms.uStoryLight=this.storyLight;
+      shader.vertexShader='attribute vec3 benchEmission; attribute float benchHero; varying vec3 vBenchEmission; varying float vBenchHero;varying vec3 vStoryWorld;\n'+shader.vertexShader;
+      shader.vertexShader=shader.vertexShader.replace('#include <begin_vertex>','#include <begin_vertex>\nvBenchEmission=benchEmission;vBenchHero=benchHero;vStoryWorld=(modelMatrix*vec4(position,1.)).xyz;');
+      shader.fragmentShader='uniform float uStoryLight;varying vec3 vStoryWorld;varying vec3 vBenchEmission;varying float vBenchHero;\nvec3 hable(vec3 x){return ((x*(.22*x+.03)+.004)/(x*(.22*x+.30)+.06))-.033333333333;}\n'+shader.fragmentShader;
+      shader.fragmentShader=shader.fragmentShader.replace('#include <emissivemap_fragment>','#include <emissivemap_fragment>\nfloat storyLight=all(greaterThanEqual(vStoryWorld,vec3(9.15,4.35,2.25)))&&all(lessThanEqual(vStoryWorld,vec3(14.1,12.,8.85)))?uStoryLight:1.;totalEmissiveRadiance += vBenchEmission*storyLight;');
       shader.fragmentShader=shader.fragmentShader.replace('#include <tonemapping_fragment>',`
         gl_FragColor.rgb=hable(max(vec3(0.),gl_FragColor.rgb)*${(2**g.exposure*2).toFixed(8)})/hable(vec3(${g.white.toFixed(4)}));
       `);
@@ -51,7 +53,7 @@ export class TownScene {
         c=pow(clamp(c*vec3(${g.gain.join(',')})+vec3(${g.lift.join(',')})*(1.-c),0.,1.),1./vec3(${g.gamma.join(',')}));
         l=dot(c,vec3(.2126,.7152,.0722)); c=clamp(vec3(l)+(c-vec3(l))*${g.saturation.toFixed(4)},0.,1.);
         l=dot(c,vec3(.2126,.7152,.0722));c*=min(1.,.76/max(.00001,l));
-        if(vBenchHero>.5)c=mix(vec3(.985,.925,.705),vec3(1.,.985,.83),clamp(dot(vBenchEmission,vec3(.2126,.7152,.0722)),0.,1.));
+        if(vBenchHero>.5)c=mix(vec3(.20,.19,.24),mix(vec3(.985,.925,.705),vec3(1.,.985,.83),clamp(dot(vBenchEmission,vec3(.2126,.7152,.0722)),0.,1.)),storyLight);
         gl_FragColor.rgb=c;
       `);
     };
