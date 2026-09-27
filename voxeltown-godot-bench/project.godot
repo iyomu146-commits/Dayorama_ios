@@ -1,0 +1,37 @@
+config_version=5
+
+[application]
+config/name="Voxeltown Godot Bench"
+config/version="0.1.0"
+run/main_scene="res://main.tscn"
+config/features=PackedStringArray("4.7", "GL Compatibility")
+config/use_custom_user_dir=true
+config/custom_user_dir_name="voxeltown-godot-bench"
+
+[display]
+window/size/viewport_width=1280
+window/size/viewport_height=900
+window/size/window_width_override=1280
+window/size/window_height_override=900
+window/stretch/mode="canvas_items"
+window/handheld/orientation=0
+window/vsync/vsync_mode=1
+window/energy_saving/keep_screen_on=false
+
+[rendering]
+textures/vram_compression/import_etc2_astc=true
+renderer/rendering_method="gl_compatibility"
+renderer/rendering_method.mobile="gl_compatibility"
+renderer/rendering_method.web="gl_compatibility"
+textures/default_filters/use_nearest_mipmap_filter=false
+lights_and_shadows/directional_shadow/size=2048
+lights_and_shadows/directional_shadow/soft_shadow_filter_quality=1
+environment/defaults/default_clear_color=Color(0.15,0.12,0.19,1)
+
+[input_devices]
+pointing/android/enable_pan_and_scale_gestures=true
+pointing/emulate_touch_from_mouse=false
+pointing/emulate_mouse_from_touch=true
+
+[audio]
+driver/enable_input=false

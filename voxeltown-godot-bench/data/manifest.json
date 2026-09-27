@@ -1,0 +1,15 @@
+{
+  "formatVersion": 1,
+  "files": {
+    "look/town_evening.json": "6e58eaed0bb9f0c063e217e06457b88198e56df138614d4744ee1eeaa05fc993",
+    "palettes/tile002_street.json": "aac7dec8d19bbd93cc1e7ecdeebfe2005da3e2d34ea03b0e7ac9037eba6b0b6f",
+    "templates/booth.json": "6b38c1b6eafa035e22a57edf693f2c0c967297f7cb0bc64838b5c90a141145cd",
+    "templates/cat.json": "889edd0ba8a76f508c834abdccb19d03c5c562d19f31bd547a5357b76a10cc68",
+    "templates/house_a.json": "4e3df9c4b86acb4c9027f1de8277b651e786daeba6170b6efdad691bdef0910f",
+    "templates/house_b.json": "979cc970bbe66f758400fd84a82fa10c603a816b32b8e4103e1dee7164d248a2",
+    "templates/pole_guard.json": "18cea12bd7081b87563f6630bbb29d4b0c03d2a9a56d820db0a081d14081a74d",
+    "templates/pole_transformer.json": "434b258e3577e837b052ae675497572c32c4717e129ca2808cbd3e5e58b84bbe",
+    "templates/vending.json": "84e0b63805b454802dc220f084a803f7f1820d509d9b4aec72c4fd0d0729ab7e",
+    "tiles/tile002.json": "ebbfb0214d7e66bb3c3ac5ccce688bee6102c41359f3001b45d0428d60c21485"
+  }
+}

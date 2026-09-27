@@ -1,0 +1,102 @@
+name: iPhone Twin Bench
+on:
+  push:
+    branches: ['codex/iphone-twin-bench']
+    paths: ['voxeltown-three-bench/**', 'voxeltown-godot-bench/**', 'iphone-twin-bench/**', '.github/workflows/iphone-twin-bench.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: iphone-twin-bench-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  three:
+    runs-on: macos-15
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: voxeltown-three-bench/package-lock.json
+      - name: Select Xcode 26
+        run: |
+          python3 - <<'PY'
+          import glob,os
+          paths=sorted(glob.glob('/Applications/Xcode_26*.app/Contents/Developer'))
+          assert paths,'Xcode 26 required'
+          with open(os.environ['GITHUB_ENV'],'a') as f:f.write('DEVELOPER_DIR='+paths[-1]+'\n')
+          PY
+      - name: Test and synchronize Three.js
+        working-directory: voxeltown-three-bench
+        run: |
+          npm ci
+          npm test
+          npm run build
+          npx cap sync ios
+      - name: Build iPhone WKWebView app
+        working-directory: voxeltown-three-bench
+        run: |
+          set -o pipefail
+          xcodebuild -project ios/App/App.xcodeproj -scheme App -configuration Release -destination 'generic/platform=iOS' -derivedDataPath "$RUNNER_TEMP/three" CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY='' CURRENT_PROJECT_VERSION="$GITHUB_RUN_NUMBER" build > "$RUNNER_TEMP/three-build.log" 2>&1 || { tail -100 "$RUNNER_TEMP/three-build.log"; exit 1; }
+          python3 ../iphone-twin-bench/tools/package_ipa.py "$RUNNER_TEMP/three/Build/Products/Release-iphoneos/App.app" "$RUNNER_TEMP/ipa/Three-Bench.ipa"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: Three-iPhone-Bench
+          path: |
+            ${{ runner.temp }}/ipa/
+            ${{ runner.temp }}/three-build.log
+          retention-days: 14
+  godot:
+    runs-on: macos-15
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download pinned Godot and iOS templates
+        run: |
+          set -euo pipefail
+          cd "$RUNNER_TEMP"
+          base=https://github.com/godotengine/godot-builds/releases/download/4.7.1-stable
+          curl -fL --retry 3 "$base/Godot_v4.7.1-stable_macos.universal.zip" -o godot.zip
+          curl -fL --retry 3 "$base/Godot_v4.7.1-stable_export_templates.tpz" -o templates.tpz
+          curl -fL --retry 3 "$base/SHA512-SUMS.txt" -o sums.txt
+          python3 - <<'PY'
+          import hashlib
+          from pathlib import Path
+          lines=Path('sums.txt').read_text().splitlines()
+          for local,release in [('godot.zip','Godot_v4.7.1-stable_macos.universal.zip'),('templates.tpz','Godot_v4.7.1-stable_export_templates.tpz')]:
+              expected=next(line.split()[0] for line in lines if line.strip().endswith(release))
+              with open(local,'rb') as f: actual=hashlib.file_digest(f,'sha512').hexdigest()
+              assert actual==expected, release
+          PY
+          unzip -q godot.zip
+          mkdir -p "$HOME/Library/Application Support/Godot/export_templates/4.7.1.stable"
+          unzip -p templates.tpz templates/ios.zip > "$HOME/Library/Application Support/Godot/export_templates/4.7.1.stable/ios.zip"
+          chmod +x Godot.app/Contents/MacOS/Godot
+          xattr -dr com.apple.quarantine Godot.app || true
+      - name: Validate and export Godot Xcode project
+        run: |
+          set -euo pipefail
+          mkdir -p voxeltown-godot-bench/reports "$RUNNER_TEMP/godot-ios"
+          godot="$RUNNER_TEMP/Godot.app/Contents/MacOS/Godot"
+          "$godot" --headless --editor --path voxeltown-godot-bench --import --quit
+          "$godot" --headless --path voxeltown-godot-bench --script res://tests/parity.gd
+          "$godot" --headless --path voxeltown-godot-bench --export-release iOS "$RUNNER_TEMP/godot-ios/Bench.ipa"
+          gem install --user-install xcodeproj --no-document
+          ruby iphone-twin-bench/tools/inject_godot_metrics.rb "$RUNNER_TEMP/godot-ios/Bench.xcodeproj" iphone-twin-bench/native/BenchNative.mm
+      - name: Build iPhone native Godot app
+        run: |
+          set -o pipefail
+          xcodebuild -project "$RUNNER_TEMP/godot-ios/Bench.xcodeproj" -scheme Bench -configuration Release -destination 'generic/platform=iOS' -derivedDataPath "$RUNNER_TEMP/godot-device" CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY='' build > "$RUNNER_TEMP/godot-build.log" 2>&1 || { tail -100 "$RUNNER_TEMP/godot-build.log"; exit 1; }
+          python3 iphone-twin-bench/tools/package_ipa.py "$RUNNER_TEMP/godot-device/Build/Products/Release-iphoneos/Bench.app" "$RUNNER_TEMP/ipa/Godot-Bench.ipa"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: Godot-iPhone-Bench
+          path: |
+            ${{ runner.temp }}/ipa/
+            ${{ runner.temp }}/godot-build.log
+            voxeltown-godot-bench/reports/parity.json
+          retention-days: 14

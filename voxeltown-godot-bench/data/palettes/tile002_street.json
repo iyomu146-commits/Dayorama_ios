@@ -1,0 +1,453 @@
+{
+ "kind": "palette",
+ "formatVersion": 1,
+ "id": "tile002_street",
+ "name": "tile002 夕暮れの通り (15cm 版の校正済み基本色)",
+ "entries": [
+  {
+   "index": 1,
+   "name": "soil",
+   "hex": "#32170a",
+   "surface": "soil",
+   "role": "ground"
+  },
+  {
+   "index": 2,
+   "name": "soil_dark",
+   "hex": "#31160b",
+   "surface": "soil_dark",
+   "role": "ground"
+  },
+  {
+   "index": 3,
+   "name": "grass",
+   "hex": "#232106",
+   "surface": "grass",
+   "role": "ground"
+  },
+  {
+   "index": 4,
+   "name": "curb",
+   "hex": "#6e5c75",
+   "surface": "curb",
+   "role": "curb"
+  },
+  {
+   "index": 5,
+   "name": "asphalt",
+   "hex": "#3d3045",
+   "surface": "asphalt",
+   "role": "road"
+  },
+  {
+   "index": 6,
+   "name": "paver",
+   "hex": "#806b7b",
+   "surface": "paver",
+   "role": "sidewalk"
+  },
+  {
+   "index": 7,
+   "name": "yard",
+   "hex": "#2b211d",
+   "surface": "yard",
+   "role": "ground"
+  },
+  {
+   "index": 8,
+   "name": "block",
+   "hex": "#846f73",
+   "surface": "block",
+   "role": "wall"
+  },
+  {
+   "index": 9,
+   "name": "block_cap",
+   "hex": "#654f4d",
+   "surface": "block_cap",
+   "role": "wall"
+  },
+  {
+   "index": 10,
+   "name": "plate",
+   "hex": "#402014",
+   "surface": "plate",
+   "role": "wall"
+  },
+  {
+   "index": 11,
+   "name": "plaster_beige",
+   "hex": "#9d828a",
+   "surface": "plaster_beige",
+   "role": "building"
+  },
+  {
+   "index": 12,
+   "name": "plaster_pink",
+   "hex": "#b9756e",
+   "surface": "plaster_pink",
+   "role": "building"
+  },
+  {
+   "index": 13,
+   "name": "found",
+   "hex": "#55403b",
+   "surface": "found",
+   "role": "building"
+  },
+  {
+   "index": 14,
+   "name": "roof_tile",
+   "hex": "#3a2e4b",
+   "surface": "roof_tile",
+   "role": "building"
+  },
+  {
+   "index": 15,
+   "name": "roof_under",
+   "hex": "#160f1a",
+   "surface": "roof_under",
+   "role": "building"
+  },
+  {
+   "index": 16,
+   "name": "fascia",
+   "hex": "#2b1815",
+   "surface": "fascia",
+   "role": "building"
+  },
+  {
+   "index": 17,
+   "name": "wood",
+   "hex": "#45270d",
+   "surface": "wood",
+   "role": "building"
+  },
+  {
+   "index": 18,
+   "name": "wood_dark",
+   "hex": "#9b655b",
+   "surface": "wood_dark",
+   "role": "building"
+  },
+  {
+   "index": 19,
+   "name": "door",
+   "hex": "#996645",
+   "surface": "door",
+   "role": "building"
+  },
+  {
+   "index": 20,
+   "name": "curtain",
+   "hex": "#988663",
+   "surface": "curtain",
+   "role": "building"
+  },
+  {
+   "index": 21,
+   "name": "glass",
+   "hex": "#9f8e4a",
+   "surface": "glass",
+   "role": "building"
+  },
+  {
+   "index": 22,
+   "name": "glass_lattice",
+   "hex": "#a0893f",
+   "surface": "glass_lattice",
+   "role": "building"
+  },
+  {
+   "index": 23,
+   "name": "lamp",
+   "hex": "#a09278",
+   "surface": "lamp",
+   "role": "building"
+  },
+  {
+   "index": 24,
+   "name": "pole_metal",
+   "hex": "#555558",
+   "surface": "pole_metal",
+   "role": "prop"
+  },
+  {
+   "index": 25,
+   "name": "cloth_white",
+   "hex": "#d3a5a8",
+   "surface": "cloth_white",
+   "role": "prop"
+  },
+  {
+   "index": 26,
+   "name": "cloth_blue",
+   "hex": "#6273a2",
+   "surface": "cloth_blue",
+   "role": "prop"
+  },
+  {
+   "index": 27,
+   "name": "cloth_pink",
+   "hex": "#ac5f76",
+   "surface": "cloth_pink",
+   "role": "prop"
+  },
+  {
+   "index": 28,
+   "name": "ac",
+   "hex": "#96848f",
+   "surface": "ac",
+   "role": "prop"
+  },
+  {
+   "index": 29,
+   "name": "ac_fan",
+   "hex": "#211d25",
+   "surface": "ac_fan",
+   "role": "prop"
+  },
+  {
+   "index": 30,
+   "name": "pipe",
+   "hex": "#6d4f5f",
+   "surface": "pipe",
+   "role": "prop"
+  },
+  {
+   "index": 31,
+   "name": "pot",
+   "hex": "#5f3525",
+   "surface": "pot",
+   "role": "prop"
+  },
+  {
+   "index": 32,
+   "name": "leaf",
+   "hex": "#17360b",
+   "surface": "leaf",
+   "role": "plant"
+  },
+  {
+   "index": 33,
+   "name": "leaf_lit",
+   "hex": "#32460e",
+   "surface": "leaf_lit",
+   "role": "plant"
+  },
+  {
+   "index": 34,
+   "name": "leaf_dark",
+   "hex": "#1b3d17",
+   "surface": "leaf_dark",
+   "role": "plant"
+  },
+  {
+   "index": 35,
+   "name": "flower",
+   "hex": "#883b40",
+   "surface": "flower",
+   "role": "plant"
+  },
+  {
+   "index": 36,
+   "name": "vend_red",
+   "hex": "#590405",
+   "surface": "vend_red",
+   "role": "fixture"
+  },
+  {
+   "index": 37,
+   "name": "vend_display",
+   "hex": "#a09e90",
+   "surface": "vend_display",
+   "role": "fixture"
+  },
+  {
+   "index": 38,
+   "name": "vend_panel",
+   "hex": "#a09058",
+   "surface": "vend_panel",
+   "role": "fixture"
+  },
+  {
+   "index": 39,
+   "name": "drink_blue",
+   "hex": "#355687",
+   "surface": "drink_blue",
+   "role": "fixture"
+  },
+  {
+   "index": 40,
+   "name": "drink_yellow",
+   "hex": "#988225",
+   "surface": "drink_yellow",
+   "role": "fixture"
+  },
+  {
+   "index": 41,
+   "name": "drink_green",
+   "hex": "#567825",
+   "surface": "drink_green",
+   "role": "fixture"
+  },
+  {
+   "index": 42,
+   "name": "drink_orange",
+   "hex": "#974925",
+   "surface": "drink_orange",
+   "role": "fixture"
+  },
+  {
+   "index": 43,
+   "name": "metal_dark",
+   "hex": "#211a25",
+   "surface": "metal_dark",
+   "role": "fixture"
+  },
+  {
+   "index": 44,
+   "name": "booth_frame",
+   "hex": "#4d4449",
+   "surface": "booth_frame",
+   "role": "fixture"
+  },
+  {
+   "index": 45,
+   "name": "booth_inner",
+   "hex": "#876839",
+   "surface": "booth_inner",
+   "role": "fixture"
+  },
+  {
+   "index": 46,
+   "name": "phone",
+   "hex": "#58721a",
+   "surface": "phone",
+   "role": "fixture"
+  },
+  {
+   "index": 47,
+   "name": "phone_dark",
+   "hex": "#1a1f15",
+   "surface": "phone_dark",
+   "role": "fixture"
+  },
+  {
+   "index": 48,
+   "name": "pole",
+   "hex": "#2f2e42",
+   "surface": "pole",
+   "role": "fixture"
+  },
+  {
+   "index": 49,
+   "name": "pole_band",
+   "hex": "#423944",
+   "surface": "pole_band",
+   "role": "fixture"
+  },
+  {
+   "index": 50,
+   "name": "insulator",
+   "hex": "#18151a",
+   "surface": "insulator",
+   "role": "fixture"
+  },
+  {
+   "index": 51,
+   "name": "transformer",
+   "hex": "#090918",
+   "surface": "transformer",
+   "role": "fixture"
+  },
+  {
+   "index": 52,
+   "name": "stripe_y",
+   "hex": "#926310",
+   "surface": "stripe_y",
+   "role": "fixture"
+  },
+  {
+   "index": 53,
+   "name": "stripe_d",
+   "hex": "#161214",
+   "surface": "stripe_d",
+   "role": "fixture"
+  },
+  {
+   "index": 54,
+   "name": "wire",
+   "hex": "#161115",
+   "surface": "wire",
+   "role": "offgrid"
+  },
+  {
+   "index": 55,
+   "name": "cloud",
+   "hex": "#a55b87",
+   "surface": "cloud",
+   "role": "offgrid"
+  },
+  {
+   "index": 56,
+   "name": "lamp_booth",
+   "hex": "#a09782",
+   "surface": "lamp_booth",
+   "role": "fixture"
+  },
+  {
+   "index": 57,
+   "name": "cat_white",
+   "hex": "#99928c",
+   "surface": "cat_white",
+   "role": "animal"
+  },
+  {
+   "index": 58,
+   "name": "cat_orange",
+   "hex": "#874a1a",
+   "surface": "cat_orange",
+   "role": "animal"
+  },
+  {
+   "index": 59,
+   "name": "cat_dark",
+   "hex": "#211816",
+   "surface": "cat_dark",
+   "role": "animal"
+  },
+  {
+   "index": 60,
+   "name": "glass_edge",
+   "hex": "#9f8e4a",
+   "surface": "glass",
+   "emitScale": 0.7,
+   "role": "building"
+  },
+  {
+   "index": 61,
+   "name": "glass_center",
+   "hex": "#9f8e4a",
+   "surface": "glass",
+   "emitScale": 1.2,
+   "role": "building"
+  },
+  {
+   "index": 62,
+   "name": "glass_lattice_edge",
+   "hex": "#a0893f",
+   "surface": "glass_lattice",
+   "emitScale": 0.7,
+   "role": "building"
+  },
+  {
+   "index": 63,
+   "name": "glass_lattice_center",
+   "hex": "#a0893f",
+   "surface": "glass_lattice",
+   "emitScale": 1.2,
+   "role": "building"
+  }
+ ]
+}

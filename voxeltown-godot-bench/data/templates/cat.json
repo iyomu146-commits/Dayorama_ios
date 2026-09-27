@@ -1,0 +1,51 @@
+{
+ "kind": "template",
+ "formatVersion": 1,
+ "id": "cat",
+ "name": "三毛猫",
+ "category": "animal",
+ "palette": "tile002_street",
+ "voxels": {
+  "size": [4, 2, 4],
+  "encoding": "rows",
+  "rows": [
+   "39000039",
+   "39000039",
+   "3a3b3939",
+   "3b3a3a39",
+   "00003b39",
+   "3b003b3a",
+   "0000003b",
+   "3a00003a"
+  ]
+ },
+ "pivot": [0, 0, 0],
+ "footprint": {
+  "size": [4, 2],
+  "rows": ["1111", "1111"]
+ },
+ "pieces": [],
+ "order": {
+  "rule": "layered-v1",
+  "runs": [
+   [0, 1],
+   [2, 1],
+   [1, 1],
+   [3, 4],
+   [8, 3],
+   [7, 1],
+   [11, 2],
+   [15, 1],
+   [13, 1],
+   [16, 1],
+   [14, 1],
+   [17, 1],
+   [19, 1],
+   [18, 1]
+  ]
+ },
+ "emitters": [],
+ "meta": {
+  "source": "src/scene3.py cat"
+ }
+}
