@@ -56,6 +56,14 @@ jobs:
     timeout-minutes: 35
     steps:
       - uses: actions/checkout@v4
+      - name: Select Xcode 26
+        run: |
+          python3 - <<'PY'
+          import glob,os
+          paths=sorted(glob.glob('/Applications/Xcode_26*.app/Contents/Developer'))
+          assert paths,'Godot 4.7.1 templates require Xcode 26 SDK symbols'
+          with open(os.environ['GITHUB_ENV'],'a') as f:f.write('DEVELOPER_DIR='+paths[-1]+'\n')
+          PY
       - name: Download pinned Godot and iOS templates
         run: |
           set -euo pipefail
