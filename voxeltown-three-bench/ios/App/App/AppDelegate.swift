@@ -20,7 +20,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 public class BenchPlugin: CAPPlugin, CAPBridgedPlugin {
     public let identifier="BenchPlugin"
     public let jsName="Bench"
-    public let pluginMethods=["info","snapshot","ready","awake","save"].map { CAPPluginMethod(name:$0,returnType:CAPPluginReturnPromise) }
+    public let pluginMethods:[CAPPluginMethod]=["info","snapshot","ready","awake","save"].map { CAPPluginMethod(name:$0,returnType:CAPPluginReturnPromise) }
     private func metrics() -> [String:Any] {
         var vm=task_vm_info_data_t()
         var count=mach_msg_type_number_t(MemoryLayout<task_vm_info_data_t>.size/MemoryLayout<integer_t>.size)
