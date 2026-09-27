@@ -12,8 +12,10 @@ export function localBundle():Bundle {
 test('formatVersion 1: TS cellhash is exactly Python h32/u01; scene resolution is byte-identical',()=>{
   const python=process.env.BENCH_PYTHON||'C:/calude/sleepwork/dayorama-format-v1/.venv/Scripts/python.exe';
   const source=process.env.FORMAT_SOURCE||'C:/calude/voxeltown';
-  const run=spawnSync(python,['-B','tools/python-reference.py',source,resolve('public/data')],{encoding:'utf8',maxBuffer:8*1024*1024});
-  assert.equal(run.status,0,run.stderr);const ref=JSON.parse(run.stdout);
+  // CI replays the frozen Python oracle; local default still executes the canonical converter.
+  const run=process.env.BENCH_ORACLE_FILE?null:spawnSync(python,['-B','tools/python-reference.py',source,resolve('public/data')],{encoding:'utf8',maxBuffer:8*1024*1024});
+  if(run)assert.equal(run.status,0,run.stderr);
+  const ref=JSON.parse(run?run.stdout:readFileSync(process.env.BENCH_ORACLE_FILE!,'utf8'));
   for(const [x,y,z,s,h,u] of ref.hashes){assert.equal(h32(x,y,z,s),h);assert.equal(u01(x,y,z,s),u);}
   const world=resolveBundle(localBundle());
   const sha=createHash('sha256').update(world.grid).digest('hex');assert.equal(sha,ref.gridSha256);

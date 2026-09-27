@@ -30,6 +30,8 @@ jobs:
           PY
       - name: Test and synchronize Three.js
         working-directory: voxeltown-three-bench
+        env:
+          BENCH_ORACLE_FILE: ../voxeltown-godot-bench/tests/python-reference.json
         run: |
           npm ci
           npm test
