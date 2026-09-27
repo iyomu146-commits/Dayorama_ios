@@ -3,6 +3,7 @@ import {TownScene} from './scene';
 import {World} from './world';
 import {buildChunk} from './mesher';
 import {storyState,type StorySpec} from './story-state';
+import {attachStoryDrawList} from './story-draw-list';
 
 const fallShader=`
  float age=uStoryTime-aStory.x;
@@ -20,6 +21,8 @@ export class StoryPlayer {
  audio?:AudioContext;buffers=new Map<string,AudioBuffer>();sources=new Set<AudioBufferSourceNode>();muted=false;
  lastPop=-1;completePlayed=false;lastStep=-1;finalShown=true;
  interrupted=false;
+ warmupMs=0;firstReadyMs=0;runNumber=0;
+ drawList!:ReturnType<typeof attachStoryDrawList>;
  constructor(public town:TownScene,public changed:(s:ReturnType<typeof storyState>)=>void,public ended:(r:any)=>void){}
  async load(){
   const start=performance.now(),r=await fetch('/story/story.json');if(!r.ok)throw Error('Story data missing');this.spec=await r.json();
@@ -43,6 +46,8 @@ export class StoryPlayer {
   const originalCompile=material.onBeforeCompile;material.onBeforeCompile=(shader,renderer)=>{originalCompile.call(material,shader,renderer);shader.vertexShader='attribute float aHeight;\n'+shader.vertexShader;shader.vertexShader=shader.vertexShader.replace('.60*(1.-p)*(1.-p)', '.60/max(.0001,aHeight)*(1.-p)*(1.-p)');};
   const depth=new THREE.MeshDepthMaterial({depthPacking:THREE.RGBADepthPacking});depth.onBeforeCompile=shader=>{shader.uniforms.uStoryTime=this.uniform;shader.vertexShader='attribute vec3 aStory;attribute float aHeight;uniform float uStoryTime;\n'+shader.vertexShader;shader.vertexShader=shader.vertexShader.replace('#include <begin_vertex>','#include <begin_vertex>\n'+fallShader.replace('.60*(1.-p)*(1.-p)','.60/max(.0001,aHeight)*(1.-p)*(1.-p)'));};depth.customProgramCacheKey=()=> 'story-depth-v1';
   mesh.customDepthMaterial=depth;mesh.castShadow=true;mesh.receiveShadow=true;mesh.frustumCulled=false;this.instances=mesh;this.root.add(mesh);
+  for(const a of [mesh.instanceMatrix,mesh.instanceColor!,geometry.getAttribute('aStory'),geometry.getAttribute('aHeight')]) (a as THREE.BufferAttribute).setUsage(THREE.DynamicDrawUsage);
+  this.drawList=attachStoryDrawList(mesh,this.spec);
   for(const [id,position,size,color] of this.spec.actor.boxes){const part=new THREE.Mesh(new THREE.BoxGeometry(...size as [number,number,number]),new THREE.MeshLambertMaterial({color}));part.position.fromArray(position);part.userData.base=part.position.clone();part.castShadow=true;part.receiveShadow=true;this.actor.add(part);this.parts.set(id,part);}
   this.root.add(this.actor);this.root.visible=false;this.town.scene.add(this.root);
   const spillMaterial=new THREE.ShaderMaterial({transparent:true,depthWrite:false,uniforms:{power:{value:0}},vertexShader:'varying vec2 p;void main(){p=uv*2.-1.;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}',fragmentShader:'varying vec2 p;uniform float power;void main(){float a=pow(max(0.,1.-dot(p,p)),2.)*.18*power;gl_FragColor=vec4(1.,.64,.27,a);}'});
@@ -56,10 +61,24 @@ export class StoryPlayer {
  }
  sound(name:string,gain:number){if(this.muted||!this.audio||this.audio.state!=='running'||!this.buffers.has(name))return;const source=this.audio.createBufferSource(),volume=this.audio.createGain();source.buffer=this.buffers.get(name)!;volume.gain.value=gain;source.connect(volume).connect(this.audio.destination);this.sources.add(source);source.onended=()=>{source.disconnect();volume.disconnect();this.sources.delete(source);};source.start();}
  silence(){for(const source of this.sources){try{source.stop();}catch{}}this.sources.clear();}
- start(){this.active=true;this.playing=true;this.frames=[];this.phaseFrames={};this.last=0;this.completePlayed=false;this.lastPop=-1;this.lastStep=-1;this.root.visible=true;this.town.controls.enabled=false;this.seek(0);this.interrupted=false;}
+ async warmup(){
+  const start=performance.now(),canvas=this.town.renderer.domElement,visibility=canvas.style.visibility;
+  canvas.style.visibility='hidden';this.root.visible=true;
+  try{
+   for(const t of [16,26.5,0]){
+    this.time=t;this.update();
+    await new Promise<void>(resolve=>requestAnimationFrame(()=>resolve()));
+    this.town.render();
+   }
+   // A single loading-time fence includes initial shader/buffer GPU work in readiness.
+   // Never used in timed playback or to manufacture an FPS result.
+   this.town.renderer.getContext().finish();
+  }finally{canvas.style.visibility=visibility;this.warmupMs=performance.now()-start;}
+ }
+ start(){this.runNumber++;this.active=true;this.playing=true;this.frames=[];this.phaseFrames={};this.last=0;this.completePlayed=false;this.lastPop=-1;this.lastStep=-1;this.root.visible=true;this.town.controls.enabled=false;this.seek(0);this.interrupted=false;}
  seek(t:number){this.interrupted=true;this.time=Math.max(0,Math.min(this.spec.duration,t));this.last=0;this.silence();this.completePlayed=this.time>=this.spec.finishTime;this.lastPop=Math.floor(this.time*7);this.update();}
  update(){
-  const s=storyState(this.spec,this.time);this.uniform.value=this.time;
+  const s=storyState(this.spec,this.time);this.uniform.value=this.time;this.drawList.update(this.time);
   if(this.finalShown!==s.finished){for(const [key,mesh] of this.town.meshes)mesh.geometry=(s.finished?this.original:this.context).get(key)!;this.finalShown=s.finished;}
   this.instances.visible=!s.finished;this.light.value=s.light;
   this.actor.visible=s.actorVisible;this.actor.position.fromArray(s.actorPosition);this.actor.rotation.z=s.heading;
@@ -75,7 +94,7 @@ export class StoryPlayer {
   const pop=Math.floor(this.time*7);if(this.time>=this.spec.buildStart+this.spec.fallDuration&&this.time<this.spec.finishTime&&pop!==this.lastPop){this.sound('place',.28);this.lastPop=pop;}
   if(this.time>=this.spec.finishTime&&!this.completePlayed){this.sound('complete',.65);this.completePlayed=true;}
   const s=storyState(this.spec,this.time),step=Math.floor((this.time-this.spec.residentTime)*3.6);if(s.walking&&step!==this.lastStep){this.sound('step',.7);this.lastStep=step;}
-  if(this.time>=this.spec.duration){this.playing=false;this.ended({id:this.spec.id,sourceGridSha256:this.spec.sourceGridSha256,prepareMs:this.prepareMs,intervalsMs:this.frames,phaseIntervalsMs:this.phaseFrames,finalCells:s.n,completed:true,continuousPlayback:!this.interrupted&&this.frames.reduce((a,b)=>a+b,0)>=31000,resolution:this.town.stats().resolution,mode:'instanced-order-presentation-v1',note:'Preparation outside timed playback. Cached context/full geometry. CPU frame callback cadence, not GPU presentation.'});}
+  if(this.time>=this.spec.duration){this.playing=false;this.ended({id:this.spec.id,revision:'story-v2',runNumber:this.runNumber,sourceGridSha256:this.spec.sourceGridSha256,prepareMs:this.prepareMs,warmupMs:this.warmupMs,firstReadyMs:this.firstReadyMs,intervalsMs:this.frames,phaseIntervalsMs:this.phaseFrames,finalCells:s.n,completed:true,continuousPlayback:!this.interrupted&&this.frames.reduce((a,b)=>a+b,0)>=31000,resolution:this.town.stats().resolution,mode:'instanced-order-presentation-v1',presentationCull:'dense-six-settled-unit-neighbours-v1',note:'Preparation and warmup outside timed playback, reported separately. CPU frame callback cadence, not GPU presentation.'});}
  }
  exit(){this.active=false;this.playing=false;this.silence();this.root.visible=false;this.light.value=1;for(const [key,mesh] of this.town.meshes)mesh.geometry=this.original.get(key)!;this.finalShown=true;this.town.controls.enabled=true;this.town.resetView();this.town.renderer.shadowMap.needsUpdate=true;}
 }

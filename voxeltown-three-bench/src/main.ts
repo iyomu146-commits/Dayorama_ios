@@ -51,10 +51,10 @@ function prepare(){dialog.close();$('#reference').hidden=true;$('#stage').classL
 $('#fps').onclick=()=>{prepare();run(()=>bench!.fps());};$('#edits').onclick=()=>{prepare();run(()=>bench!.edits());};$('#idle').onclick=()=>{prepare();run(()=>bench!.idle());};$('#cancel').onclick=()=>{bench?.abort();dialog.close();};
 $('#save').onclick=()=>run(async()=>{if(!bench)return;const json=bench.json();if(native){status('保存: '+(await Bench.save({json})).path);}else{const u=URL.createObjectURL(new Blob([json],{type:'application/json'})),a=document.createElement('a');a.href=u;a.download='bench-report.json';a.click();setTimeout(()=>URL.revokeObjectURL(u),1000);}});
 async function openStory(){
- if(!town||!bench||bench.active)return;prepare();status('演出を準備中');storyButton.disabled=true;
+ if(!town||!bench||bench.active||storyButton.disabled)return;const readyStarted=performance.now();prepare();status('演出を準備中');storyButton.disabled=true;
  document.documentElement.dataset.benchBuffer='1280x720';town.resize();
  try{
-  if(!story){story=new StoryPlayer(town,s=>{status(`${s.phase} · ${s.n.toLocaleString()} / 40,540`);$<HTMLInputElement>('#storySeek').value=String(story!.time);},r=>{(bench!.report as any).story=r;$<HTMLButtonElement>('#storyPlay').textContent='再生';if(native)void Bench.save({json:bench!.json()});});const audioReady=story.unlockAudio().catch(()=>{});await story.load();await audioReady;}
+  if(!story){story=new StoryPlayer(town,s=>{status(`${s.phase} · ${s.n.toLocaleString()} / 40,540`);$<HTMLInputElement>('#storySeek').value=String(story!.time);},r=>{(bench!.report as any).story=r;$<HTMLButtonElement>('#storyPlay').textContent='再生';if(native)void Bench.save({json:bench!.json()});});const audioReady=story.unlockAudio().catch(()=>{});await story.load();await audioReady;await story.warmup();story.firstReadyMs=performance.now()-readyStarted;}
   try{await story.unlockAudio();}catch(e){console.warn('Audio unavailable',e);}
   $('#tools').hidden=true;storyBar.hidden=false;story.start();if(native)await Bench.awake({enabled:true});request();
  }catch(e){status('演出の準備に失敗: '+String(e));}finally{storyButton.disabled=false;}

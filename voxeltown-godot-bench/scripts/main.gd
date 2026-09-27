@@ -25,6 +25,7 @@ var base_bar: HBoxContainer
 var story_position: HSlider
 var story_play: Button
 var story_clock: float=0.0
+var story_preparing: bool=false
 
 func _ready() -> void:
 	if '--release-smoke' in OS.get_cmdline_user_args():
@@ -148,16 +149,22 @@ func _ready() -> void:
 func button(parent: Node,label: String,action: Callable) -> void:
 	var b:=Button.new(); b.text=label; b.custom_minimum_size.y=38
 	b.pressed.connect(func():
-		if not town or (bench and bench.active and label!='Stop'): return
+		if not town or story_preparing or (bench and bench.active and label!='Stop'): return
 		action.call())
 	parent.add_child(b)
 
 func open_story() -> void:
+	if story_preparing: return
+	story_preparing=true
+	var ready_started: int=Time.get_ticks_usec()
 	fixed_buffer=Vector2i(1280,720);stage.stretch_mode=TextureRect.STRETCH_KEEP_ASPECT_CENTERED;resize_stage()
 	if not story:
 		set_status('Preparing story...');await get_tree().process_frame
 		story=StoryPlayer.new(self)
-		if not story.prepare(): story=null;set_status('Story load failed');return
+		if not story.prepare(): story=null;set_status('Story load failed');story_preparing=false;return
+		await story.warmup()
+		story.first_ready_ms=float(Time.get_ticks_usec()-ready_started)/1000.0
+	story_preparing=false
 	base_bar.hide();story_bar.show();story_play.text='Pause';story.start()
 
 func _process(_delta: float) -> void:

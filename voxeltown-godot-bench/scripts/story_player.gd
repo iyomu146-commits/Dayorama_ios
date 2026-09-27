@@ -19,6 +19,9 @@ var muted: bool=false
 var frames: Array=[]
 var phase_frames: Dictionary={}
 var prepare_ms: float=0.0
+var warmup_ms: float=0.0
+var first_ready_ms: float=0.0
+var run_number: int=0
 var sounds: Dictionary={}
 var last_pop: int=-1
 var last_step: int=-1
@@ -106,7 +109,23 @@ func play_sound(id: String,gain: float) -> void:
 func silence() -> void:
 	for p in sounds.values(): p.stop()
 
+func warmup() -> void:
+	# Compatibility compiles materials on their first actual render, not on load().
+	# Render both instance/shadow and resident material paths while the stage is covered.
+	var started: int=Time.get_ticks_usec()
+	var previous_modulate: Color=host.stage.self_modulate
+	host.stage.self_modulate=Color(1,1,1,0)
+	root.visible=true;host.continuous=true;OS.low_processor_usage_mode=false
+	host.viewport.render_target_update_mode=SubViewport.UPDATE_ALWAYS
+	for sample_time in [16.0,26.5,0.0]:
+		time=sample_time;update();host.set_status('Preparing story...')
+		await RenderingServer.frame_post_draw
+		await RenderingServer.frame_post_draw
+	host.stage.self_modulate=previous_modulate
+	warmup_ms=float(Time.get_ticks_usec()-started)/1000.0
+
 func start() -> void:
+	run_number+=1
 	active=true;playing=true;frames=[];phase_frames={};last_usec=0;complete_played=false;last_pop=-1;last_step=-1
 	timeline.play('build')
 	root.visible=true;DisplayServer.screen_set_keep_on(true);OS.low_processor_usage_mode=false
@@ -159,7 +178,7 @@ func tick() -> void:
 	if s.walking and step!=last_step: play_sound('step',.7);last_step=step
 	if time>=float(spec.duration):
 		playing=false;host.continuous=false;host.invalidate();OS.low_processor_usage_mode=true
-		host.bench.report.story={'id':spec.id,'sourceGridSha256':spec.sourceGridSha256,'prepareMs':prepare_ms,'intervalsMs':frames,'phaseIntervalsMs':phase_frames,'finalCells':s.n,'completed':true,'resolution':[host.viewport.size.x,host.viewport.size.y],'mode':'instanced-order-presentation-v1','note':'Preparation outside timed playback. Cached context/full geometry. CPU process cadence, not GPU presentation.'}
+		host.bench.report.story={'id':spec.id,'revision':'story-v2','runNumber':run_number,'sourceGridSha256':spec.sourceGridSha256,'prepareMs':prepare_ms,'warmupMs':warmup_ms,'firstReadyMs':first_ready_ms,'intervalsMs':frames,'phaseIntervalsMs':phase_frames,'finalCells':s.n,'completed':true,'resolution':[host.viewport.size.x,host.viewport.size.y],'mode':'instanced-order-presentation-v1','note':'Preparation and warmup outside timed playback, reported separately. CPU process cadence, not GPU presentation.'}
 		host.bench.report.story.continuousPlayback=not interrupted and frames.reduce(func(a,b): return a+b,0.0)>=31000.0
 		host.bench.save();host.story_play.text='Play'
 
