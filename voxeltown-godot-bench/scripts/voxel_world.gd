@@ -28,8 +28,16 @@ static func v3(a: Array) -> Vector3i:
 	return Vector3i(int(a[0]),int(a[1]),int(a[2]))
 static func json_file(path: String) -> Dictionary:
 	var parser := JSON.new()
-	assert(parser.parse(FileAccess.get_file_as_string(path))==OK,path)
-	assert(parser.data is Dictionary,path)
+	# Assertions are omitted in release templates, including their expressions.
+	# Parsing is required work, not a debug-only assertion side effect.
+	var file: FileAccess=FileAccess.open(path,FileAccess.READ)
+	if file==null:
+		push_error('Cannot read JSON: '+path)
+		return {}
+	var error: Error=parser.parse(file.get_as_text())
+	if error!=OK or not parser.data is Dictionary:
+		push_error('Invalid JSON object: '+path+' '+parser.get_error_message())
+		return {}
 	return parser.data
 static func decode(block: Dictionary) -> PackedByteArray:
 	var s: Vector3i=v3(block.size)
@@ -100,13 +108,16 @@ func apply_diff(diff: Dictionary,t: Dictionary={},a: Dictionary={}) -> void:
 			if not t.is_empty(): p=place(p,t,a)
 			write(p,0 if kind=='remove' else int(row[3]))
 
-func load_data(root: String='res://data') -> void:
+func load_data(root: String='res://data') -> bool:
 	var manifest: Dictionary=json_file(root+'/manifest.json')
+	if not manifest.get('files') is Dictionary: return false
 	for path in manifest.files:
 		assert(FileAccess.get_sha256(root+'/'+path)==manifest.files[path],'Data hash mismatch: '+path)
 	var tile: Dictionary=json_file(root+'/tiles/tile002.json')
+	if not tile.has_all(['look','palette','formatVersion','size','originCell','base','placements','zones']): return false
 	var look: Dictionary=json_file(root+'/look/'+tile.look+'.json')
 	var pal: Dictionary=json_file(root+'/palettes/'+tile.palette+'.json')
+	if look.is_empty() or not pal.get('entries') is Array: return false
 	assert(tile.formatVersion==1 and look.formatVersion==1 and pal.formatVersion==1 and look.cellHash=='cellhash-v1')
 	assert(tile.chunk==16 and is_equal_approx(float(tile.cellSize),0.15))
 	bundle={'tile':tile,'look':look,'palette':pal,'templates':{},'manifest':manifest}
@@ -129,6 +140,7 @@ func load_data(root: String='res://data') -> void:
 	for b in tile.base.pieces: add_piece(b,'base')
 	for a in tile.placements:
 		var t: Dictionary=json_file(root+'/templates/'+a.template+'.json')
+		if not t.has_all(['formatVersion','palette','voxels','pivot','pieces']): return false
 		assert(t.formatVersion==1 and t.palette==tile.palette)
 		bundle.templates[a.template]=t
 		var s: Vector3i=v3(t.voxels.size)
@@ -151,6 +163,7 @@ func load_data(root: String='res://data') -> void:
 		apply_diff(zone.diff)
 	finalize_pieces()
 	for value in grid: assert(value==0 or palette.has(value),'Undefined palette')
+	return true
 
 func occupied_chunks() -> Array[Vector3i]:
 	var keys: Dictionary={}

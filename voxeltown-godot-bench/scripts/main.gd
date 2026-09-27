@@ -21,6 +21,9 @@ var fixed_buffer:=Vector2i.ZERO
 var buffer_popup: ConfirmationDialog
 
 func _ready() -> void:
+	if '--release-smoke' in OS.get_cmdline_user_args():
+		get_tree().quit(ReleaseSmoke.run())
+		return
 	qa_mode='--qa' in OS.get_cmdline_user_args()
 	if OS.has_feature('android'):
 		var density: float=maxf(1.0,float(DisplayServer.screen_get_dpi())/160.0)
@@ -70,7 +73,10 @@ func _ready() -> void:
 	button(bar,'Buffer',buffer_dialog)
 	status=Label.new(); status.text='Loading canonical tile002…'; footer.add_child(status)
 	await get_tree().process_frame
-	world=VoxelWorld.new(); world.load_data()
+	world=VoxelWorld.new()
+	if not world.load_data():
+		set_status('Data load failed; see application log')
+		return
 	for e in world.palette.values():
 		if int(e.index)>0: palette_select.add_item(str(e.name),int(e.index))
 	town=TownScene.new(); viewport.add_child(town); town.setup(world)

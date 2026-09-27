@@ -84,6 +84,9 @@ jobs:
           unzip -q godot.zip
           mkdir -p "$HOME/Library/Application Support/Godot/export_templates/4.7.1.stable"
           unzip -p templates.tpz templates/ios.zip > "$HOME/Library/Application Support/Godot/export_templates/4.7.1.stable/ios.zip"
+          unzip -p templates.tpz templates/macos.zip > macos-template.zip
+          unzip -p macos-template.zip macos_template.app/Contents/MacOS/godot_macos_release.universal > godot-release
+          chmod +x godot-release
           chmod +x Godot.app/Contents/MacOS/Godot
           xattr -dr com.apple.quarantine Godot.app || true
       - name: Validate and export Godot Xcode project
@@ -94,6 +97,13 @@ jobs:
           "$godot" --headless --editor --path voxeltown-godot-bench --import --quit
           "$godot" --headless --path voxeltown-godot-bench --script res://tests/parity.gd
           "$godot" --headless --path voxeltown-godot-bench --export-release iOS "$RUNNER_TEMP/godot-ios/Bench.ipa"
+          # Test the exact exported iOS data pack in an actual release runtime.
+          # An editor-only test cannot catch assert expressions being stripped.
+          mkdir -p "$RUNNER_TEMP/release-smoke"
+          cp "$RUNNER_TEMP/godot-release" "$RUNNER_TEMP/release-smoke/Bench"
+          cp "$RUNNER_TEMP/godot-ios/Bench.pck" "$RUNNER_TEMP/release-smoke/Bench.pck"
+          (cd "$RUNNER_TEMP/release-smoke" && ./Bench --headless -- --release-smoke) | tee "$RUNNER_TEMP/release-smoke.log"
+          grep -q '"passed":true' "$RUNNER_TEMP/release-smoke.log"
           gem install --user-install xcodeproj --no-document
           ruby iphone-twin-bench/tools/inject_godot_metrics.rb "$RUNNER_TEMP/godot-ios/Bench.xcodeproj" iphone-twin-bench/native/BenchNative.mm
       - name: Build iPhone native Godot app
@@ -108,5 +118,6 @@ jobs:
           path: |
             ${{ runner.temp }}/ipa/
             ${{ runner.temp }}/godot-build.log
+            ${{ runner.temp }}/release-smoke.log
             voxeltown-godot-bench/reports/parity.json
           retention-days: 14
