@@ -11,10 +11,10 @@ concurrency:
   cancel-in-progress: false
 jobs:
   iphone:
-    # The approved one-time build is complete. A future draft-asset build
-    # requires a new explicit grant; do not silently broaden this permission.
+    # User approved this Widget trial build and required compile fixes only.
+    # Draft input is fetched read-only; restore this job to contents:read after build.
     permissions:
-      contents: read
+      contents: write
     runs-on: macos-15
     timeout-minutes: 40
     steps:
@@ -50,6 +50,12 @@ jobs:
           assert paths, 'Xcode 26 required'
           with open(os.environ['GITHUB_ENV'],'a') as f:f.write('DEVELOPER_DIR='+paths[-1]+'\n')
           PY
+      - name: Test shared widget progress model
+        run: |
+          set -euo pipefail
+          source="$RUNNER_TEMP/unity-ios/NativeWidget"
+          xcrun swiftc "$source/Shared/WidgetModel.swift" "$source/Tests/main.swift" -o "$RUNNER_TEMP/widget-model-test"
+          "$RUNNER_TEMP/widget-model-test" "$source/Tests/projection-fixture.json" | tee "$RUNNER_TEMP/widget-model-test.log"
       - name: Compile unsigned device app
         run: |
           set -o pipefail
@@ -64,4 +70,5 @@ jobs:
           path: |
             ${{ runner.temp }}/ipa/
             ${{ runner.temp }}/unity-build.log
+            ${{ runner.temp }}/widget-model-test.log
           retention-days: 14
