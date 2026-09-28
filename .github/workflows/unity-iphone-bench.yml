@@ -1,0 +1,61 @@
+name: Unity iPhone Bench
+on:
+  push:
+    branches: ['codex/unity-iphone-bench']
+    paths: ['dayorama-unity-lab/CI/input.json', '.github/workflows/unity-iphone-bench.yml', 'dayorama-unity-lab/Tools/package-ios.py']
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: unity-iphone-bench-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  iphone:
+    runs-on: macos-15
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fetch hash-pinned Windows export
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          asset=$(python3 -c 'import json; print(json.load(open("dayorama-unity-lab/CI/input.json"))["assetId"])')
+          gh api "/repos/$GITHUB_REPOSITORY/releases/assets/$asset" -H 'Accept: application/octet-stream' > "$RUNNER_TEMP/unity-xcode.zip"
+          python3 - <<'PY'
+          import os,json,hashlib,zipfile
+          from pathlib import Path
+          root=Path(os.environ['RUNNER_TEMP']); archive=root/'unity-xcode.zip'
+          expected=json.loads(Path('dayorama-unity-lab/CI/input.json').read_text())['sha256']
+          assert hashlib.file_digest(archive.open('rb'),'sha256').hexdigest()==expected
+          dest=root/'unity-ios'; dest.mkdir()
+          with zipfile.ZipFile(archive) as z:
+              for item in z.infolist():
+                  target=(dest/item.filename).resolve()
+                  assert target.is_relative_to(dest.resolve())
+                  z.extract(item,dest)
+                  if not item.is_dir(): target.chmod((item.external_attr >> 16) & 0o777 or 0o644)
+          PY
+      - name: Select Xcode 26
+        run: |
+          python3 - <<'PY'
+          import glob,os
+          paths=sorted(glob.glob('/Applications/Xcode_26*.app/Contents/Developer'))
+          assert paths, 'Xcode 26 required'
+          with open(os.environ['GITHUB_ENV'],'a') as f:f.write('DEVELOPER_DIR='+paths[-1]+'\n')
+          PY
+      - name: Compile unsigned device app
+        run: |
+          set -o pipefail
+          xcodebuild -project "$RUNNER_TEMP/unity-ios/Unity-iPhone.xcodeproj" -scheme Unity-iPhone -configuration Release -destination 'generic/platform=iOS' -derivedDataPath "$RUNNER_TEMP/unity-device" -jobs 3 CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY='' CURRENT_PROJECT_VERSION="$GITHUB_RUN_NUMBER" ENABLE_USER_SCRIPT_SANDBOXING=NO build > "$RUNNER_TEMP/unity-build.log" 2>&1 || { tail -100 "$RUNNER_TEMP/unity-build.log"; exit 1; }
+          app=$(find "$RUNNER_TEMP/unity-device/Build/Products/Release-iphoneos" -maxdepth 1 -name '*.app' -type d)
+          test -d "$app"
+          python3 dayorama-unity-lab/Tools/package-ios.py "$app" "$RUNNER_TEMP/ipa"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: Unity-iPhone-Bench
+          path: |
+            ${{ runner.temp }}/ipa/
+            ${{ runner.temp }}/unity-build.log
+          retention-days: 14
