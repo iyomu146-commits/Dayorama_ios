@@ -11,10 +11,10 @@ concurrency:
   cancel-in-progress: false
 jobs:
   iphone:
-    # Temporary for this device build; revert to read once its artifact is saved.
-    # GitHub requires push-level access to read a draft release's assets.
+    # The approved one-time build is complete. A future draft-asset build
+    # requires a new explicit grant; do not silently broaden this permission.
     permissions:
-      contents: write
+      contents: read
     runs-on: macos-15
     timeout-minutes: 40
     steps:
