@@ -11,10 +11,10 @@ concurrency:
   cancel-in-progress: false
 jobs:
   iphone:
-    # User approved this Widget trial build and required compile fixes only.
-    # Draft input is fetched read-only; restore this job to contents:read after build.
+    # The approved Widget build is complete. A future draft-asset build
+    # requires a new explicit grant; do not silently broaden this permission.
     permissions:
-      contents: write
+      contents: read
     runs-on: macos-15
     timeout-minutes: 40
     steps:
