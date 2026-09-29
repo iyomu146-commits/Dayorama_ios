@@ -11,10 +11,10 @@ concurrency:
   cancel-in-progress: false
 jobs:
   iphone:
-    # Temporary grant for this approved daily-walk IPA build only.
-    # Restore to read after the build completes or fails.
+    # The approved daily-walk build is complete. A future draft-asset build
+    # requires a new explicit grant; do not silently broaden this permission.
     permissions:
-      contents: write
+      contents: read
     runs-on: macos-15
     timeout-minutes: 40
     steps:
